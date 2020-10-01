@@ -1,6 +1,6 @@
 タイトル　：　わたしのハイフ
 
-ホームページ \n
+ホームページ 
 https://xn--68jp0cyhmeplpb.com/
 
 AppStore URL
