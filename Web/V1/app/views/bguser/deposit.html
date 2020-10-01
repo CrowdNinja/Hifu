@@ -1,0 +1,111 @@
+
+<title>押金管理 - 押金列表</title>
+<div class="page-header">
+	<h1>
+		押金管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 押金列表
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_advice/deposit/">押金列表</a></li>
+    </ul>
+    <br />
+    </div> 
+		<form class="form-horizontal" role="form" id="submitform">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>押金</th>
+						<th>备注说明</th>
+						<th>创建时间</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<{foreach $deposit.list as $v}>
+					<tr class="alert1" align="left">
+						<td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+						<td><{$v['money']}>元</td>
+						<td><{$v['note']}></td>
+						<td><{formattime($v['ctime'])}></td>
+						<td >
+                            <{if chkcommand('/admin_device/deposit_edit')}>
+                            <a href="admin_system#page/admin_device/deposit_edit/<{$v['id']}>" class="btn btn-success btn-xs"><i class="fa fa-edit"></i> <{translate('修改')}></a>
+                            <{/if}>
+                        </td>
+					</tr>
+					<{/foreach}>
+					<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+						<td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">
+							<{if chkcommand('/admin_device/deposit_delete')}>
+							<input id="btnDelete" class="btn btn-lg btn-default" value="删除" type="button">
+		                    <{/if}>
+		                   <!--  <{if chkcommand('/admin_device/depositdeposr_clear')}>
+							<input id="btnClear" class="btn btn-lg btn-default" value="清空" type="button"> 
+		                    <{/if}> -->
+		                    <{if chkcommand('/admin_device/deposit_edit')}>
+		                    <a href="/admin_system#page/admin_device/deposit_edit" class="btn btn-lg btn-primary">+ 添加押金</a>
+		                    <{/if}>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+                    	 <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$deposit.total}> <{translate('条记录')}> <{$deposit.pages}>  </td></tr></table>
+		</form>
+</div>
+
+ 
+	<script type="text/javascript">
+		$('#btnDelete').click(function(){
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(!ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+			tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_device/deposit_delete', data, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			}, false, { 'ids': ckvals });
+		});
+	// 	$('#btnClear').click(function(){
+	// 		tooltipbox.confirm('确定永久清空所有数据？', function(data){
+	// 			tooltipbox.show('正在执行操作...');
+	// 			$.post('/admin_user/staff_clear', { }, function(res){
+	// 				if(res.status == '1'){
+	// 					tooltipbox.show('操作执行成功');
+	// 					location.reload();
+	// 				}else{
+	// 					tooltipbox.show('数据或网络错误');
+	// 				}
+	// 			}, 'json').error(function(a, b, c){
+	// 				tooltipbox.show('数据或网络错误');
+	// 			});
+	// 		});
+	// 	});
+	// 	try{
+	// 		if((window.opener || window.parent).location.href.indexOf('admin_coupon/give') != -1 ||
+	// 			(window.opener || window.parent).location.href.indexOf('admin_corp/add') != -1 || 
+	// 				(window.opener || window.parent).location.href.indexOf('admin_corp/edit') != -1)
+	// 			(window.opener || window.parent).iframeLoadNotify(window);
+	// 	}catch(e){}
+	// });
+</script>
+ 
+ 

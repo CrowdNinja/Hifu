@@ -1,0 +1,219 @@
+
+<title><{translate('設備管理')}> - <{translate('予約管理用機器設定')}></title>
+<div class="page-header">
+	<h1>
+		<{translate('設備管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('予約管理用機器設定')}>
+	</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+<link rel="stylesheet" href="/style/common.css" />
+<div class="row">
+	<div class="col-xs-12">
+
+		<ul class="nav nav-tabs">
+			<li class=" active" ><a href="javascript:;"><{translate('予約管理用機器リスト')}></a></li>
+
+		</ul>
+		<br />
+
+
+        <div class="panel panel-success">
+            <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('スクリーニング')}></div>
+            <div class="panel-body" style="display:">
+                    <div class="form-group form-search form-inline">
+                        <label class="control-label"><{translate('店舗選択')}></label>
+                        <input id="adminid" name="adminid" value="<{$get.adminid}>" style="width:200px" />
+
+                        <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('検索する')}></button>
+                    </div>
+            </div>
+        </div>
+
+        <script>
+        $(function () {
+            $("#adminid").select2({
+                ajax: {
+                    url: "/admin_device/reserve_device_shop_search",
+                    data: function (params) {
+                        return { 
+                            keywords: params
+                        };
+                    },
+                    results:function(data,pageNo){
+                        if(data.data.length){
+                            data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+                        }else{
+                            data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                        }
+                        return {
+                            results:data.data	
+                        };
+                    },
+                    processResults: function (data) {
+                        return { 
+                            results: data
+                        };
+                    },
+                    type: 'post',
+                    dataType: 'json'
+                },	
+                initSelection: function(elem, cbfunc){
+                },
+                allowClear: false,
+                openOnEnter: false,
+                minimumInputLength: 1,
+            });
+
+            <{if $gid==4}>
+                <{if $member_store_id}>
+                    $('#adminid').select2('data', {id:"<{$member_store_id}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$member_store_id}>"]);
+                    $("#adminid").prop("disabled", true);
+                <{/if}>
+            <{else}>
+                <{if $get.adminid}>
+                    $('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);
+                <{/if}>
+            <{/if}>
+
+            $('.btn-default').click(function(){
+                var url = $.searchURL( location.href );
+                location.href = url;
+            });
+
+        });
+        </script>
+
+		<form class="form-horizontal" role="form" id="submitform" method="post" action="/admin_device/list_reserve_device" enctype="multipart/form-data">
+			<table class="table table-bordered table-hover table-list">
+				<thead>
+				<tr>
+					<th><{translate('店舗名')}></th>
+                    <{foreach $deviceSonTypeList as $deviceId=>$deviceName}>
+                    <th><{$deviceName}></th>
+                    <{/foreach}>
+                    <th><{translate('操作')}></th>
+				</tr>
+				</thead>
+				<tbody>
+				<{foreach $shopDeviceList as $v}>
+				<tr class="alert1 success" align="left">
+					<td><{$v['shop_name']}></td>
+                    <{foreach $deviceSonTypeList as $deviceId=>$deviceName}>
+                    <td><{$v[$deviceId]}></th>
+                    <{/foreach}>
+					<td >
+						<{if chkcommand('/admin_device/edit_reserve_device')}>
+						<a href="admin_system#page/admin_device/edit_reserve_device/<{$v['admin_id']}>/" class="btn btn-success btn-xs"> <i class="fa fa-edit"></i> <{translate('変更する')}></a>
+						<{/if}>
+					</td>
+				</tr>
+				<{/foreach}>
+				<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+					<td style="border:none" colspan="9">
+						<{if chkcommand('/admin_device/edit_reserve_device')}>
+						<a href="/admin_system#page/admin_device/edit_reserve_device/" class="btn btn-lg btn-primary">+ <{translate('追加する')}></a>
+						<{/if}>
+
+					</td>
+				</tr>
+
+				</tbody>
+			</table>
+			<table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$shopDeviceAdmin.total}> <{translate('条记录')}> <{$shopDeviceAdmin.pages}>  </td></tr></table>
+
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+    var isbusy = false;
+    //这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+    //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+    //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+    function isPositiveInteger(s){//是否为正整数
+        var re = /^[0-9]+$/ ;
+        return re.test(s)
+    }
+    $(function(){
+        $('.img-prefile').viewer('destroy').viewer({});
+        $('.img-prefile').parent().off('click', '.viewer-canvas').on('click', '.viewer-canvas', function(e){
+            var _con = $(this).find('img');
+            if(_con && !_con.is(e.target) && _con.has(e.target).length === 0){
+                $('.img-prefile').viewer('hide');
+            }
+        });
+        $(".open_device").click(function () {
+            var macno = $(this).data('macno');
+            layer.prompt({title: '开启时长（分钟）', formType: 2}, function(text, index){
+                if(!isPositiveInteger(text)){
+                    tooltipbox.show("请输入正确时间");
+                    return false
+                }
+                $.post("/admin_device/open",{minute:text,macno:macno},function(re){
+                    layer.close(index);
+                    if(re){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show('操作执行失败');
+                        location.reload();
+                    }
+                });
+            },'json');
+        });
+        $("#import").change(function(){
+            $("#submitform").submit();
+        });
+        $('.listpage').find('a').each(function(){
+            var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+            $(this).attr('href', url);
+        });
+        $('#downloadExcel').click(function(){
+            $.download("./macno_import.xlsx");
+            return false;
+        });
+
+        $('#btnDelete').click(function(){
+            var ckvals = $.selectCK('input[name="id[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_device/delete_device_son_type', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            }, false, { 'ids': ckvals });
+        });
+        $('#btnClear').click(function(){
+            tooltipbox.confirm("<{translate('确定永久清空所有数据？')}>", function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_device/clear', { }, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(a, b, c){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            });
+        });
+
+    });
+</script>
+
+

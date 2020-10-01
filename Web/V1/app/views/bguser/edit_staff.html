@@ -1,0 +1,199 @@
+<title>管理员管理 - <{if $row['id']}>编辑<{else}>添加<{/if}>管理员 </title>
+<div class="page-header">
+	<h1>
+		管理员管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> <{if $row['id']}>编辑<{else}>添加<{/if}>管理员
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+	<script>window.UEDITOR_HOME_URL = '/app/third_party/ueditor1_4_3_3-utf8-php/';</script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>
+	<script type="text/plain" id="j_ueditorupload" style="height:5px;display:none;" ></script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.upload.js"></script>
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_user/staff/">管理员列表</a></li>
+        <li class="active"><a href="/admin_system#page/admin_user/edit/<{$row['id']}>"><{if $row['id']}>编辑<{else}>添加<{/if}>管理员</a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+        
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_user/edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+             
+            <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">登录账号:</label>
+		<div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="account" name="account" value="<{$row['account']}>" class="form-control input-width" autocomplete="new-password" required />
+			</span>
+		</div>
+        <div class="col-xs-12 col-sm-1">
+        <a href="javascript:;" class=" check-account btn  btn-primary btn-sm">检测重复</a>
+        </div>
+		<!-- <div class="help-block inline">* 必须是手机号码</div> -->
+	</div>
+    
+    <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">密码:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="password" type="text" name="password" value="" class="form-control input-width" autocomplete="new-password" autocomplete="off" />
+			</span>
+		</div>
+		<div class="help-block inline">* 留空不修改密码</div>
+	</div>
+
+	<div class="form-group">
+			<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">属性:</label>
+			<div class="col-xs-12 col-sm-5">
+				<span class="block">
+	            	<select name="admin_type" id="admin_type" class="form-control" onchange="change();">               
+	                		<!-- <option value="<{$k}>" <{if strval($row['status'])==strval($k)}>selected<{/if}>><{$v}></option>  -->
+	                		<option value="3">代理</option>
+	                		<option value="4">商家</option>
+	                </select> 
+				</span>
+			</div>
+			<div class="help-block inline"></div>
+	</div>
+    
+	<div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">所属代理/商家:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+            	<select name="creater" id="creater" class="form-control">
+               		<{foreach $nickname as $k => $v}> 
+               			<{if $v['gid'] == 3}>                
+                		<option value="<{$v['nickname']}>" <{if $row['creater']==$v['nickname']}>selected<{/if}>><{$v['nickname']}></option>
+                		<{/if}>
+                	<{/foreach}>
+                </select>
+                <select name="shangjia" id="shangjia" class="form-control">
+               		<{foreach $nickname as $k => $v}> 
+               			<{if $v['gid'] == 4}>                
+                		<option value="<{$v['nickname']}>" <{if $row['creater']==$v['nickname']}>selected<{/if}>><{$v['nickname']}></option>
+                		<{/if}>
+                	<{/foreach}>
+                </select>
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+    <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">姓名:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="nickname" type="text" name="nickname" value="<{$row['nickname']}>" class="form-control input-width" autocomplete="new-password" autocomplete="off" />
+			</span>
+		</div>
+	</div>
+
+   			 
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button" id="saveedit" class="btn  btn-primary btn-lg">提交</button>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			rules: {
+				title: {
+					required: true
+				}
+			}
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker-date').datetimepicker({
+		format: 'YYYY-MM-DD',
+        language: 'zh-CN',
+        pickDate: true,
+        pickTime: false,
+        hourStep: 1,
+        minuteStep: 15,
+        secondStep: 30,
+        inputMask: true
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker').datetimepicker({
+		format: 'YYYY-MM-DD HH:mm:ss',
+        language: 'zh-CN',
+        pickDate: true,
+        pickTime: true,
+        hourStep: 1,
+        minuteStep: 15,
+        secondStep: 30,
+        inputMask: true
+	});
+	$('.check-account').click(function(){
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_user/staff_check', { 'id': "<{$row['id']}>", 'account': $('#account').val() }, function(res){
+			if(res.status == '0'){
+				tooltipbox.alert('账号可用');
+			}else if(res.status == '-1'){
+				tooltipbox.alert('未提交数据');
+			}else{
+				tooltipbox.alert('账号已经存在');	
+			}
+		}, 'json').error(function(){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+		});
+		return false;
+	});
+	$('#saveedit').click(function(){
+		if(!$('#submitform').valid())return false;
+		if(isbusy)return false;
+		isbusy = true;
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_user/staff_edit/<{$row['id']}>', $('#submitform').serialize(), function(res){
+			if(res.status == '1'){
+				tooltipbox.show('操作完成');
+				location.href = '/admin_system#page/admin_user/staff/';
+			}else if(res.status == '0'){
+				tooltipbox.alert('相同记录已经存在');	
+			}else{
+				tooltipbox.show("<{translate('数据或网络错误')}>");
+			}
+			isbusy = false;
+		}, 'json').error(function(a, b, c){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+			isbusy = false;
+		});
+	});
+	// $('#shanjia').hide();
+	$('#admin_type').val('<{$row['admin_type']}>');
+	change();
+});
+function change()
+{
+	var admin_type=$('#admin_type').val();
+	if(admin_type==4)
+	{
+		$('#shangjia').show();
+		$('#creater').hide();
+	}else{
+		$('#shangjia').hide();
+		$('#creater').show();
+	}
+}
+</script> 

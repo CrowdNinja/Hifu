@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>订单详情</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.book {
+			border: #35C7BF 1px solid;
+			color: #35C7BF;
+		}
+	</style>
+
+	<body class="bigBox">
+		<article class="container">
+			<section class="plr24 list">
+				<!--<div class="border-r1 bw plr20 pb30 mt30">
+					<div class="ptb20 bdb flex_sb">
+						<div class="font15">
+							<span class="col6">订单编号：</span><i class="order_num">11111111</i>
+						</div>
+						<div class="plr20 ptb10 book border-r6" id="over">结束订单</div>
+						<div class="plr20 ptb10 color_green dpn" id="over_time">订单已结束</div>
+					</div>
+					<div class="plr10">
+						<div class="flex mt20"><span class="w200 col6">设备号：</span><i class="macno">111111111111</i></div>
+						<div class="flex mt10"><span class="w200 col6">开始时间：</span><i class="start_time">111111111111</i></div>
+						<div class="flex mt10"><span class="w200 col6">结束时间：</span><i class="over_time">111111111111</i></div>
+						<div class="flex mt10"><span class="w200 col6">免费取衣时间：</span><i class="free_time">111111111111</i></div>
+					</div>
+				</div>-->
+			</section>
+			<div class="plr90">
+				<div class="plr40 bg_green mlr24 colw lh100 border-r6 flex_aj mt100 mta">点击开门</div>
+			</div>
+		</article>
+
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script>
+		dlc_request('admin_get_device_order', {
+			'shop_token': get_save('token'),
+			'macno': getUrlParam('macno')
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				if(res.data.tradeno) {
+					$('.list').html('<div class="border-r1 bw plr20 pb30 mt30">' +
+						'<div class="ptb20 bdb flex_sb">' +
+						'<div class="font15">' +
+						'<span class="col6">' +
+						'</span>' +
+						'<i class="order_num">' + res.data.tradeno +
+						'</i>' +
+						'</div>' +
+						'<div class="plr20 ptb10 book border-r6" id="over" data-id =' + res.data.id + '>结束订单' +
+						'</div>' +
+						'</div>' +
+						'<div class="plr10">' +
+						'<div class="flex mt20">' +
+						'<span class="w200 col6">设备号' + '</span>' +
+						'<i class="macno">' + res.data.macno + '</i>' +
+						'</div>' +
+						'<div class="flex mt10">' +
+						'<span class="w200 col6">开始时间' + '</span>' +
+						'<i class="start_time">' + res.data.start_time + '</i>' +
+						'</div>' +
+						'<div class="flex mt10">' +
+						'<span class="w200 col6">结束时间' + '</span>' +
+						'<i class="start_time">' + res.data.end_time + '</i>' +
+						'</div>' +
+						'<div class="flex mt10">' +
+						'<span class="w200 col6">免费取衣时间' + '</span>' +
+						'<i class="start_time">' + res.data.free_charge_time + '</i>' +
+						'</div>' +
+						'</div>' +
+						'</div>')
+				}
+			} else {
+				dlctipbox.show(res.msg);
+			}
+
+		});
+	$('.list').on('click', '#over', function() {
+		var order_id = $(this).data('id');
+		dlctipbox.confirm('确定结束订单？', function(index) {
+			if(index == 1) {
+				dlc_request('admin_finish_order', {
+					'shop_token': get_save('token'),
+					'order_id': order_id
+				}, function(res) {
+					console.log(res);
+					if(res.code == 1) {
+						dlctipbox.show(res.msg);
+						setTimeout(function() {
+							history.go(0);
+						},1000);
+					} else {
+						dlctipbox.show(res.msg);
+					}
+				});
+			}
+
+		});
+	});
+	$('.mta').on('click', function() {
+		dlc_request('admin_open_box', {
+			'shop_token': get_save('token'),
+			'macno': getUrlParam('macno')
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				dlctipbox.alert(res.msg);
+				setTimeout(function() {
+					location.href='admindoor_success.html?macno='+getUrlParam('macno');
+				},1000);
+			} else if(res.code == -88) {
+				dlctipbox.show(res.msg);
+				setTimeout(function() {
+					location.href='admindoor_fail.html?macno='+getUrlParam('macno');
+				},1000);
+			}else{
+				dlctipbox.alert(res.msg);
+			}
+		})
+	});
+</script>

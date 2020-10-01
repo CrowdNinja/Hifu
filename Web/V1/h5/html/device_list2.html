@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>设备详情</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<style>
+			header {
+				top: 0;
+				left: 0;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			
+			.el {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.address{
+				width: 0.24rem;
+				height: 0.27rem;
+				vertical-align: middle;
+			}
+			.col_free{
+				color: #41CF87;
+			}
+			.col_offline{
+				color: #9C9C9C;
+			}
+			.col_using{
+				color: #FE375C;
+			}
+			.col_stop{
+				color: #4975F6;
+			}
+		</style>
+	</head>
+
+	<body class="device_list">
+		<article>
+			<header class="p24" style="padding-bottom: 0;">
+				<a href="/" class="flex_sb bw pl30 border-r1 mb10">
+					<div>
+						<span class="db font15 pt30 fw" id="shop_nickname">如天酒店</span>
+						<span class="db pt20 pb30 col9" id="shop_address"><img class="address mr10" src="../img/ico3.png" >东莞市南城区鸿福路25号</span>
+					</div>
+					<div class="font21 color_green mr30" id="device_count">228</div>
+				</a>
+			</header>
+
+			<section class="container">
+				<div class="plr20">
+					<div class="devic_top pw100 h70 lh70 flex col6">
+						<div class="flex1 tac">设备编号</div>
+						<div class="flex1 tac" style="margin-left: 1.5rem;">设备状态</div>
+					</div>
+				</div>
+				<div class="list mb10 mlr24">
+					<!-- <div class="item flex lh100 bw font16 mb10 border-r1">
+						<div class="flex1 tac el fw">2000001111</div>
+						<div class="flex1 tac device_status col_free" style="margin-left: 1.5rem;">空闲</div>
+					</div>
+					<div class="item flex lh100 bw font16 mb10 border-r1">
+						<div class="flex1 tac el fw">2000001111</div>
+						<div class="flex1 tac device_status col_offline" style="margin-left: 1.5rem;">离线</div>
+					</div>
+					<div class="item flex lh100 bw font16 mb10 border-r1">
+						<div class="flex1 tac el fw">2000001111</div>
+						<div class="flex1 tac device_status col_using" style="margin-left: 1.5rem;">使用中</div>
+					</div>
+					<div class="item flex lh100 bw font16 mb10 border-r1">
+						<div class="flex1 tac el fw">2000001111</div>
+						<div class="flex1 tac device_status col_stop" style="margin-left: 1.5rem;">停止</div>
+					</div> -->
+				</div>
+			</section>
+		</article>
+
+	</body>
+</html>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script>
+	var jerry = '',
+		macno;
+	var page = 0;
+	
+	function get_list() {
+		var data = {
+			'shop_token': get_save('token'),
+			'page': page,
+			'shop_id': getUrlParam('id')
+		};
+		//获取设备列表
+		dlc_request('/device_list_details', data, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				if(page == 1) {
+					$('#shop_nickname').text(res.data.nickname);
+					$('#shop_address').text(res.data.address);
+					$('#device_count').text(res.data.device_count);
+				}
+				var str = '';
+				if(res.data.list.totalpage < page) {
+					jerry.lock();
+					jerry.noData();
+				}else if(res.data.list.list.length > 0) {
+				var data = res.data.list.list;
+					for(var i in data) {
+						if(data[i].status == 1){
+							str += '<div class="item flex lh100 bw font16 mb10 border-r1">' +
+								'<div class="flex1 tac el fw">' + data[i].macno +
+								'</div>' +
+								'<div class="flex1 tac col_free" style="margin-left: 1.5rem;">' + data[i].status_name +
+								'</div>' +
+								'</div>';
+						}else if(data[i].status == 2){
+							str += '<div class="item flex lh100 bw font16 mb10 border-r1">' +
+								'<div class="flex1 tac el fw">' + data[i].macno +
+								'</div>' +
+								'<div class="flex1 tac col_offline" style="margin-left: 1.5rem;">' + data[i].status_name +
+								'</div>' +
+								'</div>';
+						}else if(data[i].status == 3){
+							str += '<div class="item flex lh100 bw font16 mb10 border-r1">' +
+								'<div class="flex1 tac el fw">' + data[i].macno +
+								'</div>' +
+								'<div class="flex1 tac col_using" style="margin-left: 1.5rem;">' + data[i].status_name +
+								'</div>' +
+								'</div>';
+						}
+					}
+				} else {
+					jerry.lock();
+					jerry.noData();
+				}
+
+				setTimeout(function() {
+					if(page == 1) {
+						$('.list').html(str);
+					} else {
+						$('.list').append(str);
+					}
+					onOff = 0;
+					jerry.resetload();
+					jerry.unlock();
+					jerry.noData(false);
+				}, 1000);
+			} else {
+				dlctipbox.show(res.msg);
+			}
+		});
+	};
+	$('.container').dropload({
+		scrollArea: window,
+		domUp: {
+			domClass: 'dropload-up',
+			domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate: '<div class="dropload-update">↑释放更新</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>'
+		},
+		domDown: {
+			domClass: 'dropload-down',
+			domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+			domNoData: '<div class="dropload-noData">暂无更多数据</div>'
+		},
+		loadUpFn: function(me) {
+			jerry = me;
+			page = 1;
+			get_list();
+		},
+		loadDownFn: function(me) {
+			jerry = me;
+			page++;
+			get_list();
+		},
+		threshold: 50
+	});
+
+</script>

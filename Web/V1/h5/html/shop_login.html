@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>登录</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/commonsecond.css"/>
+    <link rel="stylesheet" href="../css/mainsecond.css"/>
+</head>
+<style>
+		.checkbox_bg {
+			width: .3rem;
+			height: .3rem;
+			background: url(../img/check.png) no-repeat;
+			background-size: 100%;
+		}
+		
+		input[name=check_pass]:checked+.checkbox_bg {
+			width: .3rem;
+			height: .3rem;
+			background: url(../img/checked.png) no-repeat;
+			background-size: 100%;
+		}
+</style>
+<body class="page_login bw">
+<article class="plr30">
+    <section class="plr40">
+        <div class="tac ptb60 plr50" id="logo">
+            <!-- <img src="../img/daozhang.png" class="logo"> -->
+        </div>
+        <div>
+            <label class="bdb ptb30 flex_a">
+                <img src="../img/1.png" style="width: .32rem;">
+                <input type="text" class="ml20 flex1" id="username" placeholder="请输入账号">
+            </label>
+            <label class="bdb ptb30 flex_a">
+                <img src="../img/2.png" style="width: .32rem;">
+                <input type="password" class="ml20 flex1" placeholder="请输入您的密码" id="password">
+            </label>
+           <!-- <div class="flex mt10">
+					<label class="ptb30 flex_aj">
+                <input type="checkbox" name="check_pass" class="check_re"  id="check"/>
+                <div class="checkbox_bg"></div>
+                 <span class="ml10">记住密码</span>
+           </label>
+				</div> -->
+        </div>
+        <div class="mt100 font16" >
+            <div id="btn" class="colw lh100 border-r6 tac bta" style="background: linear-gradient(#1bddbb,#28c3bb);">登录</div>
+        </div>
+        
+    </section>
+</article>
+</body>
+</html>
+<script src="../js/jquery-1.8.3.min.js" ></script>
+<script src="../js/dlc.js"></script>
+<script>
+    dlc_request('/get_setting',{},function(res){
+        console.log(res);
+        if(res.code == 1){
+            $('#logo').html('<img src="'+res.data.logo+'">');//?
+        }
+    });
+    if(get_save('username')){
+        $('#username').val(get_save('username'));
+        $('#password').val(get_save('password'));
+    }
+    $('.bta').click(function() {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        if(isNull(username)){
+            dlctipbox.show('请输入账号');
+        }else if(isNull(password)){
+            dlctipbox.show('请输入您的密码');
+        }else{
+            dlc_request('shop_login',{'username':username,'password':password},function(res){
+                console.log(res);
+                if(res.code==1){
+                    save('username',username);
+                     save('password',password);
+                    save('token',res.data.shop_token);
+                    save('type',res.data.type);
+                    if (res.data.type == 0 || res.data.type == 1) { //哪个要跳转到哪个
+                    	location.href = './agent1.html';
+                    } else if (res.data.type == 2) {
+                    	location.href = './agent2.html';
+                    } else if( res.data.type == 3) {
+						location.href = './admin_device.html';
+					}
+                    
+                }else{
+                    dlctipbox.show(res.msg);
+                }
+            });
+        }
+    });
+    
+   
+</script>
+
+
+
+
+
+
+
+

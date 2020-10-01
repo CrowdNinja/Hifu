@@ -1,0 +1,303 @@
+<?php /* Smarty version Smarty-3.1.19, created on 2020-06-04 16:15:35
+         compiled from "C:\xampp\htdocs\beauty-server\app\views\login.html" */ ?>
+<?php /*%%SmartyHeaderCode:13545988595ed5aabf4560d8-27059049%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
+$_valid = $_smarty_tpl->decodeProperties(array (
+  'file_dependency' => 
+  array (
+    '506d562014d1d47c204a7681fd9e53a65a1217d7' => 
+    array (
+      0 => 'C:\\xampp\\htdocs\\beauty-server\\app\\views\\login.html',
+      1 => 1591104997,
+      2 => 'file',
+    ),
+  ),
+  'nocache_hash' => '13545988595ed5aabf4560d8-27059049',
+  'function' => 
+  array (
+  ),
+  'version' => 'Smarty-3.1.19',
+  'unifunc' => 'content_5ed5aabf4a8ee4_41657938',
+  'has_nocache_code' => false,
+),false); /*/%%SmartyHeaderCode%%*/?>
+<?php if ($_valid && !is_callable('content_5ed5aabf4a8ee4_41657938')) {function content_5ed5aabf4a8ee4_41657938($_smarty_tpl) {?><!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta charset="utf-8" />
+		<title><?php echo translate('美容仪系统管理平台');?>
+</title>
+
+		<meta name="description" content="Bhy Login" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+		<!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="/style/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="/style/assets/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/style/dlc.ui.css" />
+		<!-- text fonts -->
+		<link rel="stylesheet" href="/style/assets/css/ace-fonts.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="/style/assets/css/ace.min.css" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="/style/assets/css/ace-part2.min.css" />
+		<![endif]-->
+		<link rel="stylesheet" href="/style/assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="/style/assets/css/ace-ie.min.css" />
+		<![endif]-->
+		<link rel="stylesheet" href="/style/assets/css/ace.onpage-help.css" />
+		<link rel="stylesheet" href="/style/assets/css/style.css" />
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+		<!--[if lt IE 9]>
+		<script src="/style/assets/js/html5shiv.js"></script>
+		<script src="/style/assets/js/respond.min.js"></script>
+		<![endif]-->
+		
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='/style/assets/js/jquery.min.js'>"+"<"+"/script>");
+		</script>
+
+	</head>
+
+	<body class="login-layout" style="height:99vh; width:99vw; padding:0;margin:0; background:#f1f1f1; background-size:cover;">
+		<div class="main-container" style="position:absolute; top:8%; left:50%;margin-left:-202.5px;">
+			<div class="main-content">
+				<div class="row">
+					<div class="col-sm-10">
+						<div class="login-container">
+
+
+							<div class="center">
+								<i class="fa fa-leaf" style="content:url(/images/logo2.png);width:200px; height:150px; vertical-align:middle;"> </i>
+							</div>
+
+							<div class="position-relative" >
+								<!--<div id="login-box" class="login-box visible widget-box no-border" style="background:rgba(255,248,220,0.5); ">-->
+								<!--<div class="widget-boday" style="background:rgba(	255,248,220,0.2);">-->
+								<div class="widget-main mt-4" style="text-align:center;border:2px solid #a1a1a1;padding:10px 40px; height: 260px;background-color: white;">
+									<div class="space-6"></div>
+
+									<form  id="submitform" accept-charset="utf-8">
+										<fieldset>
+											<label class="block clearfix">
+												<span class="block input-icon input-icon-right">
+													<input type="text" class="form-control" placeholder="<?php echo translate('账号');?>
+" id="userName" name="userName"   style="height:50px;"/>
+													<!-- <i class="ace-icon fa fa-user"></i> -->
+												</span>
+											</label>
+
+											<label class="block clearfix">
+												<span class="block input-icon input-icon-right">
+													<input type="password" class="form-control" placeholder="<?php echo translate('密码');?>
+" name="password"  style="height:50px;" />
+													<!-- <i class="ace-icon fa fa-lock"></i> -->
+												</span>
+											</label>
+											<div class="d-flex justify-content-between">
+												<div class="form-check w-100 py-2 mr-3 bg_heavy_green">
+													<input class="form-check-input" type="radio" name="language" id="chinese" value="1">
+													<label class="form-check-label text-white mb-0" for="chinese">
+														中国語
+													</label>
+												</div>
+												<div class="form-check w-100 py-2 ml-3 bg_light_green">
+													<input class="form-check-input" type="radio" name="language" id="japanese" value="2">
+													<label class="form-check-label text-white mb-0" for="japanese">
+														日本語
+													</label>
+												</div>
+												<!-- <span class="d-block w-100 py-2 pr-3 bg_heavy_green"><input id="chinese"  type="radio" value="1"   name="language"  > 中国語 </span>
+												<span class="d-block w-100 py-2 pl-3 bg_light_green"><input id="japanese" type="radio" value="2"   name="language"  > 日本語</span> -->
+											</div>
+											<!-- <span ><input type="checkbox" id="check-button"  name="remember"  ><?php echo translate('记住账号');?>
+ </span> -->
+											<!-- <div class="space"></div> -->
+
+											<div class="d-flex justify-content-between mt-3">
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" type="checkbox" name="remember" id="check-button">
+													<label class="form-check-label mb-0" for="check-button"><?php echo translate('记住账号');?>
+</label>
+												</div>
+												<button type="button" class="width-35 pull-right btn btn-sm btn-primary" id="saveedit" name="saveedit">
+													<span class="bigger-110"><?php echo translate('登录');?>
+</span>
+												</button>
+											</div>
+
+											<div class="space-4"></div>
+										</fieldset>
+									</form>
+
+
+								</div><!-- /.widget-main -->
+
+
+								<!--</div>&lt;!&ndash; /.widget-body &ndash;&gt;-->
+								<!--</div> &lt;!&ndash;/.login-box &ndash;&gt;-->
+
+
+							</div><!-- /.position-relative -->
+
+							<div class="center">
+								<!-- <h5 class="white"  style="white-space:nowrap;margin-top: 20px;"><?php echo translate('美容仪有限公司');?>
+&copy; <?php echo date('Y');?>
+ <?php echo translate('版权所有');?>
+</h5>
+								<h6><a href="http://beian.miit.gov.cn" target="_blank">粤ICP备19088834号</a></h6> -->
+							</div>
+
+							<div class="space-6"></div>
+							
+							<!--<div class="navbar-fixed-top align-right">
+								<br />
+								&nbsp;
+								<a id="btn-login-dark" href="#">Dark</a>
+								&nbsp;
+								<span class="blue">/</span>
+								&nbsp;
+								<a id="btn-login-blur" href="#">Blur</a>
+								&nbsp;
+								<span class="blue">/</span>
+								&nbsp;
+								<a id="btn-login-light" href="#">Light</a>
+								&nbsp; &nbsp; &nbsp;
+							</div>-->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.main-content -->
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='/style/assets/js/jquery.min.js'>"+"<"+"/script>");
+		</script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='/style/assets/js/jquery1x.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='/style/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script type="text/javascript" src="/style/assets/js/jquery.particleground.min.js"></script>
+		<script type ="text/javascript" src ="/style/assets/js/jquery.cookie.js"></script>
+		<!-- inline scripts related to this page -->
+		<script type="text/javascript">
+			jQuery(function($) {
+			   /*$('.login-layout').particleground({
+				dotColor: '#ffffff',
+				lineColor: '#ffffff'
+			  });*/
+			  var backgroundIndex = Math.floor(Math.random()*13+1);
+			//   $('body').css('background', '#333 url(/style/wallpage/' + 27 + '.jpg) no-repeat').css('background-size', 'cover');
+				
+			 $(document).on('click', '.toolbar a[data-target]', function(e) {
+				e.preventDefault();
+				var target = $(this).data('target');
+				$('.widget-box.visible').removeClass('visible');//hide others
+				$(target).addClass('visible');//show target
+			 });
+			});
+
+			//you don't need this, just used for changing background
+			jQuery(function($) {
+			 $('#btn-login-dark').on('click', function(e) {
+				$('body').attr('class', 'login-layout');
+				$('#id-text2').attr('class', 'white');
+				$('#id-company-text').attr('class', 'blue');
+				
+				$.cookie('login-style', 'dark',  { expires: 365, path: '/' });
+				e.preventDefault();
+			 });
+			 $('#btn-login-light').on('click', function(e) {
+				$('body').attr('class', 'login-layout light-login');
+				$('#id-text2').attr('class', 'grey');
+				$('#id-company-text').attr('class', 'blue');
+				
+				$.cookie('login-style', 'light',  { expires: 365, path: '/' });
+				e.preventDefault();
+			 });
+			 $('#btn-login-blur').on('click', function(e) {
+				$('body').attr('class', 'login-layout blur-login');
+				$('#id-text2').attr('class', 'white');
+				$('#id-company-text').attr('class', 'light-blue');
+				
+				$.cookie('login-style', 'blur',  { expires: 365, path: '/' });
+				e.preventDefault();
+			 });
+			 
+			 var loginStyle = $.cookie('login-style') || 'dark';
+			 $('#btn-login-' + loginStyle).click();
+			 $(window).resize(function(){ 
+				$('.main-container').css('left', Math.max(0, ($(window).width() - $('.main-container').width()) / 2)).css('margin-left', '0');
+			 });
+			 $('.main-container').css('left', Math.max(0, ($(window).width() - $('.main-container').width()) / 2)).css('margin-left', '0');
+			});
+		</script>
+		<script type ="text/javascript" src ="/style/js/dlc.js"></script>
+		<script type="text/javascript">
+            $('#check-button').change(function(){
+                if($(this).is(':checked')) {
+                    var username=$('#userName').val();
+                    localStorage.setItem('userName',username);
+                    localStorage.setItem('remember',1);
+                }else{
+                    localStorage.setItem('userName','');
+                    localStorage.setItem('remember',0);
+                }
+            });
+
+	  $(document).ready(function () {
+          if(localStorage.getItem('userName')){
+              $('#userName').val(localStorage.getItem('userName'));
+          }
+          if(localStorage.getItem('remember')==1){
+              $('#check-button').attr('checked',true)
+          }
+          if(localStorage.getItem('language')==1){
+              $("#chinese").attr('checked', 'true');
+		  }  else{
+              $("#japanese").attr('checked', 'true');
+		  }
+          $('#chinese').change(function(){
+              Dlc.service.post("/login/set_language/", {'type':1} );
+              localStorage.setItem('language',1);
+              location.reload();
+		  }); 
+          $('#japanese').change(function(){
+              Dlc.service.post("/login/set_language/", {'type':2} );
+              localStorage.setItem('language',2);
+              location.reload();
+          });
+		$("#saveedit").click(function () {
+            var language=$("input[name='language']:checked").val();
+            localStorage.setItem('language',language);
+		  Dlc.service.post("/login/do_post/", $("#submitform").serialize() );
+		  return false;
+				});
+		$("#submitform").keydown(function(e){
+			 var e = e || event,
+			 keycode = e.which || e.keyCode;
+			 if (keycode==13) {
+			  $("#saveedit").trigger("click");
+			 }
+			});
+	});
+	  
+</script>
+	</body>
+</html>
+<?php }} ?>

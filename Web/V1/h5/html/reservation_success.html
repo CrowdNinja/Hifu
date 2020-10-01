@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>预约成功</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.bg_sure {
+			background: url(../img/bg_orderpay.png) no-repeat center;
+			background-size: 100% 100%;
+			height: 4.5rem;
+		}
+	</style>
+
+	<body>
+		<article>
+			<div class="plr60 bg_sure tac">
+				<div class="pt120"><span class="col6">设备编号：</span><i class="macno"></i></div>
+				<div class="mt80 tac">
+					<p class="col3">您预约的时间为：</p>
+					<p class="mt20 time col_time"></p>
+				</div>
+			</div>
+			<div class="bw border-r1 mt20 mlr20">
+				<p class="lh80 bdb plr20">注意事项</p>
+				<div class="plr20">
+					<p class="mtb20"><i class="color1">*</i>若到达预约时间前面顾客衣物没有取出，我们将会微信消息通知您，并给您发起退款。</p>
+					<p class="mtb20">*若到达预约时间设备空闲，我们 将按时计费！请您注意时间！</p>
+					<p class="mtb20">*若您想取消预约，请在预约达到时间前取消，若您没有取消，我们将正常进行计费！</p>
+				</div>
+			</div>
+			<div class="ptb30 mlr30 border-r6 flex_aj bg_green colw mt100 mta mlr20" id="cancel">取消预约</div>
+		</article>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script>
+	dlc_request('get_reservation_info', {
+		'order_id': getUrlParam('order_id')
+	}, function(res) {
+
+		console.log(res);
+		if(res.code == 1) {
+			var order_id = res.data.order_id
+			$('.macno').text(res.data.macno);
+			$('.col_time').text(res.data.start_time);
+			$('#cancel').on('click', function() {
+				location.href = 'cancel_resevation.html?order_id=' + order_id;
+			});
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+</script>

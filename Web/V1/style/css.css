@@ -1,0 +1,94 @@
+/*全局控制*/
+body{margin:0;padding:16px 13px;font-family:"微软雅黑",Arial,"宋体";font-size:12px;/*overflow-y:scroll;*/*overflow-y:hidden;color:#333;}
+html,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,p{margin:0;padding:0;}
+input,select,textarea{font-size:12px;font-family:Arial;vertical-align:middle;}img{border:0;}ul,li{list-style-type:none;}
+a{color:#333;text-decoration:none;}a:hover{text-decoration:underline;}a:focus{outline:none;}
+.tc{text-align:center;}.tl{text-align:left;}.tr{text-align:right;}
+.dis{display:block;}.undis{display:none;}
+.rela{position:relative;}.abso{position:absolute;}
+.fl{float:left;}.fr{float:right;}.cl{clear:both;}.fb{font-weight:bold;color:#333;}.fnb{font-weight:200;margin-left:-1px;}
+.hr_1,.hr_10{font-size:1px;line-height:1px;clear:both;_overflow:hidden;}
+.hr_1{height:1px;}.hr_10{height:10px;}
+
+.mgr_table td{border-bottom:1px solid #ebebeb;}
+.mgr_table .thead{background:#f2fafc;font-weight:bold;}
+.mgr_table .thead2{height:25px;background:url(../images/mgr_colt_bg.png) repeat-x;font-weight:bold;_line-height:26px;text-align:center;}
+.mgr_table .thead2 td{border-right:1px solid #f0f0f0;}
+.mgr_table .thead2 .noborder{border-right:none;}
+.mgr_table .title{padding-left:20px;text-align:left;}
+.mgr_table .title2{padding-left:23px;text-align:left;}
+
+.mgr_table .isdir{background:url(../images/folder.gif) no-repeat left center;padding-left:18px;}
+.mgr_table .editfile_ico{padding-left:20px;background:url(../images/htm.gif) no-repeat;margin-left:8px;}
+.editfile_msg{display:none;width:138px;height:50px;background:url(../images/editfile_msg.png) no-repeat;position:absolute;top:50%;left:50%;margin:-23px 0 0 -67px;}
+
+.mgr_table .mgr_tr{background:#fff;}
+.mgr_table .mgr_tr_on{background:#f5f5f5;}
+
+.mgr_table .titles{line-height:22px;word-break:break-all;}
+.mgr_table .number{font-family:Verdana;color:#a5a5a5;font-size:11px;}
+.mgr_table .thumbs{border:1px dotted #ccc;background:#fff;width:80px;overflow:hidden;display:inline-block;}
+
+.mgr_table .action span{padding:0 4px;color:#666;}
+.mgr_table .action a{color:#005590;text-decoration:underline;}
+.mgr_table .action a:hover{color:#900;}
+.mgr_table .disimg,.mgr_table .disimg2{padding-left:23px;cursor:pointer;}
+.mgr_table .disimg{background:url(../images/adds.gif) no-repeat 0 -16px;}
+.mgr_table .disimg2{background:url(../images/adds.gif) no-repeat 0 3px;}
+.mgr_table .infotype{color:#bbb;}
+.mgr_table .infotype i{font-style:normal;}
+.mgr_table .tr_orange{background:#ffffe8;font-weight:bold;}
+.mgr_table .tr_green{background:#f9ffe5;font-weight:bold;}
+
+.mgr_nlist{height:100px;text-align:center;line-height:100px;font-weight:bold;background:#fafafa;}
+
+.mgr_divt,.mgr_divt2{background:#f2fafc;border-bottom:1px solid #e3eff3;}
+.mgr_divt{height:35px;}
+.mgr_divt2{height:30px;}
+.mgr_divb{height:30px;padding:0 10px;background:#f2fafc;text-align:right;line-height:30px;border-bottom:1px solid #e3eff3;}
+
+.mgr_btn a,.mgr_btn_short a{display:inline-block;height:23px;line-height:24px;float:right;margin-top:3px;background-position:0 top;font-family:"宋体";text-align:center;overflow:hidden;cursor:pointer;}
+.mgr_btn a{width:85px;background-image:url(../images/mgr_btn.gif);}
+.mgr_btn_short a{width:71px;background-image:url(../images/mgr_btn_short.gif);}
+.mgr_btn a:hover,.mgr_btn_short a:hover{background-position:0 center;text-decoration:none;}
+.mgr_btn a:active,.mgr_btn_short a:active{background-position:0 bottom;}
+.subbtn_area {
+    text-align: center;
+    margin-top: 25px;
+}
+.blue_submit_btn {
+    background: url(../images/blue_submit_btn.png) no-repeat;
+    margin-right: 15px;
+}
+.blue_submit_btn, .blue_back_btn {
+    width: 100px;
+    height: 35px;
+    border: 0;
+    border-radius: 4px;
+    color: #333333;
+    cursor: pointer;
+}
+.blue_back_btn {
+    background-color: #ABCDEF;
+}
+.blue_back_btn:hover{
+    background-color: #F60;
+}
+
+
+/*列表分页*/
+.page_list{
+    width: 500px;
+    height: 40px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 14px;
+    line-height: 40px;
+}
+.page_list a{
+    text-decoration: underline;
+}
+.page_list span.current{
+    color: #005590;
+}
+

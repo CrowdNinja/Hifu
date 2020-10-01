@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>取衣通知</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.radioBg {
+			width: .42rem;
+			height: .42rem;
+			background: url("../img/ico17.png") no-repeat;
+			background-size: 100%;
+		}
+		
+		input[name=type]:checked+.radioBg {
+			background: url("../img/4a.png") no-repeat;
+			background-size: 100%;
+		}
+		
+		.mask {
+			position: fixed;
+			height: 100%;
+			width: 100%;
+			background: rgba(0, 0, 0, 0.35);
+			z-index: 999;
+		}
+		
+		.model_content {
+			position: absolute;
+			width: 5.8rem;
+			background: #fff;
+			left: 50%;
+			margin-left: -2.9rem;
+			top: 25%;
+			border-radius: .1rem;
+			overflow: hidden;
+		}
+	</style>
+
+	<body>
+		<article class="plr20 pt20">
+			<div class="tac mt30">
+				<p class="font15">支付金额</p>
+				<p class="mt10"><i>￥</i><i class="money col_time font24"></i></p>
+			</div>
+			<div class="bw plr20 ptb20 border-r1 mt50">
+				<p class="flex"><i class="w150 col9">设备编号：</i><i class="macno"></i></p>
+				<p class="mt20 flex"><span class="w150 col9">订单编号：</span><i class="num"></i></p>
+				<p class="mt20 flex"><span class="w150 col9">取件时间：</span><i class="take_time"></i></p>
+				<p class="mt20 flex"><span class="w150 col9">消费时间：</span><i class="expend_time"></i></p>
+				<p class="mt20 flex"><span class="w150 col9">费用明细：</span><i class="info"></i></p>
+				<p class="mt20"><span class="w150 col9">温馨提示：</span><i>记得带走干衣机内所有的衣物并且关好设备门哦！</i></p>
+			</div>
+			<div class="bw mt30">
+				<div class="ptb30 plr20 bdb">支付方式</div>
+				<label id="ali_pay" class="dpn">
+                        <div class="flex_sb plr24 h100">
+                            <div class="flex_a">
+                                <img src="../img/26.png" style="width: .54rem;" style="display: none;">
+                                <span class="ml20">支付宝支付</span>
+                            </div>
+                            <input id="zf" type="radio" name="type" value="ali_pay" style="display: none;">
+                            <div class="radioBg"></div>
+                        </div>
+                    </label>
+				<label id="wx_pay" class="dpn">
+                      <div class="flex_sb plr24 h100">
+                            <div class="flex_a">
+                                <img src="../img/3a.png" style="width: .54rem;" style="display: none;">
+                                <span class="ml20">微信支付</span>
+                            </div>
+                            <input id="wx" type="radio" name="type" value="wx_pay" style="display: none;">
+                            <div class="radioBg"></div>
+                      </div>
+                    </label>
+
+			</div>
+			<div class="ptb30 mlr30 border-r6 flex_aj bg_green colw mt100 mta">支付</div>
+		</article>
+		<div id="alipay"></div>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script>
+	if(isWeiXin()) {
+		$('#wx_pay').show();
+		$('input[value="wx_pay"]').prop('checked', true);
+	} else {
+		$('#ali_pay').show();
+		$('input[value="ali_pay"]').prop('checked', true);
+	}
+
+	function isWeiXin() {
+		var ua = window.navigator.userAgent.toLowerCase();
+		console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+		if(ua.match(/MicroMessenger/i) == 'micromessenger') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	dlc_request('takes_clothes_inform', {
+		'macno': getUrlParam('macno'),
+		'order_id': getUrlParam('order_id')
+	}, function(res) {
+		console.log(res);
+		if(res.code == 1) {
+			$('.macno').text(res.data.macno);
+			$('.num').text(res.data.tradeno);
+			$('.take_time').text(res.data.takes_time);
+			$('.expend_time').text(res.data.use_time);
+			$('.info').text(res.data.desc);
+			$('.money').text(res.data.pay_money);
+		} else {
+			dlctipbox.alert(res.msg);
+		}
+	});
+	var onOff = 0;
+	var order_id = '';
+	$('.mta').click(function() {
+		if(onOff) return false;
+		onOff = 1;
+		var pay_type = $('input[name=type]:checked').val();
+		if(pay_type == 'wx_pay') {
+			pay_type = 2;
+			dlc_request('takes', {
+				'order_id': getUrlParam('order_id'),
+				'macno': getUrlParam('macno'),
+				'pay_type': pay_type
+			}, function(res) {
+				console.log(res);
+				if(res.code == 1) {
+					order_id = res.data.order_id;
+					jsApiParameters = res.data.payparams.success;
+					callpay(order_id);
+				} else if(res.code == 88) {
+					var order_id = res.data.order_id;
+					dlctipbox.show(res.msg);
+					setTimeout(function() {
+						location.href = 'door_status.html?order_id=' + order_id;
+					}, 500);
+				} else if(res.code == -88) {
+					var order_id = res.data.order_id;
+					dlctipbox.show(res.msg);
+					setTimeout(function() {
+						location.href = 'door_status.html?order_id=' + order_id;
+					}, 500);
+				} else {
+					onOff = 0;
+					dlctipbox.show(res.msg);
+				}
+
+			});
+		} else if(pay_type == 'ali_pay') {
+			var pay_type = 3;
+			dlc_request('takes', {
+				'order_id': getUrlParam('order_id'),
+				'macno': getUrlParam('macno'),
+				'pay_type': pay_type
+			}, function(res) {
+				console.log(res);
+				//					dlctipbox.show(res.msg);
+				if(res.code == 1) {
+					order_id = res.data.order_id;
+					var html = res.data.payparams;
+					$('#alipay').html(html);
+				} else if(res.code == 88) {
+					order_id = res.data.order_id;
+					dlctipbox.show(res.msg);
+					setTimeout(function() {
+						location.href = 'door_status.html?order_id=' + order_id;
+					}, 500);
+				} else if(res.code == -88) {
+					var order_id = res.data.order_id;
+					dlctipbox.show(res.msg);
+					setTimeout(function() {
+						location.href = 'door_status.html?order_id=' + order_id;
+					}, 500);
+				} else {
+					onOff = 0;
+					dlctipbox.show(res.msg);
+				}
+
+			});
+		} else {
+			dlctipbox.show('请选择支付方式');
+		}
+
+	});
+
+	function jsApiCall(order_id) {
+		WeixinJSBridge.invoke(
+			'getBrandWCPayRequest',
+			jsApiParameters,
+			function(res) {
+				if(res.err_msg == 'get_brand_wcpay_request:ok') {
+					dlctipbox.show('支付成功');
+					location.href = 'door_status.html?order_id=' + order_id;
+				} else {
+					onOff = 0;
+					dlctipbox.show('支付取消或失败');
+				}
+			}
+		);
+	}
+
+	function callpay(order_id) {
+		if(typeof WeixinJSBridge == "undefined") {
+			if(document.addEventListener) {
+				document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+			} else if(document.attachEvent) {
+				document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+				document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+			}
+		} else {
+			jsApiCall(order_id);
+		}
+	}
+
+	function isWeiXin() {
+		var ua = window.navigator.userAgent.toLowerCase();
+		console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+		if(ua.match(/MicroMessenger/i) == 'micromessenger') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+</script>

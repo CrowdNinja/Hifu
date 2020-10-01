@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>预约排位</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<link rel="stylesheet" href="../css/mobiscroll.jquery.min.css" />
+	</head>
+	<style>
+		.bottom_img {
+			width: 100%;
+			height: 2rem;
+			background: url(../img/yuyue.png) no-repeat;
+			background-size: 100% 100%;
+		}
+	</style>
+
+	<body class="bigBox">
+		<article class="plr24 flex1">
+			<p class="lh80">
+				<i>设备号：</i>
+				<i class="macno"></i>
+			</p>
+			<div class="ptb20 plr20 bw border-r1">
+				<p><i class="col9">上位顾客结束时间为:</i><i class="end_time ml10"></i></p>
+				<p class="mt10"><i class="col9">上位顾客有效取衣时间为:</i><i class="take_time ml10"></i></p>
+			</div>
+			<div class="bw border-r1 mt20">
+				<p class="lh80 bdb plr20">预约须知</p>
+				<div class="plr20">
+					<p class="mtb20"><i class="color1">*</i>若到达预约时间前面顾客衣物没有取出，我们将会微信消息通知您，并给您发起退款。</p>
+					<p class="mtb20"><i class="color1">*</i>若到达预约时间设备空闲，我们将按时计费！请您注意时间！</p>
+				</div>
+			</div>
+			<div class="ptb20 plr20 flex_sb lh60 bw mt20 border-r1">
+				<i>预约时间</i>
+				<input class="flex1 tae mr10" / placeholder="请选择" id="star_time" type="text">
+				<img src="../img/5a.png" / style="width: .23rem;">
+			</div>
+			<p class="tae col_time font13 mt10"><i>您可预约的时间为：</i><i class="can_reservation"></i></p>
+			<div class="ptb30 mlr30 border-r6 flex_aj bg_green colw mt100 mta">确定</div>
+		</article>
+		<section class="bottom_img">
+		</section>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script src="../js/mobiscroll.jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+	var macno = getUrlParam('macno');
+	$('.macno').text(macno);
+	dlc_request('get_device_use_info', {
+		'macno': getUrlParam('macno')
+	}, function(res) {
+		console.log(res);
+		var time = res.data.takes_time;
+		if(res.code == 1) {
+			$('.end_time').text(res.data.end_time);
+			$('.take_time').text(res.data.last_takes_time);
+			$('.can_reservation').text(res.data.takes_time + '后');
+		} else {
+			dlctipbox.alert(res.msg);
+		}
+		$('#star_time').mobiscroll().datetime({
+			theme: 'ios',
+			headerText: '可预约时间:' + res.data.takes_time + '后',
+			showLabel: true,
+			display: 'bottom',
+			min: new Date(new Date().getTime() - 24 * 60 * 60),
+			lang: 'zh',
+			dateFormat: 'yy-mm-dd',
+			nowText: "今天",
+			timeFormat: 'HH:ii',
+			returnFormat: 'jsdate',
+			onBeforeClose: function(event, inst) {
+				if(event.button == 'set') {
+					$('#star_time').val(event.valueText);
+				}
+			}
+		});
+	});
+	$('.mta').on('click', function() {
+		var star_time = $('#star_time').val();
+		if(isNull(star_time)) {
+			dlctipbox.alert('请选择预约时间');
+		} else {
+			dlc_request('is_reservation', {
+				'macno': macno,
+				'time': star_time
+			}, function(res) {
+				if(res.code == 1) {
+					save('star_time', star_time);
+					save('macno', macno);
+					location.href = 'reservation_package.html';
+				} else {
+					dlctipbox.alert(res.msg);
+				}
+			});
+
+		}
+	});
+</script>

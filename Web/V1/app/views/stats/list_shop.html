@@ -1,0 +1,176 @@
+
+<title><{translate('売上管理')}></title>
+<div class="page-header">
+	<h1>
+        <{translate('売上管理')}>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_stats/shop"><{translate('売上管理')}></a></li>
+    </ul>
+    <br />
+    
+     <div class="panel panel-success">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('筛选')}></div>
+    <div class="panel-body" style="display:">
+
+      
+            <div class="form-group form-search form-inline">
+
+            <label class="control-label"><{translate('店舗選択')}></label>
+				<input id="adminid" name="adminid" value="<{$get.adminid}>" style="width:200px" />
+
+
+
+                <label class="control-label"><{translate('取引日')}></label>
+                    <input class="form-control " name="createtime1" id="createtime1" type="text" value="<{$get.createtime1}>" placeholder="">
+                <label class="control-label"><{translate('〜')}></label>
+                    <input class="form-control " name="createtime2" id="createtime2" type="text" value="<{$get.createtime2}>" placeholder="">
+                
+              
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('検索する')}></button>
+            </div>
+       
+    </div>
+ 
+    </div>
+        <script>
+            laydate.render({
+                elem: '#createtime1',
+            });
+            laydate.render({
+                elem: '#createtime2'
+            });
+
+        </script>
+<script>
+$(function () {
+
+    //$("#userid,#user_recmdid,#admin_recmdid").select2({
+	$("#adminid").select2({
+		ajax: {
+			url: "/admin_shop/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('選択してください')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('選択してください')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $gid==4}>
+		<{if $member_store_id}>
+			$('#adminid').select2('data', {id:"<{$member_store_id}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$member_store_id}>"]);
+			$("#adminid").prop("disabled", true);
+		<{/if}>
+	<{else}>
+		<{if $get.adminid}>
+			$('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);
+		<{/if}>
+	<{/if}>
+
+});
+</script> 
+				
+<script>
+$(function(){
+	// 「/style/assets/js/jquery.fn.js」を参照して検索キーを処理
+	// PHPコードは検索URLパラメータを処理する必要はなく、ページ分割されたURLの処理はこのページの最後にあるJSコードに注意
+	// $.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+                                <th><{translate('店舗名')}></th>
+                                <th><{translate('売上高')}></th>
+                                <th><{translate('本部手数料')}></th>
+                                <th><{translate('クレジットカード支払額')}></th>
+                                <th><{translate('LINE Pay支払額')}></th>
+                                <th><{translate('残高支払額')}></th>
+                                <th><{translate('現金支払額')}></th>
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $stats.list as $v}>
+							<tr class="alert1" align="left">
+								<td><{$v['admin_name']}></td>
+								<td><{displayPrice($v['total_money'])}> <{translate('円')}></td>
+                                <td><{$v['royalty']}> %</td>
+                                <td><{displayPrice($v['credit_money'])}> <{translate('円')}></td>
+								<td><{displayPrice($v['line_money'])}> <{translate('円')}></td>
+								<td><{displayPrice($v['balance_money'])}> <{translate('円')}></td>
+								<td><{displayPrice($v['cash_money'])}> <{translate('円')}></td>
+							</tr>
+							<{/foreach}>
+                            
+                            <tr class="success" align="left">
+								<td><b><{translate('合計')}></b></td>
+                                <td><{displayPrice($stats_all['total_money'])}> <{translate('円')}></td>
+                                <td>-</td>
+                                <td><{displayPrice($stats_all['credit_money'])}> <{translate('円')}></td>
+                                <td><{displayPrice($stats_all['line_money'])}> <{translate('円')}></td>
+                                <td><{displayPrice($stats_all['balance_money'])}> <{translate('円')}></td>
+                                <td><{displayPrice($stats_all['cash_money'])}> <{translate('円')}></td>
+                            </tr>
+                            
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$stats.total}> <{translate('条记录')}> <{$stats.pages}>  </td></tr></table>
+					
+				</form>
+                </div>
+			</div>
+		</div>
+<script>
+$(function(){
+	$('.listpage').find('a').each(function(){
+		var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+		$(this).attr('href', url);
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker').datetimepicker({
+		format: 'YYYY-MM-DD',
+		language: 'zh-CN',
+		pickDate: true,
+		pickTime: true,
+		hourStep: 1,
+		minuteStep: 15,
+		secondStep: 30,
+		inputMask: true
+	});	
+});
+</script>

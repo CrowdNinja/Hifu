@@ -1,0 +1,273 @@
+
+<title><{translate('現金支払い管理')}></title>
+
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+
+<div class="row">
+	<div class="col-xs-12">
+    <h3>現金支払い管理</h3>
+    <br />
+
+		<div class="panel panel-success">
+			<div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('筛选')}></div>
+			<div class="panel-body" style="display:">
+
+            <div class="form-group form-search form-inline">
+
+				<label class="control-label">予約番号</label>
+				<input  class="form-control" id="pay_token" name="pay_token" value="<{$get.pay_token}>" style="width:120px" />
+				<label class="control-label">メニュー名</label>
+				<input  class="form-control" id="pack_title" name="pack_title" value="<{$get.pack_title}>" style="width:120px" />
+				<label class="control-label">予約者名</label>
+				<input  class="form-control" id="user_name" name="user_name" value="<{$get.user_name}>" style="width:120px" />
+        <label class="control-label">デバイス</label>
+        <select class="form-control" id="device" value="<{$get.device}>" style="width: 120px;" >
+          <option value="-1">
+            全て
+          </option>
+          <option value="1">
+            わたしのハイフ
+          </option>
+          <option value="2">
+            脱毛
+          </option>
+        </select>
+                <button class="btn btn-default btn-search btn-sm"><i class="fa fa-search"></i> <{translate('搜索')}></button>
+				<!--<button id="importBtn" class="btn btn-sm btn-primary"><i class="fa fa-download"></i> 下载二维码</button>-->
+            </div>
+
+    </div>
+
+    </div>
+<script>
+$(function () {
+    $('.agent_id').chosen();
+    $('.seller_id').chosen();
+<{if $get.corpid}>$('#corpid').select2('data', {id:"<{$get.corpid}>", text:"<{$get_corpid_account}>"}).select2('val', ["<{$get.corpid}>"]);<{/if}>
+
+        $("#adminid").select2({
+            ajax: {
+                url: "/admin_shop/search",
+                data: function (params) {
+                    return {
+                        keywords: params
+                    };
+                },
+                results:function(data,pageNo){
+                    if(data.data.length){
+                        data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+                    }else{
+                        data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                    }
+                    return {
+                        results:data.data
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                type: 'post',
+                dataType: 'json'
+            },
+            initSelection: function(elem, cbfunc){
+            },
+            allowClear: false,
+            openOnEnter: false,
+            minimumInputLength: 1,
+        });
+    <{if $get.adminid}>$('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);<{/if}>
+
+        });
+</script> 
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-search').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>
+
+		<form class="form-horizontal" role="form" id="submitform" method="post" action="/admin_device/import" enctype="multipart/form-data">
+      <table class="table table-hover table-striped">
+        <thead>
+          <tr>
+						<th><{translate('序号')}></th>
+						<th><{translate('メニュー名')}></th>
+						<th><{translate('予約番号')}></th>
+						<th><{translate('価格')}></th>
+						<th><{translate('予約者名')}></th>
+						<th><{translate('電話番号')}></th>
+						<th><{translate('予約時間')}></th>
+						<th><{translate('予約デバイス')}></th>
+						<th><{translate('編集')}></th>
+          </tr>
+        </thead>
+        <tbody>
+					<{foreach $trade.list as $key=>$v}>
+          <tr class="alert1" align="left">
+            <td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+						<td><{$v['pack']['title']}></td>
+						<td><{$v['pay_token']}></td>
+						<td><{$v['pack']['price']}></td>
+						<td><{$v['user_name']}></td>
+						<td><{$v['user_phone_no']}></td>
+						<td>
+							<{foreach $v['reservations'] as $vv }>
+								<{$vv['start_time']}><br>
+							<{/foreach}>
+						</td>
+						<td>
+							<{foreach $v['reservations'] as $vv }>
+								<{foreach $vv['types'] as $type}>
+									<{translate($type)}>
+								<{/foreach}>
+							<{/foreach}>
+						</td>
+						<td >
+							<a href="admin_system#page/admin_trade/edit_cash/<{$v.id}>" class="btn btn-success btn-xs btn_edit"> <{translate('編集')}></a>
+							<a class="btn btn-danger btn-xs btn_pay" id="pay" data-id="<{$key}>"> <{translate('支払い完了')}></a>
+							<a class="btn btn-primary btn-xs btn_cancel btnDelete" id="" data-id="<{$key}>"> <{translate('キャンセル・削除')}></a>
+						</td>
+          </tr>
+          <{/foreach}>
+          <tr>
+            <td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">
+
+              <input class="btn btn-default btnDelete" value="<{translate('删除')}>" type="button">
+
+              <!--<input id="btnClear" class="btn btn-default" value="清空" type="button">-->
+
+              <a class="btn btn-complete btn_pay"><i class="fa fa-plus-square-o"></i> 支払い完了</a>
+
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+                    <!--  <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$list.total}> <{translate('条记录')}> <{$list.pages}>  </td></tr></table> -->
+					
+				</form>
+      </div>
+    </div>
+  </div>
+
+<script src="/style/js/jquery.dialogBox.js"></script>
+<div id="dialog-box-mask" style="height: 400px; display: none;"></div>
+<div class="getinfo-box"></div>
+	<script type="text/javascript">
+   var isbusy = false;
+   var trades = <{json_encode($trade.list)}>
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+
+        $('.listpage').find('a').each(function(){
+            var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+            $(this).attr('href', url);
+        });
+		//YYYY-MM-DD HH:mm:ss
+		/*$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD',
+			language: 'zh-CN',
+			pickDate: true,
+			pickTime: true,
+			hourStep: 1,
+			minuteStep: 15,
+			secondStep: 30,
+			inputMask: true
+		});*/
+
+    $('.btn_pay').click(function() {
+      var index = $(this).data('id');
+      var ckvals = $.selectCK('input[name="id[]"]');
+      if (isNaN(index) && !ckvals) {
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+      }
+			tooltipbox.confirm("現金支払いをします", function(data){
+        var ids;
+        if (ckvals) {
+          ids = ckvals
+        } else {
+          ids = trades[index]['id'];
+        }
+				tooltipbox.show("<{translate('正在执行操作')}>");
+          $.ajax({
+            type: 'POST',
+            data: {
+              'ids': ids,
+            },
+            url: '/admin_trade/pay_money',
+            error: function(xhr) { alert( xhr.responseText ); }, //如果你的url,txt有问题,将会提示
+            success: function(data) {
+              window.location.reload()
+            }
+          })
+			}, false, { 'ids': ckvals });
+        
+    })
+
+		$('.btnDelete').click(function(){
+      var index = $(this).data('id');
+      console.log(index)
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(isNaN(index) && !ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+      var ids;
+      if (ckvals) {
+        ids = ckvals
+      } else {
+        ids = trades[index]['id'];
+      }
+			tooltipbox.confirm("現金支払いを削除します<br/>"+(!ckvals?"<span>予約番号："+trades[index]['pay_token']+"</span><br/><span>の支払い削除します</span><br/>":"")+"<span class='alert-red'>＊この作業は取り消せません</span>", function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+          $.ajax({
+            type: 'POST',
+            data: {
+              'ids': ids,
+            },
+            url: '/admin_trade/delete_trades',
+            error: function(xhr) { alert( xhr.responseText ); }, //如果你的url,txt有问题,将会提示
+            success: function(data) {
+              window.location.reload()
+            }
+          })
+			}, false, { 'ids': ckvals });
+		});
+		$('#btnClear').click(function(){
+			tooltipbox.confirm('确定永久清空所有数据？', function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_staff/clear', { }, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(a, b, c){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			});
+		});
+    });
+</script>
+
+<script>
+    laydate.render({
+        elem: '#createtime1',
+    });
+    laydate.render({
+        elem: '#createtime2'
+    });
+</script>

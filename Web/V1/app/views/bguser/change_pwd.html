@@ -1,0 +1,114 @@
+
+<title><{translate('首页')}> - <{translate('修改密码')}></title>
+
+<script type="text/javascript" src="/style/assets/js/jquery.validate.js"></script>
+<div class="page-header">
+	<h1>
+		<{translate('首页')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('修改密码')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+<div class="row">
+	<div class="col-xs-12">
+		<form class="form-horizontal" role="form" id="submitform">
+
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9"><{$_admin->adminname}></div>
+			</div>
+
+
+
+
+			<div class="form-group">
+				<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email"><{translate('旧密码')}>:</label>
+
+				<div class="col-xs-12 col-sm-9">
+					<div class="clearfix">
+						<input type="password" name="oldpasswd" id="oldpasswd" class="col-xs-12 col-sm-6" />
+					</div>
+				</div>
+			</div>
+
+			<div class="space-2"></div>
+
+
+			<div class="form-group">
+				<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email"><{translate('新密码')}>:</label>
+
+				<div class="col-xs-12 col-sm-9">
+					<div class="clearfix">
+						<input type="password" name="passwd" id="passwd" class="col-xs-12 col-sm-6" />
+					</div>
+				</div>
+			</div>
+
+			<div class="space-2"></div>
+
+
+
+
+			<div class="form-group">
+				<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email"><{translate('再输一次新密码')}>:</label>
+
+				<div class="col-xs-12 col-sm-9">
+					<div class="clearfix">
+						<input type="password" name="repasswd" id="repasswd" class="col-xs-12 col-sm-6" />
+					</div>
+				</div>
+			</div>
+
+			<div class="space-2"></div>
+
+
+			<div class="clearfix form-actions">
+				<div class="col-md-offset-3 col-md-9">
+					<button class="btn btn-info" type="button" id="saveedit"><{translate('提交')}></button>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: false,
+			rules: {
+			oldpasswd: {
+					required: true
+	 
+				},
+		    passwd: {
+					required: true,
+					minlength: 5
+				}, 
+			 
+			repasswd: {
+					required: true,
+					minlength: 5,
+					equalTo: "#passwd"
+				} 
+			},
+	
+			messages: {
+				oldpasswd: "请填写旧密码.",
+				passwd: {
+					required: "请填写新密码.",
+					minlength: "至少填写5位密码."
+				},
+				 
+				repasswd: "请正确填写新密码."
+			}
+			});
+			
+    $(document).ready(function () {
+		$("#saveedit").click(function () {
+		if($('#submitform').valid()){
+		  Dlc.service.post("/admin_system/password_save/", $("#submitform").serialize());
+		     return false;
+		     }
+				});
+	});
+  </script>

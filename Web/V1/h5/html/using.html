@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>开门烘干</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../compiled/flipclock.css" />
+		<link rel="stylesheet" href="../css/default.css" />
+		<link rel="stylesheet" href="../css/normalize.css" />
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<link rel="stylesheet" href="../css/swiper.min.css" />
+	</head>
+	<style>
+		.bshow {
+			box-shadow: #CCCCCC 0 1px 6px;
+		}
+		
+		.bg_add {
+			background: #B2DEDD;
+		}
+		
+		.col_add {
+			color: #28C3BB;
+		}
+		
+		.bg_over {
+			background: #F3C5C5;
+		}
+		
+		.col_over {
+			color: #FA6746;
+		}
+	</style>
+
+	<body class="bigBox">
+		<article class="flex1 plr20">
+			<section class="swiper-container">
+				<div class="swiper-wrapper" id="slide">
+					<!--<div class="swiper-slide">
+						<img src="../img/0.png" style="width:100%;height: 4rem;" />
+					</div>-->
+				</div>
+				<!-- Add Pagination -->
+				<div class="swiper-pagination"></div>
+				<!-- Add Arrows -->
+			</section>
+			<div class="ptb60 bw border-r1 bshow">
+				<div class="htmleaf-container flex_aj">
+					<div class="htmleaf-content">
+						<div class="clock"></div>
+						<div class="message"></div>
+					</div>
+				</div>
+				<p class="tac col6 font16 mt20">结束倒计时</p>
+			</div>
+			<div class="flex_sb mtb80 plr60">
+				<div class="ptb20 plr50 border-r6 bg_add col_add font14" id="add">我要加衣</div>
+				<div class="ptb20 plr50 border-r6 bg_over col_over font14" id="over">提前结束</div>
+			</div>
+			<div class="plr20 col6 font13">
+				<p><i class="col_time">*</i>干衣机开盖后会发出警报，关门后警报关闭干衣机开始工作，尽量确认干衣机工作后方才离开。</p>
+				<p class="mt20"><i class="col_time">*</i>为了方便其他顾客，烘衣结束后，您可以半个小时内免费取衣，超过时长将按时行收费，不足一个小时按一个小时计。</p>
+			</div>
+			</div>
+		</article>
+		<div class="flex_aj pb20 feedback">
+			<i style="text-decoration: underline;">我要报障</i>
+		</div>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../compiled/flipclock.js"></script>
+<script>
+	count_down();
+	var countdown;
+	countdown = setInterval(count_down, 5000);
+
+	function count_down() {
+		dlc_request('count_down', {
+			'order_id': getUrlParam('order_id')
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				var clock;
+				$(document).ready(function() {
+					var clock;
+					clock = $('.clock').FlipClock({
+						clockFace: 'HourCounter',
+						autoStart: false,
+						callbacks: {
+							stop: function() {
+								dlctipbox.alert('套餐时间结束');
+								location.href = 'take_clothes.html?order_id=' + getUrlParam('order_id');
+							}
+						}
+					});
+					clock.setTime(res.data);
+					clock.setCountdown(true);
+					clock.start();
+				});
+			} else {
+				dlctipbox.alert(res.msg);
+			}
+		});
+	}
+	$('.feedback').on('click', function() {
+		location.href = 'feedback.html?order_id=' + getUrlParam('order_id');
+	});
+	$('#over').on('click', function() {
+		dlctipbox.confirm('确定提前结束订单？', function(index) {
+			if(index == 1) {
+				dlc_request('finish_order', {
+					'order_id': getUrlParam('order_id')
+				}, function(res) {
+					console.log(res);
+					if(res.code == 1) {
+						alert(res.msg);
+						setTimeout(function() {
+							location.href = 'take_clothes.html?order_id=' + getUrlParam('order_id');
+						}, 2000);
+					} else {
+						dlctipbox.show(res.msg);
+					}
+				});
+			}
+
+		})
+	});
+	$('#add').on('click', function() {
+		dlctipbox.confirm('确定加衣？', function(index) {
+			if(index == 1) {
+				dlc_request('add_clothes', {
+					'order_id': getUrlParam('order_id')
+				}, function(res) {
+					console.log(res);
+					if(res.code == 1) {
+						alert(res.msg);
+					} else {
+						dlctipbox.show(res.msg);
+					}
+				});
+			}
+
+		});
+	});
+	//轮播图
+	dlc_request('/get_device_img', {
+		'macno': get_save('macno')
+	}, function(res) {
+		console.log(res);
+		if(res.code == 1) {
+			var res = res.data;
+			var str = '';
+			for(var i in res) {
+				str += '<div class="swiper-slide"><a><img class="img" src="' + res[i] + '" style="width:100%;height: 4rem;" /></a></div>';
+			}
+			$('#slide').html(str);
+			var swiper = new Swiper('.swiper-container', {
+				pagination: '.swiper-pagination',
+				slidesPerView: 1,
+				paginationClickable: true,
+				spaceBetween: 30,
+				autoplay: 3000,
+				autoplayDisableOnInteraction: false, //falase,用户操作后，定时滑动
+				loop: true
+			});
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+</script>

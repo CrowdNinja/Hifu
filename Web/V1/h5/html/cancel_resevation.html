@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>取消预约</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.radioBg {
+			width: .42rem;
+			height: .42rem;
+			background: url("../img/ico17.png") no-repeat;
+			background-size: 100%;
+		}
+		
+		input[name=type]:checked+.radioBg {
+			background: url("../img/4a.png") no-repeat;
+			background-size: 100%;
+		}
+		
+		.mask {
+			position: fixed;
+			height: 100%;
+			width: 100%;
+			background: rgba(0, 0, 0, 0.35);
+			z-index: 999;
+		}
+		
+		.model_content {
+			position: absolute;
+			width: 5.8rem;
+			background: #fff;
+			left: 50%;
+			margin-left: -2.9rem;
+			top: 25%;
+			border-radius: .1rem;
+			overflow: hidden;
+		}
+	</style>
+
+	<body>
+		<!--取消预约弹窗-->
+		<div class="model_page dpn">
+			<div class="model_content">
+				<div class="content plr24">
+					<p class="tac lh80">取消预约</p>
+					<p class="col6"><span>您的预约时间为：</span><i class="col_time resevation_time">3333</i></p>
+					<p class="col6 mt10"><span class="col_time">*</span><i>若时间未超过预约时间将免费为您取消</i></p>
+					<p class="col6 mt10"><span class="col_time">*</span><i>若时间超过预约时间，我们将按小时计费进行扣费</i></p>
+				</div>
+				<div class="flex lh80 bdt mt30">
+					<div class="flex1 tac col9 bdr" id="return" onclick="$('.model_page').hide()">返回</div>
+					<div class="flex1 color_green tac" id="sure">确定</div>
+				</div>
+			</div>
+		</div>
+		<!--成功取消预约弹窗-->
+		<div class="mask dpn">
+			<div class="model_content">
+				<div class="plr20 tac mt40">
+					<p class="font18">您已成功取消预约</p>
+					<p class="mt10">退款金额:<i class="font17 col_time canel_money"></i></p>
+					<p class="mt30"><i class="col_time">*</i>金额会原路退回您的账号，需1-7个工作日内到账。</p>
+				</div>
+				<div class="flex_aj lh80 color_green bdt mt30 font15 queding" onclick="$('.mask').hide()">确定</div>
+			</div>
+		</div>
+
+		<article class="plr20 pt20">
+			<div class="tac mt30">
+				<p class="font15">退还金额</p>
+				<p class="mt10"><i>￥</i><i class="money col_time font24"></i></p>
+			</div>
+			<div class="bw plr20 ptb20 border-r1 mt50">
+				<p class="flex"><i class="w150 col9">设备号：</i><i class="macno"></i></p>
+				<p class="mt20 flex"><span class="w150 col9">订单编号：</span><i class="num"></i></p>
+				<p class="mt20 flex"><span class="w150 col9">预约时间：</span><i class="start_time"></i></p>
+				<p class="mt20 flex"><span class="w150 col9">取消时间：</span><i class="cancel_time"></i></p>
+				<p class="mt20"><span class="w150 col9">费用说明：</span><i class="info ml10"></i></p>
+			</div>
+			<div class="bw mt30">
+				<div class="ptb30 plr20 bdb">退款原路返回</div>
+				<label id="ali_pay" class="dpn">
+                        <div class="flex_sb plr24 h100">
+                            <div class="flex_a">
+                                <img src="../img/26.png" style="width: .54rem;" style="display: none;">
+                                <span class="ml20">支付宝支付</span>
+                            </div>
+                            <input id="zf" type="radio" name="type" value="ali_pay" style="display: none;">
+                            <div class="radioBg"></div>
+                        </div>
+                    </label>
+				<label id="wx_pay" class="dpn">
+                      <div class="flex_sb plr24 h100">
+                            <div class="flex_a">
+                                <img src="../img/3a.png" style="width: .54rem;" style="display: none;">
+                                <span class="ml20">微信支付</span>
+                            </div>
+                            <input id="wx" type="radio" name="type" value="wx_pay" style="display: none;">
+                            <div class="radioBg"></div>
+                      </div>
+                    </label>
+
+			</div>
+			<div class="ptb30 mlr30 border-r6 flex_aj bg_green colw mt100 mta">确定</div>
+		</article>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script>
+	if(isWeiXin()) {
+		$('#wx_pay').show();
+		$('input[value="wx_pay"]').prop('checked', true);
+	} else {
+		$('#ali_pay').show();
+		$('input[value="ali_pay"]').prop('checked', true);
+	}
+
+	function isWeiXin() {
+		var ua = window.navigator.userAgent.toLowerCase();
+		console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+		if(ua.match(/MicroMessenger/i) == 'micromessenger') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	dlc_request('cancel_reservation_page',{'order_id':getUrlParam('order_id')},function(res) {
+		console.log(res);
+		if (res.code == 1) {
+			$('.macno').text(res.data.macno);
+			$('.num').text(res.data.tradeno);
+			$('.money').text(res.data.refund_money);
+			$('.start_time').text(res.data.start_time);
+			$('.cancel_time').text(res.data.cancel_time);
+			$('.info').text(res.data.desc);
+			$('.canel_money').text('￥'+res.data.refund_money);
+			$('.resevation_time').text(res.data.start_time);
+		} else{
+			dlctipbox.show(res.msg);
+		}
+	});
+	
+	$('.mta').on('click',function() {
+		$('.model_page').show();
+	});
+	$('#sure').on('click',function() {
+		dlc_request('cancel_reservation',{'order_id':getUrlParam('order_id')},function(res) {
+			console.log(res);
+			if (res.code == 1) {
+				dlctipbox.show(res.msg);
+				$('.model_page').hide();
+				$('.mask').show();
+			} else{
+				dlctipbox.alert(res.msg);
+			}
+		});
+	});
+	$('.queding').on('click',function() {
+		location.replace('index.html');
+	});
+</script>

@@ -1,0 +1,61 @@
+
+<title><{translate('系統設置')}> - <{translate('角色列表')}></title>
+<div class="page-header">
+	<h1>
+		<{translate('系統設置')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('角色列表')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<div class="row">
+	<div class="col-xs-12">
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th><{translate('编号')}></th>
+								<th><{translate('名称')}></th>
+								<th><{translate('类型')}></th>
+								<th><{translate('创建人')}></th>
+								<th><{translate('备注')}></th>
+								<th><{translate('权限')}></th>
+								<th style="width:12%"><{translate('操作')}></th>
+								 
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $values as $v}>
+							<tr class="alert1" align="left">
+								<td><{$v['id']}></td>
+								<td><{$v['title']}></td>
+								<td><{$role_type[$v['type']]}></td>
+								<td><{$v['aid']}></td>
+								<td><{$v['memo']}></td>
+								<td><a href="admin_system#page/admin_command/edit_role_command/<{$v['id']}>"><{translate('权限')}></a></td>
+								 
+								<td ><a href="admin_system#page/admin_role/edit/<{$v['id']}>"><{translate('编辑')}></a> <{if $v['id']>5}> | <a class="confirm_delete" href="/admin_role/del/<{$v['id']}>"><{translate('删除')}></a> <{/if}> </td>
+							</tr>
+							<{/foreach}>
+
+						</tbody>
+					</table>
+					<div class="col-sm-offset-5 col-sm-7">
+						<a href="/admin_system#page/admin_role/add" id="saveedit"
+							class="btn  btn-primary btn-lg"><{translate('添加')}></a>
+					</div>
+				</form>
+			</div>
+		</div>
+
+ 
+	<script type="text/javascript">
+	 
+ 
+	$('a.confirm_delete').click(function(){
+		return confirm("<{translate('是否要删除所选数据？')}>");
+	});
+</script>
+ 
+ 

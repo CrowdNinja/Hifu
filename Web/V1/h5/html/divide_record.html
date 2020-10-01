@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>分润金额</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.item span {
+			width: 2rem;
+			text-align: center;
+		}
+	</style>
+
+	<body class="page_revenue">
+		<header class="flex_a plr24 bsb bgf5">
+			<div class="bw border-r1 ptb24 flex lh50 tac pw100" style="font-weight: 600;" id="tabBar">
+				<div class="flex1 color_green tab_item" onclick="tabFn(2,this)">昨日</div>
+				<div class="flex1 bdl tab_item" onclick="tabFn(1,this)">今日</div>
+				<div class="flex1 bdl tab_item" onclick="tabFn(4,this)">本周</div>
+				<div class="flex1 bdl tab_item" onclick="tabFn(3,this)">本月</div>
+			</div>
+		</header>
+		<section class="container pt140">
+			<div class="colw tac flex_sb" style="background-color: #28c3bb;height: 2.5rem;padding: 0.3rem 0.7rem;">
+				<div>
+					<p class="font24" id="total_money"></p>
+					<p class="font17">订单金额</p>
+				</div>
+				<div>
+					<p class="font24" id="count"></p>
+					<p class="font17">成交笔数</p>
+				</div>
+				<div>
+					<p class="font24" id="divide_money"></p>
+					<p class="font17">分润金额</p>
+				</div>
+			</div>
+
+			<div class="plr20 flex_aj font14 ptb20 col6">
+				<div class="flex2 ellipsis flex_aj">订单编号</div>
+				<div class="flex1 flex_aj">订单金额</div>
+				<div class="flex1 flex_aj">收益金额</div>
+				<div class="flex1 flex_aj">分润比例</div>
+			</div>
+
+			<div class="bw mb20 list">
+				<div class="flex_aj h100 item plr20 col6">
+					<div class="flex2 flex_aj"><p class="ellipsis">1111111111111111111111111111111</p></div>
+					<div class="flex1 flex_aj">26</div>
+					<div class="flex1 flex_aj">20</div>
+					<div class="flex1 flex_aj">20%</div>
+				</div>
+			</div>
+		</section>
+	</body>
+
+</html>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script>
+	var page = 0,
+		jerry, type = 2,
+		onOff = 0;
+
+	function tabFn(flag, that) {
+		$(that).addClass('color_green').siblings().removeClass('color_green');
+		type = flag;
+		jerry.unlock(false);
+		page = 1;
+		get_list();
+	}
+
+	function get_list() {
+		if(onOff == 1) return false;
+		onOff = 1;
+		dlc_request('/divide_record', {
+			'shop_token': get_save('token'),
+			'type': type,
+			'page': page
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				if(page == 1) {
+					$('#total_money').text(res.data.total_money);
+					$('#count').text(res.data.count);
+					$('#divide_money').text(res.data.divide_money);
+				}
+				var str = '';
+				if(res.data.list.totalpage * 1 < page * 1) {
+					jerry.lock();
+					jerry.noData();
+				} else if(res.data.list.list.length > 0) {
+					var data = res.data.list.list;
+					for(var i in data) {
+						str += ' <div class="flex_aj h100 item plr20 col6">' +
+							'<div class="flex2 flex_aj ellipsis">' +'<p class="ellipsis">'+data[i].order_no +'</p>'+
+							'</div>' +
+							'<div class="flex1 flex_aj">' + data[i].order_money +
+							'</div>' +
+							'<div class="flex1 flex_aj">' + data[i].money +
+							'</div>' +
+							'<div class="flex1 flex_aj">' + data[i].proportion +
+							'%</div>' +
+							'</div>';
+					}
+				} else {
+					jerry.lock();
+					jerry.noData();
+				}
+				setTimeout(function() {
+					if(page == 1) {
+						$('.list').html(str);
+					} else {
+						$('.list').append(str);
+					}
+					onOff = 0;
+					jerry.resetload();
+					jerry.unlock();
+					jerry.noData(false);
+				}, 1000);
+			} else {
+				onOff = 0;
+				dlctipbox.show(res.msg);
+			}
+		});
+	}
+	$('.container').dropload({
+		scrollArea: window,
+		domUp: {
+			domClass: 'dropload-up',
+			domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate: '<div class="dropload-update">↑释放更新</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>'
+		},
+		domDown: {
+			domClass: 'dropload-down',
+			domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+			domNoData: '<div class="dropload-noData">暂无更多数据</div>'
+		},
+		loadUpFn: function(me) {
+			jerry = me;
+			page = 1;
+			get_list();
+		},
+		loadDownFn: function(me) {
+			jerry = me;
+			page++;
+			get_list();
+		},
+		threshold: 50
+	});
+</script>

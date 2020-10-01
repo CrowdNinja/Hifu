@@ -1,0 +1,189 @@
+
+<title><{translate('顧客管理')}> - <{translate('メッセージリスト')}></title>
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_user/message_model/"><{translate('メッセージリスト')}></a></li>
+        <!--<li><a href="/admin_system#page/admin_recharge/">充值列表</a></li>-->
+        <!--<li><a href="/admin_system#page/admin_foregift/">押金列表</a></li>-->
+        <!--<li><a href="/admin_system#page/admin_cash/">提现列表</a></li>-->
+    </ul>
+    <br />
+
+		<div class="panel panel-success">
+			<div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('筛选')}></div>
+			<div class="panel-body" style="display:">
+
+            <div class="form-group form-search form-inline">
+				<label class="control-label"><{translate('标题')}></label>
+				<input id="title" class="form-control" name="title" value="<{$get.title}>" />
+				<!--<label class="control-label">选择年龄</label>-->
+                <!--<select class="form-control" id="age" name="age">-->
+                	<!--<option value="">&#45;&#45;&#45;&#45;请选择&#45;&#45;&#45;&#45;</option>-->
+                	<!--<{foreach $user_age as $k=>$v}>-->
+                	<!--<option value=<{$k}> <{if $get.age == $k}>selected<{/if}> ><{$v}></option>-->
+                	<!--<{/foreach}>-->
+                <!--</select>-->
+               <!-- <label class="control-label">是否阅读</label>
+                <select class="form-control" id="is_read" name="is_read">
+                	<option value="">&#45;&#45;请选择&#45;&#45;</option>
+                	<option value="0"  <{if $get.is_read == '0'}>selected<{/if}>> 未阅读</option>
+                	<option value="1" <{if $get.is_read == '1'}>selected<{/if}>> 已阅读</option>
+
+                </select>-->
+
+
+                <label class="control-label"><{translate('创建日期')}></label>
+                    <input class="form-control datetimepicker" name="createtime1" id="createtime1" type="text" value="<{$get.createtime1}>" placeholder="">
+                <label class="control-label"><{translate('至')}></label>
+                    <input class="form-control datetimepicker" name="createtime2" id="createtime2" type="text" value="<{$get.createtime2}>" placeholder="">
+              
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('搜索')}></button>
+            </div>
+       
+		    </div>
+		 
+		</div>
+		<script>
+            $(function () {
+                $("#user_id").select2({
+                    ajax: {
+                        url: "/admin_user/search",
+                        data: function (params) {
+                            return {
+                                keywords: params
+                            };
+                        },
+                        results:function(data,pageNo){
+                            if(data.data.length){
+                                data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+                            }else{
+                                data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                            }
+                            return {
+                                results:data.data
+                            };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: data
+                            };
+                        },
+                        type: 'post',
+                        dataType: 'json'
+                    },
+                    initSelection: function(elem, cbfunc){
+                    },
+                    allowClear: false,
+                    openOnEnter: false,
+                    minimumInputLength: 1,
+                });
+            <{if $get.user_id}>$('#user_id').select2('data', {id:"<{$get.user_id}>", text:"<{$get_userid_account}>"}).select2('val', ["<{$get.user_id}>"]);<{/if}>
+                });
+		</script>
+		<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>                 
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th><{translate('送信日時')}></th>
+								<th><{translate('宛先（ユーザー名）')}></th>
+								<th><{translate('タイトル')}></th>
+								<th><{translate('写真')}></th>
+								<th><{translate('メッセージ内容')}></th>
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $list.list as $k => $v}>
+							<tr class="alert1 success" align="left">
+								<td><{$v['ctime']}></td>
+								<td><{$v['nickname']}></td>
+								<td><{$v['title']}></td>
+								<td><img src="<{$v['img']}>" alt="" width="30" height="30" class="img-prefile"/></td>
+								<td><{$v['content']}></td>
+							</tr>
+							<{/foreach}>
+					<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+						<td style="border:none" colspan="12">
+							<{if chkcommand('/admin_user/send_message')}>
+                            <a href="/admin_system#page/admin_user/send_message" class="btn  btn-primary btn-lg">+ <{translate('メッセージ作成')}></a>
+							<{/if}>
+						</td>
+					</tr>
+
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('合計')}> <{$list.total}> <{translate('件')}> <{$list.pages}>  </td></tr></table>
+					
+				</form>
+                </div>
+			</div>
+		</div>
+
+ 
+	<script type="text/javascript">
+ 	var isbusy = false;
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+        $('.listpage').find('a').each(function(){
+            var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+            $(this).attr('href', url);
+        });
+
+	  laydate.render({
+            elem: '#createtime1',
+        });
+        laydate.render({
+            elem: '#createtime2'
+        });
+        $('.img-prefile').viewer('destroy').viewer({});
+        $('.img-prefile').parent().off('click', '.viewer-canvas').on('click', '.viewer-canvas', function(e){
+            var _con = $(this).find('img');
+            if(_con && !_con.is(e.target) && _con.has(e.target).length === 0){
+                $('.img-prefile').viewer('hide');
+            }
+        });
+        $('.back').click(function(){
+            history.back(-1);
+        });
+		$('#btnDelete').click(function(){
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(!ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+			tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_user/message_delete', data, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			}, false, { 'ids': ckvals });
+		});
+
+	});
+</script>
+
+
+ 

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>订单详情</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+	</head>
+	<style>
+		.order{
+			width: 2.5rem;
+		}
+		.left span:nth-child(1){
+			padding-top: 0.5rem;
+		}
+		.left span:nth-child(2){
+			padding-bottom: 0.5rem;
+		}
+		.list .item + .item{
+		    border-top: 1px solid #e5e5e5;
+		}
+		.item{
+			height: 1.24rem;
+		}
+		.item span:nth-child(1){
+			width: 1.7rem;
+			height: 0.7rem;
+		}
+		.col_ali{
+			color: #4D97E8;
+		}
+		.col_wechat{
+			color: #74B66C;
+		}
+	</style>
+	<body>
+		<header>
+			<div class="flex_sb bw pl30 border-r1 mtb20 mlr20">
+				<div class="left">
+					<span class="db font18 fw" id="place"></span>
+					<span class="db pt20 col9" id="address"></span>
+				</div>
+				<div class="order">
+					<div class="dib col9">订单数量:<span class="col_price ml10" id="order_num"></span></div>
+					<div class="dib col9 mt20">总收益:<span class="col_price font16" id="total_money"></span></div>
+				</div>
+			</div>
+			<div class="ml80 flex_sb font14 ptb20 col9" style="margin-right: 0.5rem;">
+				<div>日期</div>
+				<div style="margin-left: 0.3rem;">消费时长</div>
+				<div>支付方式</div>
+				<div>消费金额</div>
+			</div>
+		</header>
+		<section class="container">
+			<div class="bw mtb20 list col3 fw">
+				<!-- <div class="flex_sb item plr10">
+					<span class="ml10 tac">2018.11.12 18:30</span>
+					<span style="margin-left: -0.4rem;">1小时</span>
+					<span class="tac pay_way" style="width: 1rem;">支付宝</span>
+					<div class="flex_a">
+						<cite style="margin-right: 0.6rem;">1.00</cite>
+					</div>
+				</div>
+				<div class="flex_sb item plr10">
+					<span class="ml10 tac">2018.11.12 21:21</span>
+					<span style="margin-left: -0.4rem;">1小时</span>
+					<span class="tac pay_way" style="width: 1rem;">微信</span>
+					<div class="flex_a">
+						<cite style="margin-right: 0.6rem;">3.00</cite>
+					</div>
+				</div> -->
+			</div>
+		</section>
+		
+	</body>
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script>
+	var page = 0;
+		jerry = '';
+	
+	function get_list(){
+		dlc_request('/order_details', {
+			'page': page,
+			'shop_token':get_save('token'),
+			'shop_id': getUrlParam('param')
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				if(page == 1) {
+					$('#place').text(res.data.nickname);
+					$('#address').text(res.data.address);
+					$('#order_num').text(res.data.count);
+					$('#total_money').text('¥' + res.data.total_money);
+				}
+				var str = '';
+				if(res.data.list.totalpage < page) {
+					jerry.lock();
+					jerry.noData();
+				} else if(res.data.list.list.length > 0) {
+					var data = res.data.list.list;
+					for(var i in data) {
+						str += '<div class="flex_sb item plr10">' +
+							'<span class="ml10 tac">' + data[i].ctime.replace(/-/g, '.') +
+							'</span>' +
+							'<span style="margin-left: -0.4rem;width:1rem;text-align:center;">' + (data[i].minute < 60 ? data[i].minute +'分钟' : data[i].hour +'小时') +
+							'</span>' +
+							'<span class="tac ' + (data[i].paytype == 3 ? 'col_ali' : 'col_wechat') + '" style="width: 1rem;">' + data[i].pay_type_name +
+							'</span>' +
+							'<div class="flex_a">' + 
+							'<cite class="mr20 tac" style="width:1rem;margin-right:0.4rem;">' + data[i].pay_money +
+							'</cite>' +
+							'</div>' +
+							'</div>';
+					}
+				} else {
+					jerry.lock();
+					jerry.noData();
+				}
+				setTimeout(function() {
+					if(page == 1) {
+						$('.list').html(str);
+					} else {
+						$('.list').append(str);
+					}
+					onOff = 0;
+					jerry.resetload();
+					jerry.unlock();
+					jerry.noData(false);
+				}, 1000);
+			} else {
+				dlctipbox.show(res.msg);
+			}
+		});
+	}
+		
+	$('.container').dropload({
+		scrollArea: window,
+		domUp: {
+			domClass: 'dropload-up',
+			domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate: '<div class="dropload-update">↑释放更新</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>'
+		},
+		domDown: {
+			domClass: 'dropload-down',
+			domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+			domNoData: '<div class="dropload-noData">暂无更多数据</div>'
+		},
+		loadUpFn: function(me) {
+			page = 1;
+			jerry = me;
+			get_list();
+		},
+		loadDownFn: function(me) {
+			page++;
+			jerry = me;
+			get_list();
+		},
+		threshold: 50
+	});
+</script>

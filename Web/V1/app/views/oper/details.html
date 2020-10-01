@@ -1,0 +1,103 @@
+<title><{translate('操作日志')}> - <{translate('日志详情')}> </title>
+<!--<div class="page-header">-->
+  <!--<h1>-->
+      <!--订单管理-->
+    <!--<small><i class="ace-icon fa fa-angle-double-right"></i> 订单详情-->
+    <!--</small>-->
+  <!--</h1>-->
+<!--</div>-->
+<!-- /.page-header -->
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="main">
+      <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_oper_log?page=<{$p}>"><{translate('日志列表')}></a></li>
+        <li class="active"><a
+            href="/admin_system#page/admin_oper_log/details/<{$row['id']}>/<{$p}>"><{translate('日志详情')}></a>
+        </li>
+      </ul>
+
+      <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+
+          <form class="form-horizontal" role="form" id="submitform" action="/admin_oper_log/edit/<{$row['id']}>"
+                method="post" accept-charset="utf-8">
+
+
+              <div class="form-group">
+                  <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('操作账号')}>:</label>
+                  <div class="col-xs-12 col-sm-5">
+                                <span class="block">
+                                    <input id="adminname" type="text" name="adminname" value="<{$row['adminname']}>"
+                                           class="form-control input-width" readonly/>
+                                </span>
+                  </div>
+                  <div class="help-block inline"></div>
+              </div>
+
+
+              <div class="form-group">
+                  <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('操作类型')}>：</label>
+                  <div class="col-xs-12 col-sm-5">
+                                <span class="block">
+                                    <input id="_type" type="text" name="_type" value="<{$row['_type']}>"
+                                           class="form-control input-width" readonly/>
+                                </span>
+                  </div>
+                  <div class="help-block inline"></div>
+              </div>
+              <div class="form-group">
+                  <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('数据表')}>：</label>
+                  <div class="col-xs-12 col-sm-5">
+                                <span class="block">
+                                    <input id="table" type="text" name="table" value="<{$row['table']}>"
+                                           class="form-control input-width" readonly/>
+                                </span>
+                  </div>
+                  <div class="help-block inline"></div>
+              </div>
+              <div class="form-group">
+                  <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('操作时间')}>：</label>
+                  <div class="col-xs-12 col-sm-5">
+                                <span class="block">
+                                    <input id="ctime" type="text" name="ctime" value="<{formattime($row['ctime'])}>"
+                                           class="form-control input-width" readonly/>
+                                </span>
+                  </div>
+                  <div class="help-block inline"></div>
+              </div>
+
+              <div class="form-group">
+                  <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('操作说明')}>：</label>
+                  <div class="col-xs-12 col-sm-5">
+                                <span class="block">
+                                    <{$row['memo']}>
+                                </span>
+                  </div>
+                  <div class="help-block inline"></div>
+              </div>
+
+              <div class="form-group">
+                  <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('执行')}>sql：</label>
+                  <div class="col-xs-12 col-sm-5">
+                                <span class="block">
+                                    <textarea id="sql" type="text" name="sql" style="height: 200px;"
+                                              class="form-control input-width" ><{$row['sql']}></textarea>
+                                </span>
+                  </div>
+                  <div class="help-block inline"></div>
+              </div>
+
+
+            <div class="form-group">
+              <div class="col-sm-offset-3 col-sm-9">
+                  <a href="admin_system#page/admin_oper_log/?page=<{$p}>" class="btn btn-primary btn-lg"> <{translate('返回')}></a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

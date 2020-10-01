@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>常见问题</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/common.css" />
+		<link rel="stylesheet" href="../css/main.css" />
+	</head>
+	<style>
+		.accordion-box {
+			position: relative;
+			background: #fff;
+		}
+		
+		.accordion-box .list-item+.list-item {
+			position: relative;
+			display: block;
+			margin-bottom: -1px;
+			background-color: #fff;
+			border-bottom: 1px solid #dedede;
+			border-top: 1px solid #dedede;
+		}
+		
+		.accordion-box .list-item-title {
+			padding: 15px 0;
+			position: relative;
+		}
+		
+		.accordion-box .list-item-content {
+			background-color: #fff;
+			display: none;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+		
+		.title-icon {
+			position: absolute;
+			top: .3rem;
+			right: .2rem;
+			/*transform:rotate(0deg);
+	-ms-transform:rotate(0deg);
+	/* IE 9 */
+			/*-moz-transform:rotate(0deg);*/
+			/* Firefox */
+			/*-webkit-transform:rotate(0deg);*/
+			/* Safari 和 Chrome */
+			/*-o-transform:rotate(0deg);*/
+			*/
+		}
+		
+		.tr {
+			transition: all .4s ease-in-out;
+		}
+		.pr100{
+			padding-right: 1rem;
+		}
+	</style>
+
+	<body class="bigBox">
+		<article class="list pt20 flex1">
+			<div class="accordion-box">
+				<div class="list-accordion plr24">
+					<!--<div class="list-item">
+						<div class="list-item-title" data-index="3">
+							<span class="title-text">我是标题四</span>
+							<span class=""><img src="../img/xiax.png"/ id="sa" class="title-icon" style="width: .4rem;"></span>
+						</div>
+						<div class="list-item-content ti2">
+							2008年5月
+						</div>
+					</div>
+					<div class="list-item">
+						<div class="list-item-title" data-index="3">
+							<span class="title-text">我是标题四</span>
+							<span class=""><img src="../img/xiax.png"/ id="sa" class="title-icon" style="width: .4rem;"></span>
+						</div>
+						<div class="list-item-content ti2 col6">
+							2008年5月
+						</div>
+					</div>
+						<div class="list-item">
+						<div class="list-item-title" data-index="3">
+							<span class="title-text">我是标题四</span>
+							<span class=""><img src="../img/xiax.png"/ id="sa" class="title-icon" style="width: .4rem;"></span>
+						</div>
+						<div class="list-item-content ti2">
+							2008年5月
+						</div>
+					</div>-->
+				</div>
+			</div>
+
+		</article>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+	$(".list-accordion").on("click", ".list-item-title .title-icon", function() {
+		if($(this).parents().siblings('.list-item-content').is(':hidden')) {
+			$(this).parents().siblings('.list-item-content').slideToggle();
+			$(this).css('transform', 'rotate(180deg)');
+			$(this).addClass('tr')
+		} else {
+			$(this).parents().siblings('.list-item-content').slideToggle();
+			$(this).css('transform', 'rotate(0deg)');
+			$(this).addClass('tr');
+			//           $('#sa').removeClass('title-icon-active');
+			//              $('#sa').addClass('title-icon');
+		}
+	});
+//	dlc_request('about', {}, function(res) {
+//		console.log(res);
+//		if(res.code == 1) {
+//			$('.logo').attr('src', res.data.logo);
+//		} else {
+//			dlctipbox.show(res.msg);
+//		}
+//	});
+	dlc_request('get_faq', {}, function(res) {
+		console.log(res);
+		if(res.code == 1) {
+			var str = '';
+			var data = res.data;
+			for(var i in data) {
+				str += '<div class="list-item">' +
+					'<div class="list-item-title" data-index="3">'+
+				   '<p class="title-text pr100">' + data[i].title +
+					'</p>' +
+					'<img src="../img/xiax.png"/ id="sa" class="title-icon" style="width: .4rem;">' +
+					'</div>' +
+					'<div class="list-item-content col6">' + data[i].content +
+					'</div>' +
+					'</div>'
+			}
+			$('.list-accordion').html(str);
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+	</script>

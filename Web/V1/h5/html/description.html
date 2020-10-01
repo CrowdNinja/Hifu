@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>使用说明</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../js/drop/dropload.css"/>
+    <link rel="stylesheet" href="../css/commonsecond.css"/>
+    <link rel="stylesheet" href="../css/mainsecond.css"/>
+</head>
+	<body class="plr24 pt20">
+		<!--<p>使用说明</p>-->
+		<section class="content"></section>
+	</body>
+</html>
+<script type="text/javascript" src="../js/dlc.js" ></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js" ></script>
+<script>
+	dlc_request('help',{},function(res) {
+		console.log(res);
+		if (res.code==1) {
+			$('.content').html(res.data.text);
+		} else{
+			dlctipbox.show(res.msg);
+		}
+	});
+	
+	
+</script>

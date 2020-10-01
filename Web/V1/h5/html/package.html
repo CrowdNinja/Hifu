@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>选择套餐</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<link rel="stylesheet" href="../css/swiper.min.css" />
+		<style>
+			body {
+				font-size: .28rem;
+			}
+			
+			.masked {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.35);
+				z-index: 9999;
+				overflow-y: scroll;
+				-webkit-overflow-scrolling: touch;
+				oveflow-scrolling: touch;
+			}
+			
+			.mask_text {
+				background-color: aliceblue;
+				width: 78%;
+				height: auto;
+				margin: 0 auto;
+				margin-top: 30%;
+				padding: .3rem;
+				border-radius: 0.1rem;
+				font-size: .3rem;
+				text-align: center;
+			}
+			
+			.mlr40 {
+				margin-left: .4rem;
+				margin-right: .4rem;
+			}
+			
+			.mlr100 {
+				margin-left: 1rem;
+				margin-right: 1rem;
+			}
+			
+			.check_ipt+span {
+				width: .3rem;
+				height: .3rem;
+				margin-right: .05rem;
+				background-image: url(../img/check.png);
+				background-size: 100% 100%;
+			}
+			
+			.check_ipt:checked+span {
+				background-image: url(../img/rechecked.png);
+				background-size: 100% 100%;
+			}
+			
+			.line {
+				width: 20%;
+				height: 1px;
+				background: #DFDFDF;
+			}
+			
+			.br_color {
+				background: #A6DAD7;
+			}
+		</style>
+	</head>
+	<!--描述：使用协议-->
+	<div class="masked pt140">
+		<div class="plr20 border-r1 mlr100 mt100 plr10 bg_green ptb30 tac colw">
+			<div class="maska"></div>
+		</div>
+		<p class="tac mt20 mb40"><img class="closed" src="../img/close.png" / style="width: .5rem;" onclick="$('.masked').hide()"></p>
+	</div>
+
+	<body class="bgcola">
+		<section class="swiper-container">
+			<div class="swiper-wrapper" id="slide">
+				<!--<div class="swiper-slide">
+					<img src="../img/0.png" style="width:100%;height: 4rem;" />
+				</div>-->
+			</div>
+			<!-- Add Pagination -->
+			<div class="swiper-pagination"></div>
+			<!-- Add Arrows -->
+		</section>
+		<section class="plr20 pt20 pb20">
+			<div>选择套餐
+			</div>
+			<ul class="list">
+				<!--<li class="lh100 plr20 flex_sb bw border-r1 mt20 pack"><span>轻薄衣物/1.5小时</span><i class="col_time">￥10.00</i></li>
+				<li class="lh100 plr20 flex_sb bw border-r1 mt20 pack"><span>轻薄衣物/1.5小时</span><i class="col_time">￥10.00</i></li>-->
+			</ul>
+			<div class="check flex mt20 pl10">
+				<label class="flex_a"><input class="check_ipt" type="checkbox" checked hidden="hidden" name="use" /><span></span></label><i class="col9">确认即表示同意</i>
+				<a class="fw color1 color_green use" style="text-decoration: underline;">《服务使用协议》</a>
+				</p>
+			</div>
+			<div class="bg_green ptb30 mlr20 tac colw border-r6 mt30 queding mta">确定</div>
+		</section>
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../js/dlc.js"></script>
+	<script type="text/javascript" src="../js/swiper.min.js"></script>
+	<script type="text/javascript">
+		var macno = getUrlParam('macno');
+		save('macno', macno);
+		dlc_request('get_device_pack', {
+			'macno': macno
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				var str = '';
+				var data = res.data;
+				//				var seller_id = res.data.seller_id; //设备商家id
+				for(var i in data) {
+					str += '<li class="lh100 plr20 flex_sb bw border-r1 mt20 pack" data-id="' + data[i].pack_id + '" data-money="' + data[i].money + '">' +
+						'<i>' + data[i].title + '/' + data[i].hour + '小时' +
+						'</i>' +
+						'<span class="col_time">￥' + data[i].price + '</span>' +
+						'</li>';
+				}
+
+				if(str) {
+					$('.list').html(str);
+				} else {
+					$('.list').html(emptyTip('暂无套餐'));
+				}
+
+			} else {
+				dlctipbox.show(res.msg);
+			}
+		});
+		//轮播图
+		dlc_request('/get_device_img', {
+			'macno': macno
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				var res = res.data;
+				var str = '';
+				for(var i in res) {
+					str += '<div class="swiper-slide"><a><img class="img" src="' + res[i] + '" style="width:100%;height: 4rem;" /></a></div>';
+				}
+				$('#slide').html(str);
+				var swiper = new Swiper('.swiper-container', {
+					pagination: '.swiper-pagination',
+					slidesPerView: 1,
+					paginationClickable: true,
+					spaceBetween: 30,
+					autoplay: 3000,
+					autoplayDisableOnInteraction: false, //falase,用户操作后，定时滑动
+					loop: true
+				});
+			} else {
+				dlctipbox.show(res.msg);
+			}
+		});
+		//选择套餐
+		$('.list').on('click', '.pack', function() {
+			$(this).addClass('br_color').siblings().removeClass('br_color');
+			var pack_id = $(this).data('id');
+			//确定
+			$('.queding').on('click', function() {
+				var check = $('.check_ipt[name=use]:checked').val();
+				if(isNull(check)) {
+					dlctipbox.show('请先查看服务使用协议并勾选同意');
+				} else if($('.pack').is('.br_color')) {
+					dlc_request('get_pack_info',{'macno':macno,'pack_id':pack_id},function(res) {
+						console.log(res);
+						if (res.code == 1) {
+							location.href = 'order_pay.html?id=' + pack_id;
+						} else{
+							dlctipbox.alert(res.msg);
+						}
+					});	
+				} else {
+					dlctipbox.show('请先选择套餐');
+				}
+			});
+		});
+
+		dlc_request('/get_protocol', {}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				$('.maska').html(res.data.prompt);
+			} else {
+				dlctipbox.show(res.msg);
+			}
+		});
+		//未选套餐前点确定
+		$('.mta').on('click', function() {
+			if($('.pack').is('.br_color')) {} else {
+				dlctipbox.show('请选择套餐');
+			}
+		});
+		$('.use').on('click', function() {
+			location.href = 'use.html'
+		});
+	</script>
+
+</html>

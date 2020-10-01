@@ -1,0 +1,209 @@
+
+<title>系统设置 - 微信菜单</title>
+<div class="page-header">
+	<h1>
+		系统设置 <small> <i class="ace-icon fa fa-angle-double-right"></i> 微信菜单
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<style type="text/css">
+.btnEdit {display:none;}
+</style>
+
+<div class="row">
+	<div class="col-xs-12">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_weixin/menu">微信菜单</a></li>
+    </ul>
+    <br /><br />
+				
+                <{if $menus.errcode > 0}>
+                	<p>* 读取菜单失败： <{$menus.errmsg}></p>
+                	<a href="javascript:location.reload();" class="btn btn-primary">↓ 重新读取</a>
+                <{else}>
+              
+				 <p>* 注意一级菜单最3个，二级菜单最多5个</p>
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>一级菜单</th>
+								<th>二级菜单</th>
+								<th>类型</th>
+								<th>参数值</th>
+								<th>操作</th>	
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $menus.selfmenu_info.button as $k => $v}>
+							<tr align="left">
+								<td><input type="text" value="<{$v['name']}>" /></td>
+								<td></td>
+								<td><select>
+                                <option value="" <{if !$v['type']}>selected<{/if}>>-</option>
+                                <option value="view" <{if $v['type']=='view'}>selected<{/if}>>链接</option>
+                                <option value="click" <{if $v['type']=='click'}>selected<{/if}>>关键词</option>
+                                </select></td>
+								<td width="50%"><input type="text" value="<{$v['url']}><{$sv['key']}><{$sv['value']}>"  style="width:100%" /></td>
+								 <td nowrap><a class="btnEdit" href="javascript:;" data-key="<{$k}>" data-skey=""><{translate('修改')}></a>
+                                 <a class="btnDelete" href="javascript:;" data-key="<{$k}>" data-skey="">删除</a>
+                                 | <a class="btnAdd" href="javascript:;" data-key="<{$k}>">添加二级菜单</a>
+                                 </td>
+							</tr>
+                            
+                                <{foreach $v.sub_button.list as $sk => $sv}>
+                                    <tr class="sub_<{$k}>" align="left">
+										<td></td>
+                                        <td><input type="text" value="<{$sv['name']}>" /></td>
+                                        <td><select>
+                                <option value="view" <{if $sv['type']=='view'}>selected<{/if}>>链接</option>
+                                <option value="click" <{if $sv['type']=='click'}>selected<{/if}>>关键词</option>
+                                </select></td>
+                                        <td width="50%"><input type="text" value="<{$sv['url']}><{$sv['key']}><{$sv['value']}>" style="width:100%" /></td>
+                                         <td nowrap><a class="btnEdit" href="javascript:;" data-key="<{$k}>" data-skey="<{$sk}>"><{translate('修改')}></a>
+                                         <a class="btnDelete" href="javascript:;" data-key="<{$k}>" data-skey="<{$sk}>">删除</a>
+                                         </td>
+                                    </tr>
+                                <{/foreach}>
+							<{/foreach}>
+					
+						</tbody>
+					</table>
+					<a href="javascript:location.reload();" class="btn btn-default">x 取消修改</a>
+					<a href="javascript:;" class="btnAdd btn  btn-primary" data-key="">+ 添加一级菜单</a>
+                    <a id="btnSave" href="javascript:;" class="btn  btn-primary">&uarr; 保存菜单到公众号</a>
+				</form>
+                
+                <{/if}>
+                
+                </div>
+			</div>
+		</div>
+
+ 
+	<script type="text/javascript">
+	var menus = <{json_encode($menus)}>;
+	
+	function init(){
+		$('.btnDelete').unbind('click').click(function(){
+			$('.btnEdit').click();
+			var key = $(this).attr('data-key');
+			var skey = $(this).attr('data-skey');
+			if(skey == ''){
+				menus['selfmenu_info']['button'][key]['_delete'] = 1;
+				$(this).parents('table').find('.sub_' + key).remove();
+				$(this).parents('tr').remove();
+			}else{
+				menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['_delete'] = 1;
+				$(this).parents('tr').remove();
+			}
+		});
+		$('.btnEdit').unbind('click').click(function(){
+			var key = $(this).attr('data-key');
+			var skey = $(this).attr('data-skey');
+			if(skey == ''){
+				menus['selfmenu_info']['button'][key]['name'] = $(this).parents('tr').find('input').eq(0).val();
+				menus['selfmenu_info']['button'][key]['type'] = $(this).parents('tr').find('select').eq(0).val();
+				if(menus['selfmenu_info']['button'][key]['type'] == 'view'){					
+					menus['selfmenu_info']['button'][key]['url'] = $(this).parents('tr').find('input').eq(1).val();
+				}else{
+					menus['selfmenu_info']['button'][key]['key'] = $(this).parents('tr').find('input').eq(1).val();
+				}
+			}else{
+				menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['name'] = $(this).parents('tr').find('input').eq(0).val();
+				menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['type'] = $(this).parents('tr').find('select').eq(0).val();
+				if(menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['type'] == 'view'){					
+					menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['url'] = $(this).parents('tr').find('input').eq(1).val();
+				}else{
+					menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['key']= $(this).parents('tr').find('input').eq(1).val();
+				}
+			}
+		});
+		$('.btnAdd').unbind('click').click(function(){
+			$('.btnEdit').click();
+			var key = $(this).attr('data-key');
+			if(key == ''){
+				if(!menus['selfmenu_info'])
+					menus['selfmenu_info'] = {};
+				if(!menus['selfmenu_info']['button'])
+					menus['selfmenu_info']['button'] = [];
+				var key = menus['selfmenu_info']['button'].length || 0;
+				menus['selfmenu_info']['button'][key] = {};
+				menus['selfmenu_info']['button'][key]['name'] = '';
+				menus['selfmenu_info']['button'][key]['type'] = 'view';
+				menus['selfmenu_info']['button'][key]['url'] = '';
+				
+				$('.table tbody').append('<tr align="left">\
+								<td><input type="text" value="" /></td>\
+								<td></td>\
+								<td><select>\
+                                <option value="">-</option>\
+                                <option value="view">链接</option>\
+                                <option value="click">关键词</option>\
+                                </select></td>\
+								<td width="50%"><input type="text" value=""  style="width:100%" /></td>\
+								 <td nowrap><a class="btnEdit" href="javascript:;" data-key="' + key + '" data-skey="">修改</a>\
+                                 <a class="btnDelete" href="javascript:;" data-key="' + key + '" data-skey="">删除</a>\
+                                 | <a class="btnAdd" href="javascript:;" data-key="' + key + '">添加二级菜单</a>\
+                                 </td>\
+							</tr>');
+			}else{
+				if(!menus['selfmenu_info']['button'][key])
+					menus['selfmenu_info']['button'][key] = {};
+				if(!menus['selfmenu_info']['button'][key]['sub_button'])
+					menus['selfmenu_info']['button'][key]['sub_button'] = {};
+				if(!menus['selfmenu_info']['button'][key]['sub_button']['list'])
+					menus['selfmenu_info']['button'][key]['sub_button']['list'] = [];
+				var skey = menus['selfmenu_info']['button'][key]['sub_button']['list'].length || 0;
+				menus['selfmenu_info']['button'][key]['sub_button']['list'][skey] = {};
+				menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['name'] = '';
+				menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['type'] = 'view';
+				menus['selfmenu_info']['button'][key]['sub_button']['list'][skey]['url'] = '';
+				
+				var conr = $(this).parents('tr');
+				if($(this).parents('table').find('.sub_' + key).length > 0){
+					conr = $(this).parents('table').find('.sub_' + key).last();
+				}
+				$(conr).after('<tr class="sub_' + key + '" align="left">\
+								<td></td>\
+								<td><input type="text" value="" /></td>\
+								<td><select>\
+                                <option value="view">链接</option>\
+                                <option value="click">关键词</option>\
+                                </select></td>\
+								<td width="50%"><input type="text" value="" style="width:100%" /></td>\
+								 <td nowrap><a class="btnEdit" href="javascript:;" data-key="' + key + '" data-skey="' + skey + '">修改</a>\
+                                 <a class="btnDelete" href="javascript:;" data-key="' + key + '" data-skey="' + skey + '">删除</a>\
+                                 </td>\
+							</tr>');
+			}
+			init();
+		});
+	}
+	var isbusy = false;
+	$(function(){
+		init();	
+		
+		$('#btnSave').click(function(){ 
+			$('.btnEdit').click();
+			if(isbusy)return false;
+			isbusy = true;
+			tooltipbox.show("<{translate('正在执行操作')}>");
+			$.post('/admin_weixin/menu', { 'ajax':1, 'menus': menus }, function(res){
+				if(res.status == '1'){
+					tooltipbox.show("<{translate('操作执行成功')}>");
+				}else{
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				}
+				isbusy = false;
+			}, 'json').error(function(){
+				tooltipbox.show("<{translate('数据或网络错误')}>");
+				isbusy = false;
+			});
+		});
+	});
+</script>
+ 
+ 

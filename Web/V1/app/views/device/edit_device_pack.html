@@ -1,0 +1,108 @@
+<title>设备管理 - 套餐管理</title>
+<!--<div class="page-header">-->
+  <!--<h1>-->
+    <!--设备套餐列表-->
+    <!--<small><i class="ace-icon fa fa-angle-double-right"></i> 套餐设置-->
+    <!--</small>-->
+  <!--</h1>-->
+<!--</div>-->
+<div class="page-content-area">
+  <div class="page-header">
+    <h1>
+      套餐管理
+    </h1>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="row">
+        <div class="col-xs-12">
+          <form method="post" action="/admin_device/get_mac_list/<{$macno}>" id="MyForm">
+            <input type="hidden" name="did" value="<{$did}>">
+            <div class="col-xs-5" style="height:545px;">
+              <div class="widget-header" style="border: 1px solid #d5d5d5;">
+                <h4 class="smaller" style="float:left">未绑定套餐</h4>
+              </div>
+              <select id="remove" class="col-xs-12" style="height:500px;" multiple="”multiple”">
+                <{foreach $arrGetList as $v}>
+                <option value="<{$v['id']}>"><{$v['title']}>(<{$v['id']}>)</option>
+                <{/foreach}>
+              </select>
+            </div>
+            <div class="col-xs-2" style="height:545px;">
+              <a href="javascript:;" id="setRight" style="display:block;margin-top:100px;"
+                 class="label label-lg label-pink arrowed-in arrowed-right">添加套餐</a>
+              <div style="height:20px;"></div>
+              <a href="javascript:;" style="display:block;" id="setLeft"
+                 class="label label-lg label-purple arrowed-in-right arrowed">删除套餐</a>
+
+            </div>
+            <div class="col-xs-5" style="height:250px;">
+              <div class="widget-header" style="border: 1px solid #d5d5d5;"><h4 class="smaller">已绑定套餐</h4></div>
+              <select name="wareA[]" id="wareA" class="col-xs-12" style="height:500px;" multiple="”multiple”">
+                <{foreach $arrExitList as $v}>
+                <option value="<{$v['id']}>"><{$v['title']}>(<{$v['id']}>)</option>
+                <{/foreach}>
+              </select>
+            </div>
+            <input type="hidden" name="url" value="/admin_system#page/admin_device/device_pack/<{$macno}>?p=<{$page}>"/>
+
+            <div style="clear:both" class="clearfix form-actions">
+              <div class="col-md-offset-3 col-md-9">
+                <button class="btn btn-info" id="subBtn">
+                  <i class="ace-icon fa fa-check bigger-110"></i>
+                  提交保存
+                </button>
+                &nbsp; &nbsp; &nbsp;
+                <a href="/admin_system#page/admin_device/device_pack/<{$macno}>?p=<{$page}>" class="btn">
+                  <i class="ace-icon fa fa-undo bigger-110"></i>
+                  返回列表
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(function(){
+    // 设备添加
+    $('#setRight').click(function(){
+      $("#wareA").append($("#remove option:selected"));
+    });
+    // 全部添加
+    $('#setAllRight').click(function(){
+      $("#wareB").append($("#remove option:selected"));
+    });
+    // 设备删除
+    $('#setLeft').click(function(){
+      $("#remove").append($("#wareA option:selected"));
+    });
+    // 全部删除
+    $('#setAllLeft').click(function(){
+      $("#remove").append($("#wareB option:selected"));
+    });
+    //双击删除单项
+    $("#wareA").on("dblclick", "option", function(){
+      $("#remove").append($(this));
+    })
+    $("#wareB").on("dblclick", "option", function(){
+      $("#remove").append($(this));
+    })
+    //双击恢复单项
+    $("#remove").on("dblclick", "option", function(){
+      $("#wareA").append($(this));
+    });
+
+    // 处理添加表单MyForm
+   $('#subBtn').click(function(){
+      $('#wareA').find('option').each(function(){
+        $(this).prop("selected","selected");
+      });
+      $('#wareB').find('option').each(function(){
+        $(this).prop("selected","selected");
+      });
+    });
+  });
+</script>

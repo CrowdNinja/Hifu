@@ -1,0 +1,187 @@
+<title>设备管理 - 套餐类型列表</title>
+<div class="page-header">
+    <h1>
+        设备管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 套餐类型列表
+    </small>
+    </h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="/admin_system#page/admin_pack/pack_type">套餐类型列表</a></li>
+        </ul>
+        <br />
+
+        <div class="panel panel-success">
+            <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> 筛选</div>
+            <div class="panel-body" style="display:">
+
+                <div class="form-group form-search form-inline">
+
+                    <label class="control-label">类型名称</label>
+                    <input class="form-control " name="title" id="title" type="text" value="<{$get.title}>" placeholder="套餐类型名称">
+
+                    <label class="control-label">创建时间</label>
+                    <input class="form-control datetimepicker" name="ctime1" id="ctime1" type="text" value="<{$get.ctime1}>" placeholder="">
+                    <label class="control-label">至</label>
+                    <input class="form-control datetimepicker" name="ctime2" id="ctime2" type="text" value="<{$get.ctime2}>" placeholder="">
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> 搜索</button>
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            $(function(){
+                //这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+                //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+                //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+                $('.btn-default').click(function(){
+                    var url = $.searchURL( location.href );
+                    location.href = url;
+                });
+            });
+        </script>
+        <form class="form-horizontal" role="form" id="submitform">
+            <!--<div class="table-actions">-->
+                <!--<button class="btn  btn-purple btn-xs " id="sortBtn"> <i class="fa fa-sort" ></i>排序</button>-->
+            <!--</div>-->
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>类型名称</th>
+                    <th>创建人</th>
+                    <th>套餐数量 (个)</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <{foreach $pack.list as $k=>$v}>
+                <tr class="alert1 success" align="left">
+                    <td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+                    <!--<td style='padding-left:20px;'><input name='sort' type='text' size='3' data-id="<{$v['id']}>" value="<{$v['sort']}>" class='input input-order'></td>-->
+                    <td><{$v['title']}></td>
+                    <td><{$v['agent_name']}></td>
+                    <td><{$v['pack_num']}></td>
+                    <td><{$v['ctime']}></td>
+                    <td >
+                        <{if chkcommand('/admin_pack/pack_type_edit')}>
+                        <a href="admin_system#page/admin_pack/pack_type_edit/<{$v['id']}>" class="btn btn-success btn-xs"> <i class="fa fa-edit"></i> <{translate('修改')}></a>
+                        <{/if}>
+                    </td>
+                </tr>
+                <{/foreach}>
+
+                <tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+                    <td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">
+                        <{if chkcommand('/admin_pack/pack_type_delete')}>
+                        <input id="btnDelete" class="btn btn-default" value="删除" type="button">
+                        <{/if}>
+                        <{if chkcommand('/admin_pack/pack_type_edit')}>
+                        <a href="/admin_system#page/admin_pack/pack_type_edit" class="btn  btn-primary">+ 添加套餐类型</a>
+                        <{/if}>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$pack.total}> <{translate('条记录')}> <{$pack.pages}>  </td></tr></table>
+
+        </form>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var isbusy = false;
+    //这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+    //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+    //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+    $(function(){
+        $('.listpage').find('a').each(function(){
+            var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+            $(this).attr('href', url);
+        });
+        //YYYY-MM-DD HH:mm:ss
+        /*$('.datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            language: 'zh-CN',
+            pickDate: true,
+            pickTime: true,
+            hourStep: 1,
+            minuteStep: 15,
+            secondStep: 30,
+            inputMask: true
+        });*/
+        laydate.render({
+            elem: '#ctime1',
+        });
+        laydate.render({
+            elem: '#ctime2'
+        });
+        $('a[data-macno]').click(function(){
+            tooltipbox.clear();
+            tooltipbox.alert('<p>' + $(this).data('macno') + '</p><img src="<{base_url('/Index/qrcode')}>?url=' + $(this).data('macno') + '" />');
+        });
+        $('#btnDelete').click(function(){
+            var ckvals = $.selectCK('input[name="id[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+                tooltipbox.show('正在执行操作...');
+                $.post('/admin_pack/pack_type_delete', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            }, false, { 'ids': ckvals });
+        });
+        $('#btnClear').click(function(){
+            tooltipbox.confirm('确定永久清空所有数据？', function(data){
+                tooltipbox.show('正在执行操作...');
+                $.post('/admin_pack/clear', { }, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(a, b, c){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            });
+        });
+        $('#sortBtn').click(function(){
+
+            var obj = $('input[name="sort"]');
+            var str = '';
+            obj.each(function(){
+                var val = $(this).val();
+                var id = $(this).attr('data-id');
+                str += id+':'+val+',';
+            });
+            $.post('/admin_pack/sort', {'str':str}, function(res){
+                if(res == '1'){
+                    tooltipbox.show("<{translate('操作执行成功')}>");
+                    location.reload();
+                }else{
+                    tooltipbox.show('操作执行失败');
+                }
+            });
+
+        });
+    });
+</script>

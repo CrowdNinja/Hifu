@@ -1,0 +1,158 @@
+<title><{translate('运营管理')}> - <{translate('热门城市')}></title>
+<!--<div class="page-header">-->
+    <!--<h1>-->
+        <!--信息管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 常见问题-->
+    <!--</small>-->
+    <!--</h1>-->
+<!--</div>-->
+<!-- /.page-header -->
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="/admin_system#page/admin_feedback/hot_keyword/"><{translate('热门城市')}></a></li>
+        </ul>
+        <br />
+
+
+        <div class="panel panel-success">
+            <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('筛选')}></div>
+            <div class="panel-body" style="display:">
+
+                <div class="form-group form-search form-inline">
+
+                    <label class="control-label"><{translate('热门城市')}></label>
+                    <input class="form-control " name="keyword" id="keyword" type="text" value="<{$get.keyword}>" placeholder="">
+
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('搜索')}></button>
+                </div>
+            </div>
+
+        </div>
+
+
+        <script>
+            $(function(){
+                //这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+                //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+                //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+                $('.btn-default').click(function(){
+                    var url = $.searchURL( location.href );
+                    location.href = url;
+                });
+            });
+        </script>
+
+        <form class="form-horizontal" role="form" id="submitform">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th><{translate('热门城市')}></th>
+                    <th><{translate('类型')}></th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <{foreach $list.list as $k => $v}>
+                <tr class="alert1 success" align="left">
+                    <td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+                    <td><{$v['keyword']}></td>
+                    <td><{$v['language_name']}></td>
+                    <td >
+                        <{if chkcommand('/admin_feedback/edit_hot_keyword/')}>
+                        <a class="btn btn-success btn-xs" href="/admin_system#page/admin_feedback/edit_hot_keyword/<{$v['id']}>"> <i class="fa fa-edit"></i> <{translate('修改')}></a>
+                        <{/if}>
+                    </td>
+                </tr>
+                <{/foreach}>
+                <tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+                    <td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">
+                        <{if chkcommand('/admin_feedback/hot_keyword_delete/')}>
+                        <input id="btnDelete" class="btn btn-default" value="<{translate('删除')}>" type="button">
+                        <{/if}>
+                       <!-- <input id="btnClear" class="btn btn-default" value="清空" type="button">-->
+                        <{if chkcommand('/admin_feedback/edit_hot_keyword/')}>
+                        <a href="/admin_system#page/admin_feedback/edit_hot_keyword/" class="btn  btn-primary">+ <{translate('添加')}></a>
+                        <{/if}>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$list.total}> <{translate('条记录')}> <{$list.pages}>  </td></tr></table>
+        </form>
+    </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+    var isbusy = false;
+    //这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+    //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+    //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+    $(function(){
+        $('.listpage').find('a').each(function(){
+            var url = $.searchURL( $(this).attr('href') );
+            $(this).attr('href', url);
+        });
+        //YYYY-MM-DD HH:mm:ss
+      /*  $('.datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            language: 'zh-CN',
+            pickDate: true,
+            pickTime: true,
+            hourStep: 1,
+            minuteStep: 15,
+            secondStep: 30,
+            inputMask: true
+        });*/
+        laydate.render({
+            elem: '#ctime1',
+        });
+        laydate.render({
+            elem: '#ctime2'
+        });
+
+        $('#btnDelete').click(function(){
+            var ckvals = $.selectCK('input[name="id[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_feedback/hot_keyword_delete', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            }, false, { 'ids': ckvals });
+        });
+        $('#btnClear').click(function(){
+            tooltipbox.confirm('确定永久清空所有数据？', function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_feedback/faq_clear', { }, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show('数据或网络错误');
+                    }
+                }, 'json').error(function(a, b, c){
+                    tooltipbox.show('数据或网络错误');
+                });
+            });
+        });
+    });
+</script>
+
+

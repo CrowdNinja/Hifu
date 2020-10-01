@@ -1,0 +1,518 @@
+<title><{translate('商家管理')}> - <{translate('商家列表')}></title>
+<div class="page-header">
+	<h1>
+		<{translate('商家管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('商家列表')}> </small>
+        <{if $parent.id}>
+         <small> <i class="ace-icon fa fa-angle-double-right"></i> <{$parent._strpath}> </small>        
+        <{/if}>
+		
+	</h1>
+</div>
+<!-- /.page-header --> 
+
+	<script type="text/javascript" src="/style/js/cnarealist.js"></script>    
+	<script type="text/javascript" src="/style/js/categorys/categorys.js"></script>    
+    <link rel="stylesheet" href="/style/js/categorys/categorys.css" />
+<style>
+	.dialog-box{
+		font: normal 12px '\5FAE\8F6F\96C5\9ED1';
+		height: auto;
+		position: fixed;
+		top: 30%;
+		left: 50%;
+		z-index: 99999;
+		display: none;
+	}
+
+	.show{
+		display: block;
+	}
+	.normal{
+		background: #fff;
+	}
+	.correct{
+		border-top: 4px solid #66be8c;
+		background: #f8fffb;
+	}
+	.error{
+		border-top: 4px solid #f5694b;
+		background: #fff8f7;
+	}
+
+	.dialog-box-container{
+		position: relative;
+		margin: 0 auto;
+		border-radius: 5px;
+		box-shadow: 0 0 10px #bbb;
+	}
+	.dialog-box-title{
+		height: 36px;
+		line-height: 36px;
+		padding: 8px 15px 0;
+	}
+	.dialog-box-title h3{
+		font-size: 14px;
+		font-weight: bold;
+		margin: 0;
+		float: left;
+	}
+	.dialog-box-close{
+		font-size: 24px;
+		margin-left: 20px;
+		font-weight: normal;
+		float: right;
+		cursor: pointer;
+		display: inline-block;
+		float: right;
+	}
+	.dialog-box-close:hover{
+		color: #f5694b;
+	}
+	.dialog-box-content{
+		font-family: 'Microsoft YaHei';
+		padding: 20px;
+		line-height: 24px;
+		margin: 0;
+	}
+	.dialog-btn{
+		height:30px;
+		padding: 0 20px 20px;
+		text-align: center;
+	}
+	.dialog-btn span{
+		width: 90px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		display: inline-block;
+		border-radius: 3px;
+		margin: 0 10px;
+		cursor: pointer;
+	}
+	.dialog-btn-cancel{
+		background: #ddd;
+	}
+	.dialog-btn-cancel:hover{
+		background: #d6d6d6;
+	}
+	.dialog-btn-confirm{
+		color: #fff;
+		background: #66be8c;
+	}
+	.dialog-btn-confirm:hover{
+		background: #58B781;
+	}
+
+	#dialog-box-mask{
+		/*position: absolute;*/
+		position:fixed;/*LAEL*/
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 99998;
+		opacity: .3;
+		filter: alpha(opacity=30);
+		background: #000;
+		display: none;
+		-webkit-transition: all 0.3s;
+		-moz-transition: all 0.3s;
+		transition: all 0.3s;
+	}
+
+	#dialog-box-iframe body{
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	/* effect */
+
+	/* effect-fade */
+	.effect-fade .dialog-box-container{
+		-webkit-transform: scale(0.6);
+		-ms-transform: scale(0.6);
+		transform: scale(0.6);
+		opacity: 0;
+		transition: all .3s;
+	}
+	.show.effect-fade .dialog-box-container{
+		-webkit-transform: scale(1);
+		-ms-transform: scale(1);
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	/* effect-newspaper */
+	.effect-newspaper .dialog-box-container{
+		-webkit-transform: scale(0) rotate(720deg);
+		-ms-transform: scale(0) rotate(720deg);
+		transform: scale(0) rotate(720deg);
+		opacity: 0;
+		-webkit-transition: all 0.3s;
+		transition: all 0.3s;
+	}
+	.show.effect-newspaper .dialog-box-container{
+		-webkit-transform: scale(1) rotate(0deg);
+		-ms-transform: scale(1) rotate(0deg);
+		transform: scale(1) rotate(0deg);
+		opacity: 1;
+	}
+
+	/* effect-fall */
+	.effect-fall{
+		-webkit-perspective: 1300px;
+		perspective: 1300px;
+	}
+	.effect-fall .dialog-box-container{
+		-webkit-transform-style: preserve-3d;
+		transform-style: preserve-3d;
+		-webkit-transform: translateZ(600px) rotateX(20deg);
+		-ms-transform: translateZ(600px) rotateX(20deg);
+		transform: translateZ(600px) rotateX(20deg);
+		opacity: 0;
+	}
+	.show.effect-fall .dialog-box-container{
+		-webkit-transition: all 0.3s ease-in;
+		transition: all 0.3s ease-in;
+		-webkit-transform: translateZ(0px) rotateX(0deg);
+		-ms-transform: translateZ(0px) rotateX(0deg);
+		transform: translateZ(0px) rotateX(0deg);
+		opacity: 1;
+	}
+
+	/* effect-scaled */
+	.effect-scaled .dialog-box-container{
+		-webkit-transform: scale(2);
+		-ms-transform: scale(2);
+		transform: scale(2);
+		opacity: 0;
+		-webkit-transition: all 0.3s;
+		transition: all 0.3s;
+	}
+	.show.effect-scaled .dialog-box-container{
+		-webkit-transform: scale(1);
+		-ms-transform: scale(1);
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	/* effect-flip-horizontal */
+	.effect-flip-horizontal{
+		-webkit-perspective: 1300px;
+		-moz-perspective: 1300px;
+		perspective: 1300px;
+	}
+	.effect-flip-horizontal .dialog-box-container{
+		-webkit-transform-style: preserve-3d;
+		transform-style: preserve-3d;
+		-webkit-transform: rotateY(-70deg);
+		-ms-transform: rotateY(-70deg);
+		transform: rotateY(-70deg);
+		-webkit-transition: all 0.3s;
+		transition: all 0.3s;
+		opacity: 0;
+	}
+	.show.effect-flip-horizontal .dialog-box-container{
+		-webkit-transform: rotateY(0deg);
+		-ms-transform: rotateY(0deg);
+		transform: rotateY(0deg);
+		opacity: 1;
+	}
+
+	/* effect-flip-vertical */
+	.effect-flip-vertical{
+		-webkit-perspective: 1300px;
+		-moz-perspective: 1300px;
+		perspective: 1300px;
+	}
+	.effect-flip-vertical .dialog-box-container{
+		-webkit-transform-style: preserve-3d;
+		transform-style: preserve-3d;
+		-webkit-transform: rotateX(-70deg);
+		-ms-transform: rotateX(-70deg);
+		transform: rotateX(-70deg);
+		-webkit-transition: all 0.3s;
+		transition: all 0.3s;
+		opacity: 0;
+	}
+	.show.effect-flip-vertical .dialog-box-container{
+		-webkit-transform: rotateX(0deg);
+		-ms-transform: rotateX(0deg);
+		transform: rotateX(0deg);
+		opacity: 1;
+	}
+
+	/* effect-sign */
+	.effect-sign{
+		-webkit-perspective: 1300px;
+		perspective: 1300px;
+	}
+	.effect-sign .dialog-box-container{
+		-webkit-transform-style: preserve-3d;
+		transform-style: preserve-3d;
+		-webkit-transform: rotateX(-60deg);
+		-ms-transform: rotateX(-60deg);
+		transform: rotateX(-60deg);
+		-webkit-transform-origin: 50% 0;
+		transform-origin: 50% 0;
+		opacity: 0;
+		-webkit-transition: all 0.3s;
+		transition: all 0.3s;
+	}
+	.show.effect-sign .dialog-box-container{
+		-webkit-transform: rotateX(0deg);
+		-ms-transform: rotateX(0deg);
+		transform: rotateX(0deg);
+		opacity: 1;
+	}
+	/*td {
+        word-break: keep-all;
+        white-space: nowrap;
+    }*/
+</style>
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_shop/"><{translate('加盟店リスト')}></a></li>
+    </ul>
+    <br />
+
+
+	<div class="panel panel-success">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('スクリーニング')}></div>
+    <div class="panel-body" style="display:">
+
+      
+            <div class="form-group form-search form-inline">
+				<label class="control-label"><{translate('店舗選択')}></label>
+				<input id="adminid" name="adminid" value="<{$get.adminid}>" style="width:200px" />
+
+				<button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('検索する')}></button>
+			</div>
+       
+    </div>
+ 
+    </div>
+		<script>
+            laydate.render({
+                elem: '#createtime1',
+            });
+            laydate.render({
+                elem: '#createtime2'
+            });
+
+		</script>
+<script>
+$(function () {
+    $("#adminid").select2({
+		ajax: {
+			url: "/admin_shop/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+
+	<{if $gid==4}>
+		<{if $member_store_id}>
+			$('#adminid').select2('data', {id:"<{$member_store_id}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$member_store_id}>"]);
+			$("#adminid").prop("disabled", true);
+		<{/if}>
+	<{else}>
+		<{if $get.adminid}>
+			$('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);
+		<{/if}>
+	<{/if}>
+
+	$("#recmdid,#userid").select2({
+		ajax: {
+			url: "/admin_user/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.recmdid}>$('#recmdid').select2('data', {id:"<{$get.recmdid}>", text:"<{$get_recmdid_account}>"}).select2('val', ["<{$get.recmdid}>"]);<{/if}>
+	<{if $get.userid}>$('#userid').select2('data', {id:"<{$get.userid}>", text:"<{$get_userid_account}>"}).select2('val', ["<{$get.userid}>"]);<{/if}>
+});
+</script> 
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>                 
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+	           <table class="table table-bordered table-hover">
+			<thead>
+          <tr>
+            <th><{translate('店舗名')}></th>
+            <th><{translate('住所')}></th>
+            <th><{translate('本部手数料')}></th>
+            <th><{translate('連絡先')}></th>
+            <th><{translate('ステータス')}></th>
+            <th><{translate('操作')}></th>
+          </tr>
+        </thead> 
+					<tbody>
+					<{section name=values loop=$data->list}>
+					<tr class="alert1 success" align="left">
+						<td>
+							<{$data->list[values]->nickname}>
+						</td>
+						<td>
+							<{$data->list[values]->area}>
+						</td>
+                        <td>
+							<{$data->list[values]->percen}> %
+						</td>
+                        <td>
+							<{$data->list[values]->name}> <{$data->list[values]->phone}>
+						</td>
+						<td>
+							<{if $data->list[values]->status == 1}><b style="color:green;"><{translate('使用可能')}></b><{elseif $data->list[values]->status == 0}><b style="color:red;"><{translate('禁用')}></b><{/if}>
+						</td>
+						<td>
+							<{if chkcommand('/admin_shop/edit')}>
+                            <a href="/admin_system#page/admin_shop/edit/<{$data->list[values]->id}><{$qs_pid}>" class="btn btn-success btn-xs"><i class="fa fa-edit"></i> <{translate('編集')}></a>
+                            <{/if}>
+						</td> 
+					</tr>
+				<{/section}>
+				
+                <tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+						<td style="border:none" colspan="12">
+							<{if $gid==1}>
+								<{if chkcommand('/admin_shop/add')}>
+								<a  href="/admin_system#page/admin_shop/add<{$qs_pid}>" class="btn  btn-primary btn-lg"><{translate('追加する')}></a>
+								<{/if}>
+							<{/if}>
+                                        
+						</td>
+					</tr>
+
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('合計')}> <{$data->total}> <{translate('件')}> <{$data->pages}>  </td></tr></table>
+					
+				</form>
+                </div>
+			</div>
+		</div>
+
+<script src="/style/js/jquery.dialogBox.js"></script>
+
+<div class="getinfo-box"></div>
+ 
+	<script type="text/javascript">
+ 	var isbusy = false;
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+		$('.listpage').find('a').each(function(){
+			var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+			$(this).attr('href', url);
+		});
+        $('.cash').click(function () {
+            var id=$(this).data('id');
+            var url = 'admin_shop/cash/?id='+id;
+            $('.getinfo-box').prev().dialogBox({
+                title: "<{translate('出金申請ですか')}>",
+                fixTop: -240,
+                autoSize: true,
+                hasMask: true,
+                hasClose: true,
+                scrolling: 'auto',
+                content: '<iframe src="'+url+'" frameborder="0" scrolling="no" style="width:450px;height:450px"></iframe>',
+
+            });
+        });
+        $('.btnDelete').click(function(){
+            var id = $(this).data('id');
+            tooltipbox.confirm("<{translate('このデータを削除してもよろしいですか？')}>", function(data){
+                tooltipbox.show("<{translate('操作を実行する')}>");
+                $.post('/admin_shop/delete', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作が正常に実行されました')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('データまたはネットワークエラー')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('データまたはネットワークエラー')}>");
+                });
+            }, false, { 'id': id });
+        });
+		$('#btnOrderBy').click(function(){
+				tooltipbox.show("<{translate('操作を実行する')}>");
+				$.post('/admin_shop/orderby<{$qs_pid}>', $('#submitform').serializeArray(), function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作が正常に実行されました')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('データまたはネットワークエラー')}>");
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('データまたはネットワークエラー')}>");
+				});
+		});
+	});
+</script>
+ 

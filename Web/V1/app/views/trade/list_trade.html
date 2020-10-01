@@ -1,0 +1,384 @@
+<title><{translate('交易管理')}> - <{translate('交易列表')}></title>
+<div class="page-header">
+	<h1>
+		 <{translate('交易管理')}><small> <i class="ace-icon fa fa-angle-double-right"></i>  <{translate('交易列表')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_trade/"><{translate('交易列表')}></a></li>
+    </ul>
+    <br />
+
+    
+     <div class="panel panel-success">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('筛选')}></div>
+    <div class="panel-body" style="display:">
+
+      
+            <div class="form-group form-search form-inline">
+
+
+               <label class="control-label"> <{translate('订单号')}></label>
+				<input id="tradeid" name="tradeid" value="<{$get.tradeid}>" style="width:200px" />
+
+            
+            <label class="control-label"><{translate('选择代理商')}></label>
+				<input id="corpid" name="corpid" value="<{$get.corpid}>" style="width:200px" />
+                
+              <label class="control-label"><{translate('选择商家')}></label>
+				<input id="adminid" name="adminid" value="<{$get.adminid}>" style="width:200px" />
+
+              <label class="control-label"><{translate('消费会员')}></label>
+				<input id="userid" name="userid" value="<{$get.userid}>" style="width:200px" />
+
+				<!--<br /><br />
+
+              <label class="control-label">商家推荐人</label>
+				<input id="admin_recmdid" name="admin_recmdid" value="<{$get.admin_recmdid}>" style="width:200px" />
+                    
+              <label class="control-label">会员推荐人</label>
+				<input id="user_recmdid" name="user_recmdid" value="<{$get.user_recmdid}>" style="width:200px" />
+				-->
+                
+                
+               
+				<label class="control-label"><{translate('状态')}></label>
+				<select name="status" id="status">
+					<option value=""><{translate('全部')}></option>
+					<{foreach $trade_status as $k => $v}>
+					<option value="<{$k}>" <{if $get.status == strval($k)}>selected<{/if}>><{$v}></option>
+                    <{/foreach}>
+				</select>
+
+				<label class="control-label"><{translate('支付方式')}></label>
+				<select name="paytype" id="paytype">
+					<option value=""><{translate('全部')}></option>
+					<{foreach $trade_paytype as $k => $v}>
+					<option value="<{$k}>" <{if $get.paytype == strval($k)}>selected<{/if}>><{$v}></option>
+					<{/foreach}>
+				</select>
+				<br/><br/>
+                <label class="control-label"><{translate('交易日期')}></label>
+                    <input class="form-control " name="createtime1" id="createtime1" type="text" value="<{$get.createtime1}>" placeholder="">
+                <label class="control-label"><{translate('至')}></label>
+                    <input class="form-control " name="createtime2" id="createtime2" type="text" value="<{$get.createtime2}>" placeholder="">
+				
+              
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('搜索')}></button>
+                    <{if chkcommand('/admin_trade/export')}>
+                    <button class="btn btn-success btn-export btn-sm"><i class="fa fa-export"></i> <{translate('导出')}></button>
+                    <{/if}>
+            </div>
+       
+    </div>
+ 
+    </div>
+        <script>
+            laydate.render({
+                elem: '#createtime1',
+            });
+            laydate.render({
+                elem: '#createtime2'
+            });
+
+        </script>
+<script>
+$(function () {
+    //$("#userid,#user_recmdid,#admin_recmdid").select2({
+    $("#userid").select2({
+		ajax: {
+			url: "/admin_user/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.userid}>$('#userid').select2('data', {id:"<{$get.userid}>", text:"<{$get_userid_account}>"}).select2('val', ["<{$get.userid}>"]);<{/if}>
+	//<{if $get.user_recmdid}>$('#user_recmdid').select2('data', {id:"<{$get.user_recmdid}>", text:"<{$get_user_recmdid_account}>"}).select2('val', ["<{$get.user_recmdid}>"]);<{/if}>
+	//<{if $get.admin_recmdid}>$('#admin_recmdid').select2('data', {id:"<{$get.admin_recmdid}>", text:"<{$get_admin_recmdid_account}>"}).select2('val', ["<{$get.admin_recmdid}>"]);<{/if}>
+    
+	$("#corpid").select2({
+		ajax: {
+			url: "/admin_corp/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.corpid}>$('#corpid').select2('data', {id:"<{$get.corpid}>", text:"<{$get_corpid_account}>"}).select2('val', ["<{$get.corpid}>"]);<{/if}>
+
+	$("#adminid").select2({
+		ajax: {
+			url: "/admin_shop/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.adminid}>$('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);<{/if}>
+	
+	
+	$("#tradeid").select2({
+		ajax: {
+			url: "/admin_trade/search",
+			data: function (params) {
+				return { 
+					keywords: params,
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.tradeid}>$('#tradeid').select2('data', {id:"<{$get.tradeid}>", text:"<{$get_tradeid_tradeno}>"}).select2('val', ["<{$get.tradeid}>"]);<{/if}>
+});
+</script> 
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+	$('.btn-export').click(function(){
+		location.href = $.searchURL(location.href).replace('/admin_system#page/admin_trade', '/admin_trade/export');
+	});	
+});
+</script>                 
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th><{translate('序号')}></th>
+								<th><{translate('交易号')}></th>
+								<th><{translate('代理名称')}></th>
+								<th><{translate('商家名称')}></th>
+								<th><{translate('消费会员')}></th>
+								<th><{translate('套餐信息')}></th>
+								<th><{translate('支付信息')}></th>
+								<th><{translate('交易状态')}></th>
+								<th><{translate('支付方式')}></th>
+								<th><{translate('创建时间')}></th>
+								<th><{translate('支付时间')}></th>
+								<th><{translate('操作')}></th>
+								 
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $trade.list as $v}>
+							<tr class="alert1 success" align="left">
+								<td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+								<td><{$v['tradeno']}></td>
+                                <td style="color:brown;"><{$v['agent_name']}></td>
+                                <td style="color:brown;"><{$v['_adminid']}></td>
+                                <td><{$v['_userid']}></td>
+                                <td >
+									<{translate('套餐名称')}>：<b ><{$v['pack']['title']}></b> <br />
+									<{translate('套餐金额')}>：<b style="color:red;"><{$v['pack']['price']}></b> <{translate('元')}><br />
+                                </td>
+                                <td >
+									<{translate('订单金额')}>：<b style="color:red;"><{$v['money']}></b> <{translate('元')}><br />
+									<{translate('优惠金额')}>：<b style="color:red;"><{$v['discount']}></b> <{translate('元')}><br />
+									<{translate('实付金额')}>：<b style="color:red;"><{$v['pay_money']}></b> <{translate('元')}><br />
+                                </td>
+                                <td><{$trade_status[$v['status']]}></td>
+                                <td><{if $v['status']==0}><span style="color:#999;"><{translate('未支付')}></span><{else}><{$trade_paytype[$v['paytype']]}><{/if}></td>
+                                <td ><{$v['ctime']}></td>
+                                <td><{$v['paytime']}></td>
+								<td >
+                                 <{if chkcommand('/admin_trade/edit')}>
+                                 <a href="admin_system#page/admin_trade/edit/<{$v['id']}>/<{$get.page}>" class="btn btn-info btn-xs"> <i class="fa fa-eye"></i> <{translate('详情')}></a>
+                                 <{/if}>
+									<{if chkcommand('/admin_trade/reservation')}>
+									<a href="admin_system#page/admin_trade/reservation?trade_id=<{$v['id']}>" class="btn btn-success btn-xs"> <i class="fa fa-eye"></i> <{translate('预约信息')}></a>
+									<{/if}>
+                                </td>
+							</tr>
+							<{/foreach}>
+					<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+						<td style="border:none" colspan="12">
+							<{if chkcommand('/admin_trade/delete')}>
+							<input id="btnDelete" class="btn btn-lg btn-default" value="<{translate('删除')}>" type="button">
+                            <{/if}>
+                            <!--<{if chkcommand('/admin_trade/clear')}>
+							<input id="btnClear" class="btn btn-lg btn-default" value="清空" type="button"> 
+                            <{/if}>
+                            <{if chkcommand('/admin_trade/edit')}>
+                            <a href="/admin_system#page/admin_trade/edit" class="btn btn-lg btn-primary">+ 添加交易</a>
+                            <{/if}>-->
+						</td>
+					</tr>
+
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$trade.total}> <{translate('条记录')}> <{$trade.pages}>  </td></tr></table>
+					
+				</form>
+                </div>
+			</div>
+		</div>
+
+ 
+<script type="text/javascript">
+ 	var isbusy = false;
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+		$('.listpage').find('a').each(function(){
+			var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+			$(this).attr('href', url);
+		});
+		//YYYY-MM-DD HH:mm:ss
+		$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD',
+			language: 'zh-CN',
+			pickDate: true,
+			pickTime: true,
+			hourStep: 1,
+			minuteStep: 15,
+			secondStep: 30,
+			inputMask: true
+		});	
+		$('#btnDelete').click(function(){
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(!ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+			tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_trade/delete', data, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			}, false, { 'ids': ckvals });
+		});
+		$('#btnClear').click(function(){
+			tooltipbox.confirm('确定永久清空所有数据？', function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_trade/clear', { }, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(a, b, c){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			});
+		});
+	});
+</script>
+ 
+ 

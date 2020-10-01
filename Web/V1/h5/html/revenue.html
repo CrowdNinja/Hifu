@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>营收统计</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.item span:nth-child(1){
+			width: 1.7rem;
+			height: 0.7rem;
+		}
+		.item span:nth-child(2){
+			margin-right: 0.5rem;
+		}
+		.col_ali{
+			color: #76AEED;
+		}
+		.col_wechat{
+			color: #74B66C;
+		}
+	</style>
+	<body class="page_revenue">
+		<header class="flex_a plr24 bsb bgf5">
+			<div class="bw border-r1 ptb24 flex lh50 tac pw100" style="font-weight: 600;" id="tabBar">
+				<div class="flex1 color_green tab_item" onclick="tabFn(2,this)">昨日</div>
+				<div class="flex1 bdl tab_item" onclick="tabFn(1,this)">今日</div>
+				<div class="flex1 bdl tab_item" onclick="tabFn(4,this)">本周</div>
+				<div class="flex1 bdl tab_item" onclick="tabFn(3,this)">本月</div>
+			</div>
+		</header>
+		<section class="container pt140">
+			<div class="ptb30 colw tac plr24" style="background-color: #28c3bb;height: 3rem;">
+				<div class="ptb30">
+					<p class="font15">累计营收（元）</p>
+					<p class="font35" id="earnings"></p>
+					<p class="font15 mt20" id="count">成交笔数:263</p>
+				</div>
+			</div>
+			<section class="mlr20" style="margin-top: -0.7rem;">
+				<div class="msg_type" style="box-shadow:0 2px 4px 0 #ccc">
+					<div class="bw border-r1 plr60 h170 flex">
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font19" id="wx_pay_money">60.00</p>
+							<p class="col9 mt10">微信支付</p>
+						</div>
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font19" id="ali_pay_money">60.00</p>
+							<p class="col9 mt10">支付宝支付</p>
+						</div>
+					</div>
+				</div>
+			</section>
+			
+			<div class="bw mtb20 list">
+				<!-- <a class="flex_sb h100 item plr10 col9">
+					<span class="ml10 tac">2018-11-12 18:30</span>
+					<span class="pay_way">支付宝</span>
+					<div class="flex_a">
+						<cite class="mr10">20元</cite>
+					</div>
+				</a>
+				<a class="flex_sb h100 item plr10 col9">
+					<span class="ml10 tac">2018-11-12 21:21</span>
+					<span class="pay_way">微信</span>
+					<div class="flex_a">
+						<cite class="mr10">20元</cite>
+					</div>
+				</a> -->
+			</div>
+		</section>
+	</body>
+
+</html>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script>
+	var page = 0,
+		jerry, type = 2,
+		onOff = 0;
+
+	function tabFn(flag, that) {
+		$(that).addClass('color_green').siblings().removeClass('color_green');
+		type = flag;
+		jerry.unlock(false);
+		page = 1;
+		get_list();
+	}
+
+	function get_list() {
+		if(onOff == 1) return false;
+		onOff = 1;
+		dlc_request('/income', {
+			'shop_token': get_save('token'),
+			'type': type,
+			'page': page
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				if(page == 1) {
+					$('#earnings').text(res.data.total_money);
+					$('#count').text('成交笔数' + res.data.count);
+					$('#wx_pay_money').text(res.data.wx_money);
+					$('#ali_pay_money').text(res.data.ali_money);
+				}
+				var str = '';
+				if(res.data.list.totalpage * 1 < page * 1) {
+					jerry.lock();
+					jerry.noData();
+				} else if(res.data.list.list.length > 0) {
+					var data = res.data.list.list;
+					for(var i in data) {
+						str += '<a class="flex_sb h100 item plr10 col9">' +
+							'<span class="ml10 tac">' + data[i].ctime +
+							'</span>' +
+							'<span class="pay_way ' + (data[i].paytype == 3 ? 'col_ali' : 'col_wechat') + '">' + data[i].pay_type_name +
+							'</span>' +
+							'<div class="flex_a">' +
+							'<cite class="mr10 tae" style="width:1.2rem">' + data[i].pay_money + '元</cite>' +
+							'</div>' +
+							'</a>'; 
+					}
+				} else {
+					jerry.lock();
+					jerry.noData();
+				}
+				setTimeout(function() {
+					if(page == 1) {
+						$('.list').html(str);
+					} else {
+						$('.list').append(str);
+					}
+					onOff = 0;
+					jerry.resetload();
+					jerry.unlock();
+					jerry.noData(false);
+				}, 1000);
+			} else {
+				onOff = 0;
+				dlctipbox.show(res.msg);
+			}
+		});
+	}
+	$('.container').dropload({
+		scrollArea: window,
+		domUp: {
+			domClass: 'dropload-up',
+			domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate: '<div class="dropload-update">↑释放更新</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>'
+		},
+		domDown: {
+			domClass: 'dropload-down',
+			domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+			domNoData: '<div class="dropload-noData">暂无更多数据</div>'
+		},
+		loadUpFn: function(me) {
+			jerry = me;
+			page = 1;
+			get_list();
+		},
+		loadDownFn: function(me) {
+			jerry = me;
+			page++;
+			get_list();
+		},
+		threshold: 50
+	});
+</script>

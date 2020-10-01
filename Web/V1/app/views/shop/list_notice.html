@@ -1,0 +1,142 @@
+<title><{translate('お知らせ')}></title>
+<div class="page-header">
+	<h1>
+		<{translate('お知らせ')}>
+        <{if $parent.id}>
+         <small> <i class="ace-icon fa fa-angle-double-right"></i> <{$parent._strpath}> </small>        
+        <{/if}>
+		
+	</h1>
+</div>
+<!-- /.page-header --> 
+
+	<script type="text/javascript" src="/style/js/cnarealist.js"></script>    
+	<script type="text/javascript" src="/style/js/categorys/categorys.js"></script>    
+    <link rel="stylesheet" href="/style/js/categorys/categorys.css" />
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_shop/notice_list"><{translate('お知らせ')}></a></li>
+    </ul>
+    <br />
+
+<!--
+	<div class="panel panel-success">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('スクリーニング')}></div>
+    <div class="panel-body" style="display:">
+
+            <div class="form-group form-search form-inline">
+				<label class="control-label"><{translate('店舗選択')}></label>
+				<input id="adminid" name="adminid" value="<{$get.adminid}>" style="width:200px" />
+
+				<button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('検索する')}></button>
+			</div>
+       
+    </div>
+--> 
+    </div>
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>                 
+				 
+		<form class="form-horizontal" role="form" id="submitform">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th><{translate('ID')}></th>
+						<th><{translate('お知らせ内容')}></th>
+						<th><{translate('日時')}></th>
+						<{if $gid==1}>
+						<th><{translate('操作')}></th>
+						<{/if}>
+					</tr>
+				</thead> 
+				<tbody>
+				<{foreach $noticeInfo.list as $v}>
+				<tr class="alert1 success" align="left">
+					<td><{$v['id']}></td>
+					<td><{nl2br($v['content'])}></td>
+					<td><{$v['regist_date']}></td>
+					<{if $gid==1}>
+					<td >
+						<{if chkcommand('/admin_shop/delete_notice')}>
+						<a class="btn btn-primary btn-xs btn_cancel btnDelete" id="" data-id="<{$v['id']}>"> <{translate('削除')}></a>
+						<{/if}>
+					</td>
+					<{/if}>
+				</tr>
+				<{/foreach}>
+				</tbody>
+				
+				<{if $gid==1}>
+				<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+                    <td style="border:none" colspan="12">
+						<{if chkcommand('/admin_shop/edit_notice')}>
+						<a href="/admin_system#page/admin_shop/edit_notice/" class="btn btn-lg btn-primary"><{translate('新規作成')}></a>
+						<{/if}>
+					</td>
+				</tr>
+				<{/if}>
+
+				</tbody>
+			</table>
+			<table   style="width:100%;" class="listpage"><tr><td ><{translate('合計')}> <{$noticeInfo.total}> <{translate('件')}> <{$noticeInfo.pages}>  </td></tr></table>
+					
+		</form>
+		</div>
+	</div>
+</div>
+
+<script src="/style/js/jquery.dialogBox.js"></script>
+
+<div class="getinfo-box"></div>
+ 
+	<script type="text/javascript">
+ 	var isbusy = false;
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+		$('.listpage').find('a').each(function(){
+			var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+			$(this).attr('href', url);
+		});
+		$('.btnDelete').click(function(){
+			var id = $(this).data('id');
+			console.log(id);
+			tooltipbox.confirm("ID:"+id+" のお知らせを削除します。よろしいですか？<br><span class='alert-red'>＊この作業は取り消せません</span>", function(data){
+				tooltipbox.show("<{translate('操作を実行する')}>");
+				// お知らせ削除実行
+				$.ajax({
+					type: 'POST',
+					data: {
+						'ids': id,
+					},
+					url: '/admin_shop/delete_notice',
+					error: function(xhr) {
+						alert( xhr.responseText ); 
+					},
+					success: function(data) {
+						var msg = JSON.parse(data)['msg'];
+						if(msg != ''){
+							alert(msg);
+						}
+						window.location.reload();
+					}
+				})
+			}, false, { 'id': id });
+		});
+	});
+</script>
+ 

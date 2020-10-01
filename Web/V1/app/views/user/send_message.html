@@ -1,0 +1,187 @@
+<title><{translate('顧客管理')}> - <{translate('メッセージ作成')}></title>
+<div class="page-header">
+	<h1>
+		<{translate('顧客管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('メッセージ作成')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+<script>window.UEDITOR_HOME_URL = '/app/third_party/ueditor1_4_3_3-utf8-php/';</script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>
+<script type="text/plain" id="j_ueditorupload" style="height:5px;display:none;" ></script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.upload.js"></script>
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+<script language='javascript' src="/style/assets/js/bootstrap-tag.min.js"></script>
+<style>
+.tags {width:100%;}
+.tagcss {width:100%; min-height:34px;/* height:35px; overflow:hidden; padding:3px;*/}
+</style>
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_user/message_model"><{translate('メッセージリスト')}></a></li>
+        <li class="active"><a href="/admin_system#page/admin_user/send_message"><{translate('メッセージを送る')}></a></li>
+    </ul>
+    <br />
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+        
+        		<form class="form-horizontal" role="form" id="submitform" enctype="multipart/form-data" action="/admin_user/send_message" method="post" accept-charset="utf-8">
+
+					<div class="form-group">
+						<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('写真')}></label>
+						<input type="hidden" name="img" value="" />
+						<div class="col-xs-12 col-sm-4">
+							<div class="upfile_imgthumb">
+								<img src="/style/xin_inselimg.png" data-default="/style/xin_inselimg.png" class="btn-upfile" data-multi="1">
+								<div class="upfile_imgcaption">
+									<a href="javascript:;"   class="btn btn-primary btn-xs btn-upfile" ><{translate('アップロード')}></a>
+									<a href="javascript:;" class="btn btn-default btn-xs btn-upremove"><{translate('削除する')}></a>
+								</div>
+							</div>
+						</div>
+						<div class="help-block inline"></div>
+					</div>
+					<div class="form-group">
+						<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('タイトル')}>*:</label>
+						<div class="col-xs-12 col-sm-4">
+					<span class="block">
+						<input id="title" type="text" name="title" value=""  maxlength="20" class="form-control input-width"  required/>
+					</span>
+						</div>
+						<div class="help-block inline"><{translate('20文字以内')}></div>
+					</div>
+					<div class="form-group">
+						<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('内容')}>:</label>
+						<div class="col-xs-12 col-sm-4">
+					<span class="block">
+						<textarea id="content" type="text" name="content"  class="form-control input-width" style="height: 128px;"  ></textarea>
+					</span>
+						</div>
+						<div class="help-block inline"></div>
+					</div>
+
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('宛先ユーザー')}>:</label>
+		<div class="col-xs-12 col-sm-4">
+			<input type="text" name="touserids" class="form-control input-width" />
+		</div>
+		<div class="col-xs-12 col-sm-1">
+            <div></div>
+            <a href="javascript:;" class="dialogBox select-account btn  btn-primary btn-sm"><{translate('選択')}></a>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+
+			 
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button" id="saveedit" class="btn  btn-primary btn-lg"><{translate('送信')}></button>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+<script>
+var iframeWindow = null;
+function iframeLoadNotify(_iframe){
+	iframeWindow = _iframe;
+    var xz="<{translate('宛先ユーザー選択')}>";
+	$('#dialog-box-iframe').show(300);
+	$(iframeWindow.document).find('.navbar,.sidebar,.footer,.breadcrumbs,.page-header,.ace-settings-container,.nav-tabs').hide();
+	$(iframeWindow.document).find('#submitform table:eq(0) tr:last .btn').hide();
+	$(iframeWindow.document).find('#submitform table:eq(0) tr:not(:last)').find('th:last,td:last').hide();
+    var selectBtn = $('<a href="javascript:;" class="btn btn-primary"> +'+ xz+ '</a>');
+	selectBtn.appendTo($(iframeWindow.document).find('#submitform table:eq(0) tr:last td').eq(0));
+	selectBtn.click(function(){
+		var ckvals = iframeWindow.$.selectCK('input[name="id[]"]');
+		if(!ckvals){
+			tooltipbox.show("<{translate('操作するデータを選択してください')}>");
+			return false;
+		}
+		ckvals = ckvals.split(',');
+		for(var i in ckvals){
+			var title = ckvals[i];
+			title = $(iframeWindow.document).find('#submitform table:eq(0) input[name="id[]"][value="' + ckvals[i] + '"]').parent().next().text();
+			$('input[name=touserids]').data('tag').add(ckvals[i], title);
+		}
+		$('.dialog-box-close').click();
+        tooltipbox.show("<{translate('選択したデータの選択が完了しました')}>");
+	});
+	tooltipbox.clear();
+}
+$('.dialogBox').click(function(){
+    tooltipbox.show("<{translate('読み込み中')}>", null, 999999999);
+	$(this).prev().dialogBox({
+        title:"<{translate('宛先ユーザー選択')}>",
+		fixTop: -1 * $(window).height() * 0.2,
+		autoSize:false,
+		hasMask:true,
+		hasClose:true,
+		width:Math.min(1000, $(window).width() * 0.9),
+		height:Math.min(1200, $(window).height() * 0.9),
+		frameborder:'no',
+		scrolling:'auto',
+		content:'/admin_system#page/admin_user',
+		framedisplay:'none',
+		iframeload:function(_iframe){
+			//setTimeout(function(){ tooltipbox.clear(); }, 5000);
+		},
+		close:function(){
+			//恢复
+			$(iframeWindow.document).find('.navbar,.sidebar,.footer,.breadcrumbs,.page-header,.ace-settings-container,.nav-tabs').show();
+			$(iframeWindow.document).find('#submitform table:eq(0) tr:last .btn').show();
+			$(iframeWindow.document).find('#submitform table:eq(0) tr:not(:last)').find('th:last,td:last').show();
+			$(iframeWindow.document).find('#submitform table:eq(0) tr:last td').eq(0).find('a:last').remove();
+			tooltipbox.clear();
+		},
+	});
+	return false;
+});
+
+var isbusy = false;
+$(function(){	
+	$('input[name=touserids]').tag({
+		'tagcss': 'tagcss'
+	});
+	$('.tagcss input').hide();//不允许录入
+	
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			rules: {
+				//title: {
+					//required: true
+				//}
+			}
+	});
+	$('#saveedit').click(function(){
+		if(!$('#submitform').valid())return false;
+		if(isbusy)return false;
+		isbusy = true;
+		tooltipbox.show("<{translate('正在执行操作')}>", null, 999999999);
+        $.post("/admin_user/send_message", $('#submitform').serialize(), function(res){
+			if(res.status == '1'){
+				tooltipbox.show(res.msg ? res.msg : "<{translate('操作完成')}>");
+                history.back(-1);
+			}else{
+				tooltipbox.show(res.msg ? res.msg : "<{translate('数据或网络错误')}>");
+			}
+			isbusy = false;
+		}, 'json').error(function(a, b, c){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+			isbusy = false;
+		});
+	});
+});
+</script> 

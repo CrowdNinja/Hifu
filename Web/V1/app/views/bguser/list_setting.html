@@ -1,0 +1,44 @@
+
+<title><{translate('系統設置')}> - <{translate('系統設置')}> </title>
+<div class="page-header">
+	<h1>
+		<{translate('系統設置')}>  <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('系統設置')}>
+	</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+
+				
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th><{translate('标题')}> </th>
+								<th><{translate('变量名')}> </th>
+								<!--<th>数据</th>-->
+								<th><{translate('操作')}> </th>
+								 
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $list as $v}>
+							<tr class="alert1" align="left">
+								<td><{$v['title']}></td>
+								<td><{$v['key']}></td>
+								<!--<td><{substr(strip_tags($v['val']), 0, 25)}>...</td>-->
+								 <td ><a href="admin_system#page/admin_setting/edit/<{$v['id']}>"><{translate('修改')}></a></td>
+							</tr>
+							<{/foreach}>
+
+						</tbody>
+					</table>
+					
+				</form>
+                </div>
+			</div>
+		</div>

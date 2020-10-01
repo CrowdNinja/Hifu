@@ -1,0 +1,109 @@
+<link rel="stylesheet" href="/style/assets/css/bootstrap.min.css">
+<script src='/style/assets/js/jquery.min.js'></script>
+<script type ="text/javascript" src ="/style/assets/js/jquery.form.js"></script>
+<script type ="text/javascript" src ="/style/js/dlc.js"></script>
+<script type ="text/javascript" src ="/style/assets/js/jquery.validate.js"></script>
+<script src="/style/assets/js/layer/layer.js"></script>
+<div class="row">
+  <div class="col-xs-12">
+
+    <form id="submitform" class="form-horizontal" role="form" enctype="multipart/form-data" action=""
+          method="post" accept-charset="utf-8" novalidate="novalidate">
+        <input type="hidden" id="ids" name="ids" value="<{$ids}>" class="form-control input-width" />
+        <!--<input type="hidden" id="page" name="page" value="<{$page}>" class="form-control input-width" />-->
+
+        <div class="form-group">
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('设备子类型')}>:</label>
+            <div class="col-xs-12 col-sm-4">
+                <select name="device_son_type_id" id="device_son_type_id" class="form-control">
+                    <option value="0"><{translate('请选择')}></option>
+                    <{foreach $device_son_type as $k => $v}>
+                    <option value="<{$v['id']}>" ><{$v['name']}></option>
+                    <{/foreach}>
+                </select>
+            </div>
+            <div class="help-block inline"></div>
+        </div>
+
+            <!--<div class="form-group" >-->
+                <!--<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">密码: </label>-->
+                <!--<div class="col-xs-12 col-sm-4">-->
+			<!--<span class="block">-->
+				<!--<input id="password" name="password" type="password" value="" class="form-control input-width"  />-->
+			<!--</span>-->
+                <!--</div>-->
+            <!--<div class="help-block inline"></div>-->
+        <!--</div>-->
+
+        <!--<div class="form-group" style="display: none;" id="div2">-->
+            <!--<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">充值时间:</label>-->
+            <!--<div class="col-xs-12 col-sm-4">-->
+			<!--<span class="block">-->
+				<!--<input id="pa2r"  type='date' name="par" min='1' value="" class="form-control input-width"  />-->
+			<!--</span>-->
+            <!--</div>-->
+
+            <!--<div class="help-block inline"></div>-->
+        <!--</div>-->
+      <!--<div class="form-group">-->
+        <!--<label class="col-xs-12 col-sm-3 control-label no-padding-right">apk文件:</label>-->
+        <!--<div class="col-xs-12 col-sm-5">-->
+			<!--<span class="block">-->
+				<!--<input type="file" name="info" value="<{$info['info']}>" class="form-control" style="border:0;padding:0;">-->
+                <!--<span style="color:red;">上传文件请等待提示在关闭窗口</span>-->
+			<!--</span>-->
+        <!--</div>-->
+        <!--<div class="help-block inline"></div>-->
+      <!--</div>-->
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <button type="button" id="saveedit" class="btn  btn-primary btn-lg">提交</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+<script src="/style/js/jquery.dialogBox.js"></script>
+<script type="text/javascript">
+    var isbusy = false;
+    $(function(){
+        $('#submitform').validate({
+            errorElement: 'div',
+            errorClass: 'help-block',
+            focusInvalid: true,
+            rules: {
+                title: {
+                    required: true
+                }
+            }
+        });
+
+        $('#saveedit').click(function(){
+
+            if(!$('#submitform').valid())return false;
+            if(isbusy)return false;
+            isbusy = true;
+            var lo=layer.load(0, {shade: false});
+            $.post('/admin_device/set_device_son_type/', $('#submitform').serialize(), function(res){
+                layer.close(lo);
+                if(res.status == '1'){
+                    layer.msg("<{translate('操作完成')}>");
+                    parent.location.reload(true);//刷新父级页面
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                }else if(res.status == '0'){
+                    layer.msg(res.msg);
+                }else{
+                    layer.msg("<{translate('数据或网络错误')}>");
+                }
+                isbusy = false;
+            }, 'json').error(function(a, b, c){
+                layer.msg("<{translate('数据或网络错误')}>");
+                isbusy = false;
+            });
+        });
+    });
+</script>
+

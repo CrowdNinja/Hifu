@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>地图</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/common.css" />
+		<link rel="stylesheet" href="../css/main.css" />
+		<style>
+			.location {
+				top: 0;
+				left: 0;
+				width: 100%;
+				background: #fff;
+			}
+			
+			.locationsecond {
+				top: 0;
+				left: 0;
+				width: 100%;
+				background: #fff;
+			}
+			
+			.bg_green {
+				background: linear-gradient(#1BDDBB, #25C5BB);
+			}
+		</style>
+	</head>
+
+	<body class="index">
+		<section id="map"></section>
+		<div id="scanner"></div>
+		<div class="locationsecond pos_f dpn">
+			<div class="flex_sb ptb40 plr24">
+				<div class="flex1 location">
+					<p class="font16" id="name"></p>
+					<p class="flex_a mt10">
+						<img src="../img/ico3.png" style="width: .3rem;">
+						<span class="col6 ml10" id="address"></span>
+					</p>
+				</div>
+				<div>
+					<div class="ptb20 plr20 bg_green border-r6 colw" id="reservation" style="z-index: 9999;">预约使用</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
+<script type="text/javascript" src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+	dlc_request('index', {}, function(res) {
+		console.log(res);
+	})
+	dlctipbox.loading('载入中...');
+	var geolocation = new qq.maps.Geolocation("N6RBZ-AJN35-AACI2-Q2ICF-HYV6O-JRBBZ", "myapp");
+	var options = {
+		timeout: 4000
+	};
+
+	function showPosition(position) {
+		lat = position.lat;
+		lng = position.lng;
+		$('#shop_list').click(function() {
+			location.href = './shop_list.html?lat=' + lat + '&lng=' + lng;
+		});
+		console.log('具体地址：' + position.addr + '经度：' + lat + '纬度' + lng);
+		var center = new qq.maps.LatLng(lat, lng);
+		var map = new qq.maps.Map(document.getElementById('map'), {
+			center: center,
+			zoom: 14,
+			zoomControl: false,
+			draggable: true, //手势控制, 用来设置地图是否能够鼠标拖拽，默认值为“可以”；
+			scrollwheel: false, //用来配置地图是否能够通过鼠标滚轮操作进行放大，默认值为“可以”；
+			disableDoubleClickZoom: false // 用来配置地图是否可以通过鼠标双击进行放大，默认值为“可以”。
+		});
+		qq.maps.event.addListener(map, 'center_changed', function(e) { //地图中心发生变化
+			console.log('地图中心变化了');
+			console.log(map.getCenter());
+			// marker.setPosition(map.getCenter().lat,map.getCenter().lng);
+			map.panTo(new qq.maps.LatLng(map.getCenter().lat, map.getCenter().lng));
+			console.log(e);
+			$('.location').hide();
+			$('.locationsecond').hide();
+		});
+
+		//创建marker
+		var marker = new qq.maps.Marker({
+			position: center,
+			map: map,
+			zIndex: 0
+		});
+		//自定义标注图标
+		var anchor = new qq.maps.Point(50, 50),
+			size = new qq.maps.Size(80, 80),
+			origin = new qq.maps.Point(0, 0),
+			markerIcon = new qq.maps.MarkerImage(
+				"../img/ic_location.png",
+				size,
+				origin,
+				anchor
+			);
+		marker.setIcon(markerIcon);
+		dlctipbox.clear();
+
+		var ret = [];
+		dlc_request('/nearby', {
+			'lat': lat,
+			'lng': lng
+		}, function(res) {
+			console.log(res);
+			var data = res.data;
+			for(i in data) {
+				ret.push({
+					'lng': data[i].lng,
+					'lat': data[i].lat,
+					'address': data[i].address,
+					'name': data[i].nickname,
+					'macno': data[i].macno
+				});
+			}
+			for(var i in ret) {
+				var logo1 = new qq.maps.LatLng(ret[i].lat, ret[i].lng);
+				//创建marker
+				var marker = new qq.maps.Marker({
+					position: logo1,
+					map: map,
+					zIndex: 1
+				});
+				//自定义标注图标
+				var anchor = new qq.maps.Point(50, 50),
+					size = new qq.maps.Size(48, 48),
+					origin = new qq.maps.Point(0, 0),
+					markerIcon = new qq.maps.MarkerImage(
+						"../img/shangjia.png",
+						size,
+						origin,
+						anchor
+					);
+				marker.setIcon(markerIcon);
+
+				//设置属性
+				marker.address = ret[i].address;
+				marker.lat = ret[i].lat;
+				marker.lng = ret[i].lng;
+				marker.name = ret[i].name;
+				marker.macno = ret[i].macno;
+
+				//获取标记的点击事件
+				qq.maps.event.addListener(marker, 'click', function(e) {
+					console.log(e);
+					$('#name').text(e.target.name);
+					$('#address').text(e.target.address);
+					$('.location').attr('data-lat', e.target.lat);
+					$('.location').attr('data-lng', e.target.lng);
+					$('#reservation').attr('data-macno', e.target.macno);
+					console.log(e.target.macno);
+					$('.locationsecond').show();
+					$('.location').show();
+				});
+			}
+		});
+	}
+
+	function showErr(err) {
+		console.log(err);
+	}
+	geolocation.getLocation(showPosition, showErr, options);
+	dlc_request('/getTicket', {}, function(res) {
+		console.log(res);
+		if(res.data.errmsg == 'ok') {
+			var timestamp = (new Date().getTime() / 1000).toFixed(0);
+			var nonceStr = Math.random().toString(36).substr(2);
+			var ticket = wx_js(res.data.ticket, timestamp, nonceStr);
+			wx.config({
+				debug: false, // 开启调试模式,调用的所有api的返回值会在客户端//alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+				appId: res.data.appid, // 必填，公众号的唯一标识
+				timestamp: timestamp, // 必填，生成签名的时间戳
+				nonceStr: nonceStr, // 必填，生成签名的随机串
+				signature: ticket, // 必填，签名，见附录1
+				jsApiList: ['checkJsApi',
+					'onMenuShareTimeline',
+					'onMenuShareAppMessage',
+					'onMenuShareQQ',
+					'onMenuShareWeibo',
+					'hideMenuItems',
+					'showMenuItems',
+					'hideAllNonBaseMenuItem',
+					'showAllNonBaseMenuItem',
+					'translateVoice',
+					'startRecord',
+					'stopRecord',
+					'onRecordEnd',
+					'playVoice',
+					'pauseVoice',
+					'stopVoice',
+					'uploadVoice',
+					'downloadVoice',
+					'chooseImage',
+					'previewImage',
+					'uploadImage',
+					'downloadImage',
+					'getNetworkType',
+					'openLocation',
+					'getLocation',
+					'hideOptionMenu',
+					'showOptionMenu',
+					'closeWindow',
+					'scanQRCode',
+					'chooseWXPay',
+					'openProductSpecificView',
+					'addCard',
+					'chooseCard',
+					'openCard'
+				] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+			});
+			wx.ready(function() {
+				wx.getLocation({
+					type: 'gcj02',
+					success: function(res) {
+						console.log(res);
+						showPosition({
+							lat: res.latitude,
+							lng: res.longitude
+						});
+					},
+					error: function(err) {
+						dlctipbox.clear();
+						dlctipbox.alert('位置获取失败，请确认手机GPS是否开启？', function() {});
+					},
+					complete: function(res) {
+						if(res.errMsg == "getLocation:cancel") {
+							dlctipbox.clear();
+							dlctipbox.alert('位置获取失败', function() {});
+						}
+					}
+				});
+				//dlctipbox.clear();
+				//                location.href = './package.html?macno=2018050520000201';
+			});
+		}
+	});
+	if(isWeiXin()) {
+		$('#scanner').on('click', function() {
+			wx.scanQRCode({
+				needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+				scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+				success: function(res) {
+					if(res.resultStr.indexOf('macno') != -1 && getUrlParam('macno', '', res.resultStr)) {
+						//						location.href = res.resultStr; //'./package.html?macno=' + getUrlParam('macno', '', res.resultStr);
+						var macno = getUrlParam('macno', '', res.resultStr);
+						dlc_request('is_device_status', {
+							'macno': macno
+						}, function(res) {
+							if(res.code == 1) {
+								location.href = 'package.html?macno=' + macno;
+							} else if(res.code == 2) {
+								dlctipbox.confirm(res.msg, function(index) {
+									if(index == 1) {
+										location.href = 'reservation.html?macno=' + macno;
+									} else {
+
+									}
+								});
+							} else if(res.code == 3) {
+								location.href = 'using.html?order_id=' + res.data.order_id;
+							}
+						});
+					} else {
+						dlctipbox.show('当前二维码无效');
+					}
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+		});
+		$('.location').on('click', function() {
+			console.log($(this).data('lat'));
+			console.log($(this).data('lng'));
+			console.log($(this).data('macno'));
+			wx.openLocation({
+				latitude: $(this).data('lat') * 1,
+
+				longitude: $(this).data('lng') * 1,
+
+				name: $('#name').text(),
+
+				address: $('#address').text(),
+
+				scale: 10,
+
+				infoUrl: ''
+			});
+		});
+	} else {
+		geolocation.getLocation(showPosition, showErr, options);
+		$('#scanner').on('click', function() {
+			//调用支付宝扫一扫
+			ready(function() {
+				AlipayJSBridge.call('scan', {
+					type: 'qr',
+					//			      actionType: 'scanAndRoute'
+				}, function(result) {
+					var macno = getUrlParam('macno', '', result.codeContent);
+					dlc_request('is_device_status', {
+						'macno': macno
+					}, function(res) {
+						if(res.code == 1) {
+							location.href = 'package.html?macno=' + macno;
+						} else if(res.code == 2) {
+							dlctipbox.confirm(res.msg, function(index) {
+								if(index == 1) {
+									location.href = 'reservation.html?macno=' + macno;
+								}
+							});
+						} else if(res.code == 3) {
+							location.href = 'using.html?order_id=' + res.data.order_id;
+						}
+					});
+				})
+			});
+		});
+		$('.location').on('click', function() {
+			console.log($(this).data('lat'));
+			console.log($(this).data('lng'));
+			ap.openLocation({
+				latitude: $(this).data('lat') * 1,
+
+				longitude: $(this).data('lng') * 1,
+
+				name: $('#name').text(),
+
+				address: $('#address').text(),
+
+				scale: 10,
+
+				infoUrl: ''
+			});
+		});
+
+		function ready(callback) {
+			// 如果jsbridge已经注入则直接调用
+			if(window.AlipayJSBridge) {
+				callback && callback();
+			} else {
+				// 如果没有注入则监听注入的事件
+				document.addEventListener('AlipayJSBridgeReady', callback, false);
+			}
+		}
+	}
+
+	function isWeiXin() {
+		var ua = window.navigator.userAgent.toLowerCase();
+		console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+		if(ua.match(/MicroMessenger/i) == 'micromessenger') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('#reservation').on('click', function() {
+		console.log($(this).data('macno'));
+		var macno = $(this).data('macno');
+		location.href = 'reservation.html?macno=' + macno;
+	});
+</script>

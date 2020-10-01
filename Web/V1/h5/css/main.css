@@ -1,0 +1,104 @@
+.index #scanner{
+    position: fixed;
+    width: 4.2rem;
+    height: 1.2rem;
+    left: 50%;
+    margin-left: -2rem;
+    bottom: .3rem;
+    background: url(../img/saomagoumai.png) no-repeat;
+    background-size: 100%;
+}
+.index .ctrl{
+    position: fixed;
+    left: .24rem;
+    bottom: 1.1rem;
+}
+.index .ctrl.coupons{
+    bottom: 2.18rem;
+}
+.package li{
+    background: #fff;
+    border-radius: .1rem;
+    padding: .3rem;
+}
+.package li + li{
+    margin-top: .1rem;
+}
+.order_package{
+    height: 3.6rem;
+    /*background: -webkit-linear-gradient(top,#f0cfd9,#fcd0d4,#dec2c8);
+    background: -o-linear-gradient(top,#f0cfd9,#fcd0d4,#dec2c8);
+    background: -moz-linear-gradient(top,#f0cfd9,#fcd0d4,#dec2c8);
+    background: linear-gradient(top,#f0cfd9,#fcd0d4,#dec2c8);*/
+    background: #FB9D23;
+    border-radius: .1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+.order_package .pos_a{
+    left: .2rem;
+    top: .2rem;
+}
+.ans .ans_item{
+    background: #fff;
+    border-radius: .1rem;
+    padding: .3rem .2rem;
+}
+.ans .ans_item + .ans_item{
+    margin-top: .2rem;
+}
+.using .start{
+    width: 3.2rem;
+    line-height:.9rem;
+    border-radius: .6rem;
+    text-align: center;
+}
+.wallet header{
+    height:3.2rem;
+}
+.wallet .recharge {
+    background:#fff;
+    width:2.56rem;
+    line-height:.6rem;
+    border-radius:.6rem;
+}
+.recharge .packages_item{
+    float: left;
+    width: 3.4rem;
+    height: 1.2rem;
+    margin-bottom: .2rem;
+}
+
+.recharge .packages_item:nth-of-type(2n){
+    margin-left: .2rem;
+}
+.recharge .packages_item .text{
+    background: #fff;
+    border-radius: .1rem;
+    width: 100%;
+    height: 100%;
+    font-size: .32rem;
+}
+.recharge .packages_item .checkbox_bg:checked + .text{
+    background: #FCA22F;
+    color: #fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,197 @@
+<title>代理商管理 - 设置计费 </title>
+<div class="page-header">
+	<h1>
+        代理商管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 设置计费
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_corp/">代理商列表</a></li>
+        <li class="active"><a href="/admin_system#page/admin_shop/set_fee/<{$id}>">设置计费</a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_shop/set_fee/<{$id}>" method="post" accept-charset="utf-8">
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">共享时间:</label>
+                        <div class="col-xs-12 col-sm-2">
+                            <span class="block">
+                                <input id="share_start_time" type="text" name="share_start_time" value="<{$row['share_start_time']}>" class="form-control " placeholder="共享开始时间" />
+
+                            </span>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-2">
+                            <span class="block">
+                                <input id="share_end_time" type="text" name="share_end_time" value="<{$row['share_end_time']}>" class="form-control " placeholder="共享结束时间" />
+                            </span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">优惠日期:</label>
+                        <div class="col-xs-12 col-sm-2">
+                            <span class="block">
+                                <input id="discount_start_time" type="text" name="discount_start_time" value="<{$row['discount_start_time']}>" class="form-control " placeholder="优惠开始日期" />
+                            </span>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-2">
+                            <span class="block">
+                                <input id="discount_end_time" type="text" name="discount_end_time" value="<{$row['discount_end_time']}>" class="form-control "  placeholder="优惠结束日期"/>
+                            </span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">优惠时间段:</label>
+                        <div class="col-xs-12 col-sm-2">
+                            <span class="block">
+                                <input id="start_time_stage" type="text" name="start_time_stage" value="<{$row['start_time_stage']}>" class="form-control " placeholder="优惠开始时间段" />
+                            </span>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-2">
+                            <span class="block">
+                                <input id="end_time_stage" type="text" name="end_time_stage" value="<{$row['end_time_stage']}>" class="form-control "  placeholder="优惠结束时间段"/>
+                            </span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+                    <div class="form-group " >
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">预支付费用（元）:</label>
+                        <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                <input id="prepay" type="text" name="prepay" value="<{$row['prepay']}>" class="form-control input-width" />
+                            </span>
+                        </div>
+                        <div class="help-block inline" ></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">收费标准:</label>
+                        <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                <input id="price" type="text" name="price" value="<{$row['price']}>" class="form-control input-width" />
+                            </span>
+                        </div>
+                        <div class="help-block inline" style="color:red;">元/小时</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">优惠价格:</label>
+                        <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                <input id="discount" type="text" name="discount" value="<{$row['discount']}>" class="form-control input-width" />
+                            </span>
+                        </div>
+                        <div class="help-block inline" style="color:red;">元/小时</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">免费时间（分钟）:</label>
+                        <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                <input id="free_time" type="text" name="free_time" value="<{$row['free_time']}>" class="form-control input-width" />
+                            </span>
+                        </div>
+                        <div class="help-block inline" ></div>
+                    </div>
+
+                    <div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button" id="saveedit" class="btn  btn-primary btn-lg">提交 </button> <b style="color:red;">（保存提交更改代理（没有商家）的设备计费设置）</b>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			rules: {
+				title: {
+					required: true
+				}
+			}
+	});
+    $('#type').change();
+    laydate.render({
+        elem: '#share_start_time',
+        type: 'datetime'
+    });
+    laydate.render({
+        elem: '#share_end_time',
+        type: 'datetime'
+    });
+    laydate.render({
+        elem: '#discount_start_time',
+        type: 'date'
+    });
+    laydate.render({
+        elem: '#discount_end_time',
+        type: 'date'
+    });
+    laydate.render({
+        elem: '#start_time_stage',
+        type: 'time'
+    })
+    laydate.render({
+        elem: '#end_time_stage',
+        type: 'time'
+    })
+	$('#saveedit').click(function(){
+		if(!$('#submitform').valid())return false;
+		if(isbusy)return false;
+		isbusy = true;
+		if($('#share_start_time').val() > $('#share_end_time').val()){
+            tooltipbox.alert("共享开始时间不能大于共享结束时间");
+            isbusy = false;
+            return false;
+        }
+        if($('#discount_start_time').val() > $('#discount_end_time').val()){
+            tooltipbox.alert("优惠开始日期不能大于优惠结束日期");
+            isbusy = false;
+            return false;
+        }
+        if($('#start_time_stage').val() > $('#end_time_stage').val()){
+            tooltipbox.alert("优惠开始时间段不能大于优惠结束时间段");
+            isbusy = false;
+            return false;
+        }
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_shop/set_fee/<{$id}>', $('#submitform').serialize(), function(res){
+			if(res.status == '1'){
+				tooltipbox.show('操作完成');
+				location.href = '/admin_system#page/admin_corp/';
+			}else if(res.status == '0'){
+				tooltipbox.alert(res.msg);
+			}else{
+				tooltipbox.show("<{translate('数据或网络错误')}>");
+			}
+			isbusy = false;
+		}, 'json').error(function(a, b, c){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+			isbusy = false;
+		});
+	});
+});
+</script> 

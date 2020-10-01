@@ -1,0 +1,714 @@
+<title><{translate('店舗管理')}> - <{translate('加盟店編集')}> </title>
+<div class="page-header">
+	<h1>
+		<{translate('店舗管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('加盟店編集')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+	<script>window.UEDITOR_HOME_URL = '/app/third_party/ueditor1_4_3_3-utf8-php/';</script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.all.min.js"> </script>
+    <!--<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>-->
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>
+	<script type="text/plain" id="j_ueditorupload" style="height:5px;display:none;" ></script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.upload.js"></script>
+	<!-- <script type="text/javascript" src="/style/js/jquery.validate.js"></script>
+	<script type="text/javascript" src="/style/js/additional_methods.min.js"></script> -->
+	<script type="text/javascript" src="/style/js/cnarealist.js"></script> 
+	<script type="text/javascript" src="/style/js/categorys/categorys.js"></script>    
+    <link rel="stylesheet" href="/style/js/categorys/categorys.css" />
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+    	<{if chkcommand('/admin_shop')}>
+        <li><a href="/admin_system#page/admin_shop/"><{translate('加盟店リスト')}></a></li>
+        <{/if}>
+        <li class="active"><a href="/admin_system#page/admin_shop/edit/<{$data->id}>"><{translate('店舗情報編集')}></a></li>
+    </ul>
+    
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+		<form class="form-horizontal" method="post" role="form" id="submitform">
+        
+        <div class="panel panel-info">
+			<div class="panel-heading">
+				<{translate('アカウント情報')}>
+			</div>
+		</div>   
+
+		<{if $_admin->_role_type == 0 || $_admin->_role_type == 1 || $_admin->id != $data->id}>
+			<div class="form-group status">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('営業ステータス')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<label>
+							<input type="radio" name="business_status" value="0" <{if $data->business_status==0}>
+							checked="checked" <{/if}> ><{translate('営業')}> 
+						</label> &nbsp;&nbsp;&nbsp;
+						<label>
+							<input type="radio" name="business_status" value="1" <{if $data->business_status==1}>
+							checked="checked" <{/if}> > <{translate('閉店')}>
+						</label>
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+		<{/if}>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('休業日')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<{foreach $week as $k=>$v}>
+						<input type="checkbox" name="week<{$k}>" value="1"  <{if $_week[$k]==1 }>checked="checked"<{/if}> /> <{$v}>
+						<{/foreach}>
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+<script>
+$(function(){
+	$(document).ready (function(){
+		$.validator.addMethod('regex', function(value, element, regexp) {
+			var re = new RegExp(regexp);
+			return this.optional(element) || re.test(value)
+		})
+		$("#submitform").validate({
+			roles: {
+				'adminname': {
+					required: true,
+					regex: /^[A-Za-z][A-Za-z0-9]*$/
+				}
+			},
+			messages: {
+				"adminname": {
+					required: '入力してください。',
+					regex: '半角,数字で入力してください'
+				}
+			}
+		})
+	})
+	$('.status').find('label').click(function(){
+		if($('input[name=status]:checked').val() == 2){
+			$('._status_memo').show();
+		}else{
+			$('._status_memo').hide();
+		}
+	});
+});
+</script>
+            
+			<{if $_admin->_role_type == 0}>
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('本部手数料')}>(<b style="color:red;">%</b>):</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="percen" type="text" name="percen" value="<{$data->percen}>" max="100" min="0" class="form-control input-width" />
+					</span>
+				</div>
+				<div class="help-block inline"> <b id="limit-percen"></b></div>
+			</div>
+			<{/if}>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('営業開始')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="hours" type="text" name="hours" value="<{$data->hours}>" class="form-control input-width"  />
+					  <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right" style="white-space: nowrap;"><{translate('閉店時間')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="hours1" type="text" name="hours1" value="<{$data->hours1}>" class="form-control input-width"  />
+                        <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('曜日別営業時間')}></label>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('月曜')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="mon_st_hours" type="text" name="mon_st_hours" value="<{$data->mon_st_hours}>" class="form-control input-width"  />
+					  <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right" style="white-space: nowrap;"><{translate('〜')}></label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="mon_ed_hours" type="text" name="mon_ed_hours" value="<{$data->mon_ed_hours}>" class="form-control input-width"  />
+                        <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+
+				<div class="help-block inline"></div>
+			</div>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('火曜')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="tue_st_hours" type="text" name="tue_st_hours" value="<{$data->tue_st_hours}>" class="form-control input-width"  />
+					  <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right" style="white-space: nowrap;"><{translate('〜')}></label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="tue_ed_hours" type="text" name="tue_ed_hours" value="<{$data->tue_ed_hours}>" class="form-control input-width"  />
+                        <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+
+				<div class="help-block inline"></div>
+			</div>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('水曜')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="wed_st_hours" type="text" name="wed_st_hours" value="<{$data->wed_st_hours}>" class="form-control input-width"  />
+					  <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right" style="white-space: nowrap;"><{translate('〜')}></label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="wed_ed_hours" type="text" name="wed_ed_hours" value="<{$data->wed_ed_hours}>" class="form-control input-width"  />
+                        <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+
+				<div class="help-block inline"></div>
+			</div>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('木曜')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="thu_st_hours" type="text" name="thu_st_hours" value="<{$data->thu_st_hours}>" class="form-control input-width"  />
+					  <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right" style="white-space: nowrap;"><{translate('〜')}></label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="thu_ed_hours" type="text" name="thu_ed_hours" value="<{$data->thu_ed_hours}>" class="form-control input-width"  />
+                        <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+
+				<div class="help-block inline"></div>
+			</div>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('金曜')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="fri_st_hours" type="text" name="fri_st_hours" value="<{$data->fri_st_hours}>" class="form-control input-width"  />
+					  <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right" style="white-space: nowrap;"><{translate('〜')}></label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="fri_ed_hours" type="text" name="fri_ed_hours" value="<{$data->fri_ed_hours}>" class="form-control input-width"  />
+                        <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+
+				<div class="help-block inline"></div>
+			</div>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('土曜')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="sat_st_hours" type="text" name="sat_st_hours" value="<{$data->sat_st_hours}>" class="form-control input-width"  />
+					  <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right" style="white-space: nowrap;"><{translate('〜')}></label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="sat_ed_hours" type="text" name="sat_ed_hours" value="<{$data->sat_ed_hours}>" class="form-control input-width"  />
+                        <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+
+				<div class="help-block inline"></div>
+			</div>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right" ><{translate('日曜')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="sun_st_hours" type="text" name="sun_st_hours" value="<{$data->sun_st_hours}>" class="form-control input-width"  />
+					  <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right" style="white-space: nowrap;"><{translate('〜')}></label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block input-icon input-icon-right">
+						<input id="sun_ed_hours" type="text" name="sun_ed_hours" value="<{$data->sun_ed_hours}>" class="form-control input-width"  />
+                        <i class="ace-icon fa fa-clock-o green"></i>
+					</span>
+				</div>
+
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('logo')}></label>
+				<input type="hidden" name="thumb" value="<{$data->thumb}>" />
+				<div class="col-xs-12 col-sm-5">
+					<div class="upfile_imgthumb">
+						<img src="<{if $data->thumb}><{$data->thumb}><{else}>/style/xin_inselimg.png<{/if}>" data-default="/style/xin_inselimg.png" class="btn-upfile">
+						<div class="upfile_imgcaption">
+							<a href="javascript:;" class="btn btn-primary btn-xs btn-upfile"><{translate('アップロード')}></a>
+							<a href="javascript:;" class="btn btn-default btn-xs btn-upremove"><{translate('削除する')}></a>
+						</div>
+					</div>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<{if $_admin->_role_type == 0}>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('店舗名')}>*:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="nickname" type="text" name="nickname" value="<{$data->nickname}>" class="form-control input-width" required/>
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('店舗タイプ')}>*:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<{foreach $item as $k=>$v}>
+						<input type="checkbox" name="keywords[]" value="<{$v['title']}>"  <{if in_array($v['title'],translate($data->keywords)) }>checked="checked"<{/if}> /><{$v['title']}>
+						<{/foreach}>
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+			<{/if}>
+
+            <div class="form-group">
+                <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('連絡先')}>:</label>
+                <div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="name" type="text" name="name" value="<{$data->name}>" class="form-control input-width"  />
+					</span>
+                </div>
+                <div class="help-block inline"></div>
+            </div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('携帯番号')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="phone" type="number" name="phone" value="<{$data->phone}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group area2">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('都道府県')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<select name="area1" id="area1" class="form-control input-width" >
+                                            <{foreach $japan_city as $v}>
+                                            <option value="<{$v['name']}>" <{if $data->area==$v['name']}>selected="selected"<{/if}> > <{$v['name']}></option>
+							<{/foreach}>
+                                        </select>
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+            
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('住所')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="address" type="text" name="address" value="<{$data->address}>" class="form-control input-width" required />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+            
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('緯度経度')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block">
+						<input id="lat" type="text" name="lat" value="<{$data->lat}>" class="form-control input-width" required />
+					</span>
+				</div>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block">
+						<input id="lng" type="text" name="lng" value="<{$data->lng}>" class="form-control input-width" required />
+					</span>
+				</div>
+                <div class="col-xs-12 col-sm-1">
+                    <a href="javascript:;" class="btn-location btn btn-primary btn-sm"><{translate('現在地')}></a>
+                </div>
+                <div class="col-xs-12 col-sm-1">
+                    <div class="pull-right"></div><a href="javascript:;" class="btn-map btn btn-primary btn-sm"><{translate('店舗地図')}></a>
+                </div>
+				<div class="help-block inline">* <{translate('最初に住所を入力してください')}></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('店舗紹介')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<script id="editor" type="text/plain" style="width:620px;height:300px;"></script>
+						<textarea id="text" name="text" style="display:none"><{$data->text}></textarea>
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+            
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<a type="button" id="saveedit" class="btn  btn-primary btn-lg">
+						<{translate('確定')}>
+					</a>
+				</div>
+			</div>
+		</form>
+        </div>
+	</div>
+</div>
+	</div>
+    </div>
+<script src="/style/assets/js/x-editable/bootstrap-editable.min.js"></script>
+<script src="/style/assets/js/jquery.gritter.min.js"></script>
+<script src="/style/assets/js/x-editable/ace-editable.min.js"></script>
+
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=<{$geocoder_key}>&plugin=AMap.Geocoder"></script>
+
+<script>
+$(function () {
+    $("#recmdid,#user_id").select2({
+		ajax: {
+			url: "/admin_user/search",
+			data: function (params) {
+				return { 
+					keywords: params,
+					bindmobile: $.trim($(this).data('bindmobile'))
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length)data['data'].splice(0, 0, {'id':0, 'text': "<{translate('请选择')}>"});
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) { 
+				return {
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $data->recmdid}>$('#recmdid').select2('data', {id:"<{$data->recmdid}>", text:"<{$data->recmdid_account}>"}).select2('val', ["<{$data->recmdid}>"]);<{/if}>
+	<{if $data->user_id}>$('#user_id').select2('data', {id:"<{$data->user_id}>", text:"<{$data->userid_account}>"}).select2('val', ["<{$data->user_id}>"]);<{/if}>
+
+        $('.city_type').change(function(){
+            var city_type=$("input[name='city_type']:checked").val();;
+            $(".area1").hide();
+            $(".area2").hide();
+            if(city_type==2){
+                $(".area2").show();
+            }else {
+                $(".area1").show();
+            }
+        });
+        $('.city_type').change();
+    $("#corpid").select2({
+		ajax: {
+			url: "/admin_corp/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length)data['data'].splice(0, 0, {'id':0, 'text': "<{translate('请选择')}>"});
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) { 
+				return {
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $data->corpid}>$('#corpid').select2('data', {id:"<{$data->corpid}>", text:"<{$data->corpid_account}>"}).select2('val', ["<{$data->corpid}>"]);<{/if}>
+
+
+});
+</script>                        
+<script type="text/javascript">
+		var limitpercen=100;
+        function limittxt(id){
+            if(id==0) return true;
+            $.post('/admin_corp/get_percen', { 'id': id }, function(res){
+                var percen='' ;
+                percen="<span> "+"<{translate('最大设置')}>"+res.data+" %</span>";
+                $("#limit-percen").html(percen).change();
+                limitpercen=parseFloat(res.data);
+                return true;
+            }, 'json').error(function(){
+                tooltipbox.show("<{translate('数据或网络错误')}>");
+            });
+        }
+function amap_click( res){
+	console.log(res);
+	//map.clearMap();
+	$("#lng").val(res.lnglat.lng);
+	$("#lat").val(res.lnglat.lat);
+}
+
+        function  formatminutes(date) {
+            var aa = $(".laydate-time-list li ol")[1];
+            var showtime = $($(".laydate-time-list li ol")[1]).find("li");
+            for (var i = 0; i < showtime.length; i++) {
+                var t00 = showtime[i].innerText;
+                if (t00 != "00" && t00 != "10" && t00 != "20" && t00 != "30" && t00 != "40" && t00 != "50") {
+                    showtime[i].remove()
+                }
+            }
+            $($(".laydate-time-list li ol")[2]).find("li").remove();  //清空秒
+
+        }
+
+	$(document).ready(function() {
+	    $('#submitform').validate({
+            errorElement: 'div',
+            errorClass: 'help-block',
+            focusInvalid: true,
+            rules: {
+                title: {
+                    required: true
+				},
+				adminname: {
+					required: true,
+					regex: /^[A-Za-z][A-Za-z0-9]*$/
+				}
+            }
+        });
+        laydate.render({
+            elem: '#hours1',
+            type: 'time'
+            ,format: 'HH:mm'
+            ,btns: ['clear', 'confirm']
+            ,ready: formatminutes
+        });
+        laydate.render({
+            elem: '#hours',
+            type: 'time'
+            ,format: 'HH:mm'
+            ,btns: ['clear', 'confirm']
+            ,ready: formatminutes
+        });
+		// 曜日別営業時間設定
+		var dayOfWeekIds = [
+			'mon_st_hours',
+			'mon_ed_hours',
+			'tue_st_hours',
+			'tue_ed_hours',
+			'wed_st_hours',
+			'wed_ed_hours',
+			'thu_st_hours',
+			'thu_ed_hours',
+			'fri_st_hours',
+			'fri_ed_hours',
+			'sat_st_hours',
+			'sat_ed_hours',
+			'sun_st_hours',
+			'sun_ed_hours'
+		];
+		$.each(dayOfWeekIds, function(index, value) {
+			laydate.render({
+				elem: '#'+value,
+				type: 'time'
+				,format: 'HH:mm'
+				,btns: ['clear', 'confirm']
+				,ready: formatminutes
+			});
+		});
+
+
+        $('#corpid').change(function () {
+            var corpid= $("#corpid").val();//代理商id
+            if(corpid) limittxt(corpid);
+        });
+        $('#corpid').change();
+		$('.btn-map').click(function(){
+			var address = $('#area').val() + ' ' + $('#address').val().replace(/ /g, '');
+			address = address.replace(/^\s/g, '').replace(' ', '省');
+			address = address.replace(' ', '市');
+			$(this).prev().dialogBox({
+				title:"<{translate('选择坐标')}>",
+				fixTop: -1 * $(window).height() * 0.2,
+				autoSize:false,
+				hasMask:false,
+				hasClose:true,
+				width:Math.min(800, $(window).width() * 0.9),
+				height:Math.min(600, $(window).height() * 0.9),
+				frameborder:'no',
+				scrolling:'auto',
+				content:'/app/third_party/ueditor1_4_3_3-utf8-php/dialogs/map/map.html?address=' + encodeURI(encodeURI(address)),
+				framedisplay:'none',
+				iframeload:function(_iframe){
+					$('#dialog-box-iframe').show(300);
+					$('.dialog-box').dragDiv();
+					//setTimeout(function(){ tooltipbox.clear(); }, 5000);
+				},
+				close:function(){					
+				},
+			});
+			return false;	
+		});
+
+
+		/*$('#password').editable({
+				type: 'text',
+				pk: <{$data->id}>,
+				url: '/admin_shop/save_pwd<{$qs_pid}>',
+				title: '修改密码',
+				value: '',
+				success: function(response, newValue) {
+				var json = eval('(' + response + ')');
+				if (json.code == 0)
+				return json.msg;
+				},
+				validate: function(value) {
+				if ($.trim(value) == '') {
+				return '密码为空，不修改.';
+				}
+				if($.trim(value).length<4)
+					{
+					return '密码必须大于4位.';
+					}
+				
+				}
+		});*/
+		var ue = UE.getEditor('editor', { autoFloatEnabled:false });
+		ue.ready(function(){
+			ue.setContent($('#text').val(), false);
+		});
+		//YYYY-MM-DD HH:mm:ss
+		$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD',
+			language: 'zh-CN',
+			pickDate: true,
+			pickTime: true,
+			hourStep: 1,
+			minuteStep: 15,
+			secondStep: 30,
+			inputMask: true
+		});	
+		$('.check-adminname').click(function(){
+			tooltipbox.show("<{translate('正在执行操作')}>");
+			$.post('/admin_bguser/check', { 'id': "<{$data->id}>", 'adminname': $('#adminname').val() }, function(res){
+				if(res.status == '0'){
+					tooltipbox.alert("<{translate('账号可用')}>");
+				}else if(res.status == '-1'){
+					tooltipbox.alert("<{translate('未提交数据')}>");
+				}else{
+					tooltipbox.alert("<{translate('账号已经存在')}>");
+				}
+			}, 'json').error(function(){
+				tooltipbox.show("<{translate('数据或网络错误')}>");
+			});
+		});
+        $("#saveedit").click(function(e) {
+			e.preventDefault
+            if ($('#submitform').valid()) {
+				var validate = /^[A-Za-z][A-Za-z0-9]*$/.test($("#adminname").val())
+				console.log(validate)
+                if(!validate){
+                    tooltipbox.alert("<{translate('ユーザー名を半角、数字で入力してください。')}>");
+                    return false;
+				}
+				if($("#percen").val()>limitpercen){
+                    tooltipbox.alert("<{translate('分割比は最大設定値比を超えることはできません')}>"+limitpercen+"%");
+                    return false;
+				}
+				if($("#percen").val()>limitpercen){
+                    tooltipbox.alert("<{translate('分割比は最大設定値比を超えることはできません')}>"+limitpercen+"%");
+                    return false;
+                }
+                if($('#hours').val() >$('#hours1').val()){
+                    tooltipbox.alert("<{translate('営業時間より営業時間を短くすることはできません')}>");
+                    return false;
+                }
+                //$('#text').val(ue.getContent());
+                Dlc.service.post("/admin_shop/save/<{$data->id}><{$qs_pid}>", $("#submitform").serialize());
+                return false;
+                //$('#submitform').submit();
+            }
+        });
+
+		$('.btn-location').click(function(){
+			if(!$('#area').val() || !$('#address').val()){
+				tooltipbox.show("<{translate('都市を選択し、最初に詳細な住所を入力してください')}>");
+				return false;
+			}
+			var map = new AMap.Map("container", {
+				resizeEnable: true
+			});
+			var geocoder = new AMap.Geocoder({
+					city: "", //城市，默认：“全国”
+					radius: 500 //范围，默认：500
+			});
+			//地理编码
+			geocoder.getLocation($('#area').val().replace(/ /g, '') + $('#address').val(), function(status, result) {
+				if (status === 'complete' && result.info === 'OK') {
+					//TODO:获得了有效经纬度，可以做一些展示工作
+					//比如在获得的经纬度上打上一个Marker
+					if(result.geocodes.length > 0){
+						$('#lat').val(result.geocodes[0].location.lat);
+						$('#lng').val(result.geocodes[0].location.lng);
+					}
+				}else{
+					// 緯度と経度の取得に失敗
+					tooltipbox.show("<{translate('失敗しました。住所が正しいことを確認してください。')}>");
+				}
+				//alert($.toJSON(result));
+			});
+		});
+	}); 
+</script>

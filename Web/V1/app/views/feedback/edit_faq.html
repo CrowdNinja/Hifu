@@ -1,0 +1,153 @@
+<title>运营管理 - <{if $row['id']}>编辑<{else}>添加<{/if}>问题 </title>
+<!--<div class="page-header">-->
+    <!--<h1>-->
+        <!--信息管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> <{if $row['id']}>编辑<{else}>添加<{/if}>问题-->
+    <!--</small>-->
+    <!--</h1>-->
+<!--</div>-->
+<!-- /.page-header -->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="main">
+            <ul class="nav nav-tabs">
+                <li><a href="/admin_system#page/admin_feedback/faq">问题列表</a></li>
+                <li class="active"><a href="/admin_system#page/admin_feedback/faq_edit/<{$row['id']}>"><{if $row['id']}>编辑<{else}>添加<{/if}>问题</a></li>
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body table-responsive">
+
+                    <form class="form-horizontal" role="form" id="submitform" action="/admin_feedback/faq_edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+                        <div class="form-group">
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">问题:</label>
+                            <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="title" name="title" value="<{$row['title']}>" class="form-control input-width" required />
+			</span>
+                            </div>
+                            <div class="help-block inline"></div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">答案:</label>
+                            <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="price" name="content" value="<{$row['content']}>" class="form-control input-width" required />
+			</span>
+                            </div>
+                            <div class="help-block inline"></div>
+                        </div>
+
+
+                        <div class="form-group" id="mark">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <button type="button" id="saveedit" class="btn  btn-primary btn-lg">提交</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        var count = 0;
+        $("#answer_add").click(function(){
+
+            var html = '<div class="form-group">'+
+                '<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">答案:</label>'+
+                '<div class="col-xs-12 col-sm-5">'+
+                '<span class="block">'+
+                '<input id="answer'+count+'" type="text" name="answer'+count+'" value="" class="form-control input-width" required />'+
+                '</span>'+
+                '<div class="help-block inline"></div></div><span style="font-size: 20px;cursor: pointer;color:#eca1df" class="del">X</span>';
+            $("#mark").prepend(html);
+            count++;
+            $(".del").on("click",function(){
+                $(this).parent('.form-group').remove();
+            });
+        });
+
+
+    });
+</script>
+
+
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=<{$geocoder_key}>&plugin=AMap.Geocoder"></script>
+<script type="text/javascript">
+    var isbusy = false;
+
+    $(function(){
+        $('#submitform').validate({
+            errorElement: 'div',
+            errorClass: 'help-block',
+            focusInvalid: true,
+            rules: {
+                title: {
+                    required: true
+                }
+            }
+        });
+        //YYYY-MM-DD HH:mm:ss
+        $('.datetimepicker-date').datetimepicker({
+            format: 'YYYY-MM-DD',
+            language: 'zh-CN',
+            pickDate: true,
+            pickTime: false,
+            hourStep: 1,
+            minuteStep: 15,
+            secondStep: 30,
+            inputMask: true
+        });
+        //YYYY-MM-DD HH:mm:ss
+        $('.datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            language: 'zh-CN',
+            pickDate: true,
+            pickTime: true,
+            hourStep: 1,
+            minuteStep: 15,
+            secondStep: 30,
+            inputMask: true
+        });
+        $('.check-device').click(function(){
+            tooltipbox.show("<{translate('正在执行操作')}>");
+            $.post('/admin_device/checkdevice', { 'id': "<{$row['id']}>", 'macno': $('#macno').val() }, function(res){
+                if(res.status == '0'){
+                    tooltipbox.alert('机器号未添加');
+                }else if(res.status == '-1'){
+                    tooltipbox.alert('数据或网络错误');
+                }else{
+                    tooltipbox.alert('机器号已经存在');
+                }
+            }, 'json').error(function(){
+                tooltipbox.show('数据或网络错误');
+            });
+        });
+        $('#saveedit').click(function(){
+            if(!$('#submitform').valid())return false;
+            if(isbusy)return false;
+            isbusy = true;
+            tooltipbox.show("<{translate('正在执行操作')}>");
+            $.post('/admin_feedback/faq_edit/<{$type}>/<{$row['id']}>', $('#submitform').serialize(), function(res){
+                if(res.status == '1'){
+                    tooltipbox.show('操作完成');
+                    location.href = '/admin_system#page/admin_feedback/faq/<{$type}>';
+                }else if(res.status == '0'){
+                    tooltipbox.alert('相同记录已经存在');
+                }else{
+                    tooltipbox.show('数据或网络错误');
+                }
+                isbusy = false;
+            }, 'json').error(function(a, b, c){
+                tooltipbox.show('数据或网络错误');
+                isbusy = false;
+            });
+        });
+    });
+</script>

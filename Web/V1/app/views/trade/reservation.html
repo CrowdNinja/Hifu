@@ -1,0 +1,149 @@
+<title><{translate('运营管理')}> - <{translate('预约详情')}> </title>
+<div class="page-header">
+	<h1>
+		<{translate('运营管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('预约详情')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="javascript:;" class="back"><{translate('预约列表')}></a></li>
+        <li class="active"><a href="/admin_system#page/admin_trade/edit/<{$row['id']}>"><{translate('预约详情')}></a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+        
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_trade/reservation_edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+
+					<div class="form-group">
+						<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('商家名称')}>:</label>
+						<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="shop_name" type="text" name="shop_name" value="<{$row['shop']['nickname']}>" class="form-control input-width " readonly />
+			</span>
+						</div>
+						<div class="help-block inline"></div>
+					</div>
+
+    <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('会员')}>:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="user_account" name="user_account" value="<{$row['user']['nickname']}>,<{$row['user']['account']}>" class="form-control input-width " readonly />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+
+
+					<div class="form-group">
+						<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('预约时间')}>:</label>
+						<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="start_time" type="text" name="start_time" value="<{$row['start_time']}>" class="form-control input-width " readonly />
+			</span>
+						</div>
+						<div class="help-block inline"></div>
+					</div>
+
+    <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('创建时间')}>:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="ctime" type="text" name="ctime" value="<{$row['ctime']}>" class="form-control input-width " readonly />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+
+					<div class="form-group">
+						<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('错误信息')}>:</label>
+						<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="error_msg" type="text" name="error_msg" value="<{$row['error_msg']}>" class="form-control input-width " readonly />
+			</span>
+						</div>
+						<div class="help-block inline"></div>
+					</div>
+
+
+					<div class="form-group">
+						<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('套餐信息')}>:</label>
+						<div class="col-xs-12 col-sm-5">
+							<div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('查看')}></div>
+							<div class="panel-body" >
+							<span class="block">
+								<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th><{translate('项目名称')}></th>
+								<th><{translate('是否使用')}></th>
+								<th><{translate('二维码')}></th>
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $row['item_list'] as $v}>
+							<tr class="alert1 success" align="left">
+								<td><{$v['title']}>  </td>
+                                <td><{$v['status']}></td>
+                                <td><img src="<{$v['qr']}>" width="25" alt="" height="25" class="img-prefile"></td>
+							</tr>
+							<{/foreach}>
+						</tbody>
+					</table>
+							</span>
+							</div>
+						</div>
+						<div class="help-block inline"></div>
+					</div>
+
+
+
+
+
+			 
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<a href="javascript:;" class="btn btn-primary btn-lg back"><{translate('返回')}></a>
+
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			rules: {
+				title: {
+					required: true
+				}
+			}
+	});
+    $('.img-prefile').viewer('destroy').viewer({});
+    $('.img-prefile').parent().off('click', '.viewer-canvas').on('click', '.viewer-canvas', function(e){
+        var _con = $(this).find('img');
+        if(_con && !_con.is(e.target) && _con.has(e.target).length === 0){
+            $('.img-prefile').viewer('hide');
+        }
+    });
+
+	$('.back').click(function(){
+        history.back(-1);
+	});
+});
+</script> 

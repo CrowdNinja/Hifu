@@ -1,0 +1,221 @@
+
+<title>设备管理 - 设备套餐列表</title>
+<!--<div class="page-header">-->
+	<!--<h1>-->
+		<!--设备管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 设备套餐列表-->
+		<!--</small>-->
+	<!--</h1>-->
+<!--</div>-->
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+		<div class="col-xs-12" style="margin-bottom:20px;padding-left:0">
+			<!--<{if chkcommand('/admin_device/edit_device_pack')}>
+			<a href="/admin_system#page/admin_device/edit_device_pack/<{$macno}>?page=<{$pages}>" id="add_mac" class="btn btn-xs btn-pink"><i class="ace-icon fa fa-share blue"></i> 管理套餐</a>
+			<{/if}>-->
+		</div>
+		<div style="clear:both">
+
+		<ul class="nav nav-tabs">
+			<li><a href="/admin_system#page/admin_device/?page=<{$pages}>" class="btn btn-xs btn-primary"> <i class="fa fa-mail-reply"></i> 返回设备列表</a></li>
+		</ul>
+
+    <br />
+
+     <!--<div class="panel panel-info">-->
+    <!--<div class="panel-heading">筛选</div>-->
+    <!--<div class="panel-body">-->
+
+            <!--<div class="form-group form-search form-inline">-->
+		  	<!--<label class="control-label">设备编号：</label>-->
+			<!--<input id="deviceid" name="deviceid" value="<{$get.deviceid}>" style="width:200px" />-->
+
+			<!--<{if $aid==1}>-->
+			<!--<label class="control-label">代理：</label>-->
+				<!--<select id="agent_id" name="agent_id">-->
+					<!--<option value="">-&#45;&#45;选择代理商-&#45;&#45;</option>-->
+					<!--<{foreach $arrAgent as $v}>-->
+					<!--<option value="<{$v['id']}>"><{$v['agentname']}></option>-->
+					<!--<{/foreach}>-->
+				<!--</select>-->
+				<!--<{/if}>-->
+
+                <!--<br /><br />-->
+                <!--<label class="control-label">添加日期</label>-->
+                    <!--<input class="form-control datetimepicker" name="createtime1" id="createtime1" type="text" value="<{$get.createtime1}>" placeholder="">-->
+                <!--<label class="control-label">至</label>-->
+                    <!--<input class="form-control datetimepicker" name="createtime2" id="createtime2" type="text" value="<{$get.createtime2}>" placeholder="">-->
+
+                    <!--<button class="btn btn-default btn-sm"><i class="fa fa-search"></i> 搜索</button>-->
+            <!--</div>-->
+
+    <!--</div>-->
+
+    <!--</div>-->
+<script>
+$(function () {
+    $("#deviceid").select2({
+		ajax: {
+			url: "/admin_device/searchdevice",
+			data: function (params) {
+				return { 
+					keywords: params,
+					type: 1
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 2,	
+	});
+	<{if $get.deviceid}>$('#deviceid').select2('data', {id:"<{$get.deviceid}>", text:"<{$get_deviceid_macno}>"}).select2('val', ["<{$get.deviceid}>"]);<{/if}>
+});
+</script> 
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>                 
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>套餐id</th>
+								<th>设备编号</th>
+								<th>套餐标题</th>
+								<th>套餐单价</th>
+								<th>套餐时长(分钟)</th>
+								<th>工作温度</th>
+								<!--<th>操作</th>-->
+								 
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $row.list as $k => $v}>
+							<tr class="alert1 success" align="left">
+								<td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+								<td><{$macno}></td>
+								<td><{$v['title']}></td>
+								<td><{$v['price']}></td>
+								<td><{$v['minute']}></td>
+								<td>
+									最高温度 ：<{$v['max_temp']}><br/>
+									最低温度 ：<{$v['min_temp']}>
+								</td>
+								<!--<td><{formattime($v['ctime'])}></td>-->
+								<!--<td ><a href="admin_system#page/admin_device/edit/<{$v['id']}>" class="btn btn-primary btn-xs">修改</a>-->
+								<!--<a href="admin_system#page/admin_device/device_pack/<{$v['macno']}>" class="btn btn-pink btn-xs" >查看套餐</a>-->
+								<!--</td>-->
+							</tr>
+							<{/foreach}>
+					<!--<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">-->
+						<!--<td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">-->
+							<!--<input id="btnDelete" class="btn btn-default" value="删除" type="button">-->
+							<!--<input id="btnClear" class="btn btn-default" value="清空" type="button"> -->
+                            <!--&lt;!&ndash;<a href="/admin_system#page/admin_device/edit" class="btn  btn-primary">+ 添加设备</a>&ndash;&gt;-->
+						<!--</td>-->
+					<!--</tr>-->
+
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$row.total}> <{translate('条记录')}> <{$row.pages}>  </td></tr></table>
+
+				</form>
+                </div>
+			</div>
+		</div>
+
+ 
+	<script type="text/javascript">
+ 	var isbusy = false;
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+		$('.listpage').find('a').each(function(){
+			var url = $.searchURL( $(this).attr('href') );
+			$(this).attr('href', url);
+		});
+		//YYYY-MM-DD HH:mm:ss
+		$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD',
+			language: 'zh-CN',
+			pickDate: true,
+			pickTime: true,
+			hourStep: 1,
+			minuteStep: 15,
+			secondStep: 30,
+			inputMask: true
+		});	
+		$('a[data-macno]').click(function(){
+			tooltipbox.clear();
+			tooltipbox.alert('<p>' + $(this).data('macno') + '</p><img src="<{base_url('/Index/qrcode')}>?url=' + $(this).data('macno') + '" />');
+		});
+		$('#btnDelete').click(function(){
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(!ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+			tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_device/delete', data, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show('数据或网络错误');
+					}
+				}, 'json').error(function(){
+					tooltipbox.show('数据或网络错误');
+				});
+			}, false, { 'ids': ckvals });
+		});
+		$('#btnClear').click(function(){
+			tooltipbox.confirm('确定永久清空所有数据？', function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_device/clear', { }, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show('数据或网络错误');
+					}
+				}, 'json').error(function(a, b, c){
+					tooltipbox.show('数据或网络错误');
+				});
+			});
+		});
+	});
+</script>
+ 
+ 
