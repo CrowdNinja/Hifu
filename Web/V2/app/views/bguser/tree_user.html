@@ -1,0 +1,291 @@
+
+<title>会员管理 - 推荐层级</title>
+<div class="page-header">
+	<h1>
+		会员管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 推荐层级
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <!--<li><a href="/admin_system#page/admin_user/">会员列表</a></li>-->
+        <li class="active"><a href="/admin_system#page/admin_user/tree">推荐层级</a></li>
+    </ul>
+    <br />
+
+
+<!--	<div class="panel panel-info">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> 筛选</div>
+    <div class="panel-body" style="display:">
+
+      
+            <div class="form-group form-search form-inline">
+
+				<label class="control-label">选择会员</label>
+				<input id="userid" name="userid" value="<{$get.userid}>" style="width:200px" />
+
+				<label class="control-label">状态</label>
+				<select name="status" id="status" class="form-control">
+					<option value="">请选择</option>
+					<{foreach $user_status as $k => $v}>
+					<option value="<{$k}>" <{if $get.status==strval($k)}>selected<{/if}>><{$v}></option>
+					<{/foreach}>
+				</select>
+
+
+				<br /><br />
+                <label class="control-label">注册日期</label>
+				<input class="form-control datetimepicker" name="createtime1" id="createtime1" type="text" value="<{$get.createtime1}>" placeholder="">
+                <label class="control-label">至</label>
+				<input class="form-control datetimepicker" name="createtime2" id="createtime2" type="text" value="<{$get.createtime2}>" placeholder="">
+
+				<button class="btn btn-default btn-sm"><i class="fa fa-search"></i> 搜索</button>
+
+			</div>
+       
+    </div>
+ 
+    </div>-->
+<script>
+$(function () {
+    $("#userid").select2({
+		ajax: {
+			url: "/admin_user/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.userid}>$('#userid').select2('data', {id:"<{$get.userid}>", text:"<{$get_userid_account}>"}).select2('val', ["<{$get.userid}>"]);<{/if}>
+});
+</script> 
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>                 
+				 
+				
+<style type="text/css">
+.tree {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #fbfbfb;
+    border: 1px solid #999;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+.tree li {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 5px 0 5px;
+    position: relative;
+}
+
+.tree li::before,
+.tree li::after {
+    content: '';
+    left: -20px;
+    position: absolute;
+    right: auto
+}
+
+.tree li::before {
+    border-left: 1px solid #999;
+    bottom: 50px;
+    height: 100%;
+    top: 0;
+    width: 1px
+}
+
+.tree li::after {
+    border-top: 1px solid #999;
+    height: 20px;
+    top: 25px;
+    width: 25px
+}
+
+.tree li span:first-child {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 3px 8px;
+    text-decoration: none
+}
+
+.tree li.parent>span {
+    cursor: pointer
+}
+
+.tree li.leaf>span {
+	background: #eee;
+    cursor: pointer
+}
+
+.tree>ul>li::before,
+.tree>ul>li::after {
+    border: 0
+}
+
+.tree li:last-child::before {
+    height: 30px
+}
+
+.numPer {
+	width: 29px;
+	height: 25px;
+	line-height: 25px;
+	border-radius: 3px;
+	margin-left: 1%;
+	text-align: center;
+	color: #fff;
+	font-size: 8px;
+	display:inline-block;
+}
+.redCol {background: #ff6666;}
+.blueCol{background: #ff9900;}
+.greenCol{background: #99cc66;}
+.rouCol{width:15em;background: #666633;}
+.eyeCol{background: #99cccc;}
+.eyeColCol{color:black;}
+.glyphicon-leaf {color:#999;}
+</style>
+             <div class="widget-body">
+                <div class="tree well">
+                	<span><sup style="font-size:1em;">* "+"代表存在下级会员，"叶子"代表没有下级会员</sup></span><br />
+                	<span><sup style="font-size:1em;">* "红色"代表一级会员数量，"橙色"代表二级会员数量，"青色"代表三级会员的数量</sup></span><br />
+                	<span><sup style="font-size:1em;">* 订单量为该会员订单数及交易金额</sup></span>
+                	<hr />
+                    <ul>
+                        <{foreach $user.list as $vo}>
+                            <{if $vo.count1 > 0}>
+                                <li id="node<{$vo.id}>" data-id="<{$vo.id}>" class="parent">
+                                    <span onclick="javascript:pathopen(this);"><i class="glyphicon glyphicon-plus"></i> <{if $vo.account==$vo.nickname}><{$vo.account}><{else}><{$vo.account}>, <{$vo.nickname}><{/if}> <em style="color:#999; font-size:10px;"><{$levels[$vo['levelid']]}></em> </span> <a href="javascript:;"></a>
+                                    <span class="numPer redCol"><{$vo.count1}></span><span class="numPer blueCol"><{$vo.count2}></span><span class="numPer greenCol"><{$vo.count3}></span><span class="numPer rouCol"><{$vo.ocount}>单：共计<{$vo.osum}>元</span>
+                                    <span class="numPer eyeCol" data-id="<{$vo.id}>" onclick="userInfo(this)"><i class="glyphicon glyphicon-eye-open"></i></span>
+                                </li>
+                           <{else}>
+                                <li id="node<{$vo.id}>" data-id="<{$vo.id}>" class="leaf">
+                                    <span><i class="glyphicon glyphicon-leaf"></i> <{if $vo.account==$vo.nickname}><{$vo.account}><{else}><{$vo.account}>, <{$vo.nickname}><{/if}>  <em style="color:#999; font-size:10px;"><{$levels[$vo['levelid']]}></em> </span>
+                                    <a href="javascript:;"></a>
+                                    <span class="numPer rouCol" style="color:black"><{$vo.ocount}>单：共计<{$vo.osum}>元</span>
+                                    <span class="numPer eyeCol eyeColCol" data-id="<{$vo.id}>" onclick="userInfo(this)"><i class="glyphicon glyphicon-eye-open"></i></span>
+                                </li>
+                           <{/if}>
+                        <{/foreach}>
+                    </ul>
+                    <br />
+                    <table style="width:100%;" class="listpage"><tr><td >  <{$user.pages}>  </td></tr></table>
+
+                </div>
+            </div>
+
+                
+                
+                </div>
+			</div>
+		</div>
+
+ 
+<script type="text/javascript">
+function userInfo(that){
+	location.href = '/admin_system#page/admin_user/edit/' + $(that).data('id');
+}
+function pathopen(o) {
+	var temp = $(o).parent();
+	if(temp.hasClass('parent-plus')){
+		temp.children('ul').slideUp('fast',function(){
+			temp.children('ul').remove();
+		});
+		temp.removeClass('parent-plus');
+	}else{
+		var pid = temp.data('id');
+		$.ajax({
+			type: 'get',
+			data: {
+				'pid': pid,
+				'page': 1,
+				'pagesize': 99999
+			},
+			url: "/admin_user/tree",
+			dataType: 'html',
+			success: function(res) {
+				var temp1 = $(res).find('.tree ul');
+				$('#node'+pid+':last').append(temp1);
+				temp1.slideDown('fast',function(){
+					return;
+				});
+				return false;
+			},
+			error: function() {
+				tooltipbox.show('网络或数据错误');
+				return false;
+			}
+		});
+		temp.addClass('parent-plus')
+		return false;
+	}
+}
+$(function(){
+	$('.listpage').find('a').each(function(){
+		var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+		$(this).attr('href', url);
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker').datetimepicker({
+		format: 'YYYY-MM-DD',
+		language: 'zh-CN',
+		pickDate: true,
+		pickTime: true,
+		hourStep: 1,
+		minuteStep: 15,
+		secondStep: 30,
+		inputMask: true
+	});	
+});
+</script>
+ 
+ 

@@ -1,0 +1,252 @@
+<title><{translate('購入履歴')}> - <{translate('購入履歴詳細')}> </title>
+<div class="page-header">
+	<h1>
+		<{translate('購入履歴')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('購入履歴詳細')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_trade/purchase_history/<{$row['user_id']}>/<{$page}>"><{translate('購入履歴')}></a></li>
+        <li class="active"><a><{translate('購入履歴詳細')}></a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+        
+		<form class="form-horizontal" role="form" id="submitform" action="/admin_trade/edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+            
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('取引番号')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="tradeno" name="tradeno" value="<{$row['tradeno']}>" class="form-control input-width" readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('支払い番号')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="tran_id" name="tran_id" value="<{$row['tran_id']}>" class="form-control input-width" readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('店舗名')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="admin_account" name="admin_account" value="<{$row['admin_account']}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('顧客')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="user_account" name="user_account" value="<{$row['user_account']}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+		
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('支払い方法')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<select name="paytype" id="paytype" class="form-control" disabled="disabled">
+							<{foreach $trade_paytype as $k => $v}>                 
+								<option value="<{$k}>" <{if strval($row['paytype'])==strval($k)}>selected<{/if}>><{$v}></option>
+							<{/foreach}>
+							
+						</select> 
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+				
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('支払い日時')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="paytime" type="text" name="paytime" value="<{$row['paytime']}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+				
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('注文日時')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="ctime" type="text" name="ctime" value="<{$row['ctime']}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+		
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('取引状況')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input type="hidden" name="_status" value="<{$row['status']}>"/>
+						<select name="status" id="status" class="form-control"  disabled="disabled"  >
+							<{foreach $trade_status as $k => $v}>
+								<option value="<{$k}>" <{if strval($row['status'])==strval($k)}>selected<{/if}>><{$v}></option>
+							<{/foreach}>
+							
+						</select> 
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+		<{if $row['status']<0}>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('払い戻し時間')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="refund_time" type="text" name="refund_time" value=" <{$row['refund_time']}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('返金理由設定')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="refund_cause" type="text" name="refund_cause" value="<{$row['refund_cause']}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('払い戻しメモ')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<textarea id="refund_memo" type="text" name="refund_time"  class="form-control input-width " > <{$row['refund_memo']}></textarea>
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+		<{/if}>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('有効期限')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="end_time" type="text" name="end_time" value="<{$row['end_time']}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('メニュー情報')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('表示')}></div>
+					<div class="panel-body" style="display:none">
+						<span class="block">
+							<span class="label label-success arrowed-in arrowed-in-right" style="margin: 0 0 2px"><{translate('メニュー名')}>：<{$row['pack']['title']}> </span><br/>
+							<span class="label label-pink arrowed-in arrowed-in-right" style="margin: 0 0 2px"><{translate('メニュー金額')}>：<{$row['pack']['price']}>円</span> <br/>
+							<table class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<th><{translate('ID')}></th>
+										<th><{translate('メニュー名')}></th>
+										<th><{translate('回数')}></th>
+										<th><{translate('ショット数')}></th>
+										<th><{translate('使用時間')}></th>
+									</tr>
+								</thead>
+								<tbody>
+									<{foreach $row['trade_pack'] as $v}>
+									<tr class="alert1 success" align="left">
+										<td><{$v['id']}></td>
+										<td><{$v['item_name']}></td>
+										<td><{$v['num']}> 回</td>
+										<td><{$v['knife']}> ショット</td>
+										<td><{$v['use_num']}> 回</td>
+									</tr>
+									<{/foreach}>
+								</tbody>
+							</table>
+						</span>
+					</div>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('合計注文額')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="money" type="text" name="money" value="<{displayPrice($row['money'])}> <{translate('元')}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"> <{translate('クーポン額')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="discount" type="text" name="discount" value="<{displayPrice($row['discount'])}> <{translate('元')}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('支払額')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="pay_money" type="text" name="pay_money" value="<{displayPrice($row['pay_money'])}> <{translate('元')}>" class="form-control input-width " readonly />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<{if $row['status']>2}>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('メッセージに分割する')}>：</label>
+				<div class="col-xs-12 col-sm-5">
+					<{if $divide_record}>
+						<{foreach $divide_record as $k=>$v}>
+							<{translate('オーナー')}>：<b><{$v['agentname']}> - <{$v['parameter_id']}></b><br/>
+							<{translate('収益額')}>：<b><{$v['money']}></b> <{translate('円')}><br/>
+							<{translate('本部手数料')}>：<b><{$v['proportion']}></b> %<br/><br/>
+						<{/foreach}>
+					<{else}>
+						<{translate('なし')}>
+					<{/if}>
+
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+			<{/if}>
+			 
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<a href="/admin_system#page/admin_trade/purchase_history/<{$row['user_id']}>/<{$page}>" class="btn btn-primary btn-lg"><{translate('戻る')}></a>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>我的订单</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.col_active {
+			color: #27C2BA;
+			border-bottom: #27C2BA solid 2px;
+		}
+		
+		.mlr40 {
+			margin-left: .4rem;
+			margin-right: .4rem;
+		}
+		
+		.book {
+			border: #35C7BF 1px solid;
+			color: #35C7BF;
+		}
+	</style>
+
+	<body>
+		<article>
+			<div class="head flex plr20 flex_a tac bw mt20 lh100">
+				<div class="flex1 col_active mlr40 order" onclick="active(3,this)">当前订单</div>
+				<div class="flex1 mlr40 order" onclick="active(4,this)">预约订单</div>
+				<div class="flex1 mlr40 order" onclick="active(1,this)">历史订单</div>
+			</div>
+			<article class="container">
+				<section class="plr24 list">
+					<!--<div class="border-r1 bw plr20 pb30 mt30">
+						<div class="ptb20 bdb flex_sb">
+							<div class="font15">
+								<span class="col6">订单编号：</span><i class="order_num">11111111</i>
+							</div>
+							<div class="plr20 ptb10 book border-r6" id="want">我要取衣</div>
+							<div class="plr20 ptb10 book border-r6 dpn" id="cancel">取消预约</div>
+						</div>
+						<div class="plr10">
+							<div class="flex mt20"><span class="w200 col6">设备号：</span><i class="macno">111111111111</i></div>
+							<div class="flex mt10"><span class="w200 col6">使用套餐：</span><i class="pack">111111111111</i></div>
+							<div class="flex mt10"><span class="w200 col6">套餐金额：</span><i class="money">111111111111</i></div>
+							<div class="flex mt10"><span class="w200 col6">开始时间：</span><i class="start_time">111111111111</i></div>
+							<div class="flex mt10"><span class="w200 col6">结束时间：</span><i class="over_time">111111111111</i></div>
+							<div class="flex mt10"><span class="w200 col6">免费取衣时间：</span><i class="free_time">111111111111</i></div>
+						</div>
+					</div>-->
+				</section>
+			</article>
+		</article>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script>
+	var page = 0,
+		jerry, type = 3,
+		onOff = 0;
+
+	function active(flag, that) {
+		$(that).addClass('col_active').siblings().removeClass('col_active');
+		type = flag;
+		jerry.unlock(false);
+		page = 1;
+		get_list();
+	};
+
+	function CurentTime() {
+		var now = new Date();
+
+		var year = now.getFullYear(); //年
+		var month = now.getMonth() + 1; //月
+		var day = now.getDate(); //日
+
+		var hh = now.getHours(); //时
+		var mm = now.getMinutes(); //分
+		var ss = now.getSeconds(); //秒
+
+		var clock = year + "-";
+
+		if(month < 10)
+			clock += "0";
+
+		clock += month + "-";
+
+		if(day < 10)
+			clock += "0";
+
+		clock += day + " ";
+
+		if(hh < 10)
+			clock += "0";
+
+		clock += hh + ":";
+		if(mm < 10) clock += '0';
+		clock += mm + ":";
+
+		if(ss < 10) clock += '0';
+		clock += ss;
+		return(clock);
+	}
+	var time = CurentTime();
+
+	function get_list() {
+		if(onOff == 1) return false;
+		onOff = 1;
+		dlc_request('/consumption', {
+			'status': type,
+			'page': page
+		}, function(res) {
+			console.log(time);
+			console.log(res);
+			if(res.code == 1) {
+				var str = '';
+				if(res.data.totalpage * 1 < page * 1) {
+					jerry.lock();
+					jerry.noData();
+				} else if(res.data.list.length > 0) {
+					var data = res.data.list;
+					for(var i in data) {
+						str += '<div class="border-r1 bw plr20 pb30 mt30">' +
+							'<div class="ptb20 bdb flex_sb">' +
+							'<div class="font15">' +
+							'<span class="col6">订单编号：' +
+							'</span>' +
+							'<i class="order_num">' + data[i].tradeno +
+							'</i>' +
+							'</div>' +
+							'<div class="plr20 ptb10 book border-r6 ' + (type == 1 ? 'dpn' : type == 3 && time > data[i].end_time ? 'db' : 'dpn') + '" id="want" data-order_id=' + data[i].id + '>我要取衣' + '</div>' +
+							'<div class="plr20 ptb10 book border-r6 ' + (type == 1 ? 'dpn' : type == 4 ? 'db' : 'dpn') + '" id="cancel" data-order_id=' + data[i].id + '>取消预约' + '</div>' +
+							'</div>' +
+							'<div class="plr10">' +
+							'<div class="flex mt20">' + '<span class="w200 col6">设备号：' + '</span>' + '<i class="macno">' + data[i].macno + '</i>' + '</div>' +
+							'<div class="flex mt10">' + '<span class="w200 col6">使用套餐：' + '</span>' + '<i class="macno">' + data[i].macno + '</i>' + '</div>' +
+							'<div class="flex mt10">' + '<span class="w200 col6">套餐金额：' + '</span>' + '<i class="macno">' + data[i].pack_money + '</i>' + '</div>' +
+							'<div class="flex mt10">' + '<span class="w200 col6">开始时间：' + '</span>' + '<i class="macno">' + data[i].start_time + '</i>' + '</div>' +
+							'<div class="flex mt10">' + '<span class="w200 col6">结束时间：' + '</span>' + '<i class="macno">' + data[i].end_time + '</i>' + '</div>' +
+							'<div class="mt10 ' + (type == 1 ? 'dpn' : '') + '">' + '<span class="w200 col6">免费领衣时间：' + '</span>' + '<i class="macno ml10">' + data[i].free_charge_time + '</i>' + '</div>' +
+							'</div>' +
+							'</div>';
+					}
+				} else {
+					jerry.lock();
+					jerry.noData();
+				}
+				setTimeout(function() {
+					if(page == 1) {
+						$('.list').html(str);
+					} else {
+						$('.list').append(str);
+					}
+					onOff = 0;
+					jerry.resetload();
+					jerry.unlock();
+					jerry.noData(false);
+				}, 1000);
+			} else {
+				onOff = 0;
+				dlctipbox.show(res.msg);
+			}
+		});
+	}
+	$('.container').dropload({
+		scrollArea: window,
+		domUp: {
+			domClass: 'dropload-up',
+			domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate: '<div class="dropload-update">↑释放更新</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>'
+		},
+		domDown: {
+			domClass: 'dropload-down',
+			domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+			domNoData: '<div class="dropload-noData">已经到底了哦~</div>'
+		},
+		loadUpFn: function(me) {
+			jerry = me;
+			page = 1;
+			get_list();
+		},
+		loadDownFn: function(me) {
+			jerry = me;
+			page++;
+			get_list();
+		},
+		threshold: 50
+	});
+	$('.list').on('click', '#want', function() {
+		var order_id = $(this).data('order_id');
+		location.href = 'take_clothes.html?order_id=' + order_id;
+	});
+	$('.list').on('click', '#cancel', function() {
+		var id = $(this).data('order_id');
+		dlctipbox.confirm('确定取消预约订单？', function(index) {
+			if(index == 1) {
+				dlc_request('/cancel_reservation', {
+					'order_id': id
+				}, function(res) {
+					console.log(res);
+					if(res.code == 1) {
+						dlctipbox.show(res.msg);
+						page = 1;
+						get_list();
+					} else {
+						dlctipbox.alert(res.msg);
+					}
+				});
+			}
+		});
+	});
+</script>

@@ -1,0 +1,177 @@
+body,html,#container{
+    height: 100%;
+    margin: 0px;
+}
+.amap-main{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.amap-main .map{
+    float: left;
+    width: 72%;
+}
+.amap-main .right{
+    float: right;
+    width: 28%;
+    height: 100%;
+}
+.amap-main .result{
+    height: 80%;
+    overflow-y: auto;
+    border-top: 1px solid #62b651;
+    border-left: 1px solid #62b651;
+}
+.amap-main .result::-webkit-scrollbar{width:5px;}
+.amap-main .result::-webkit-scrollbar-track{background-color:#F9F9F9;}
+.amap-main .result::-webkit-scrollbar-thumb{background-color:#62b651;}
+.amap-main .searchipt::-webkit-input-placeholder { /* WebKit browsers */
+    color: #62b651;
+}
+.amap-main .searchipt:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #62b651;
+}
+.amap-main .searchipt::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #62b651;
+}
+.amap-main .searchipt:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #62b651;
+}
+.amap-main .switch{
+    font-size: 14px;
+    border-left: 1px solid #62b651;
+}
+.amap-main .switch>div{
+    padding: 10px;
+    position: relative;
+}
+.amap-main .search{
+    position: absolute;
+    top: 20px;
+    width: 72%;
+    z-index: 99;
+}
+.amap-main .iptbox{
+    width: 328px;
+    background: #62b651;
+    margin: auto;
+    position: relative;
+    border-radius: 5px;
+}
+.amap-main .searchipt{
+    border: 2px solid #62b651;
+    height: 36px;
+    padding: 0 10px;
+    width: 256px;
+    outline: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: #249848;
+}
+.amap-main .searchbtn{
+    width: 50px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.amap-main .searchbtn:hover{
+    background: #70cb5c;
+}
+.amap-main .icontip{
+    width: 28px;
+    position: absolute;
+    top: 5px;
+    right: 12px;
+}
+.amap-main .amap_lib_placeSearch{
+    border: 0;
+}
+.amap-main .amap_lib_placeSearch .pageLink.current{
+    background: #62B651;
+    color: #FFFFFF;
+}
+.amap-main .amap_lib_placeSearch .pageLink{
+    font-size: 14px;
+    color: #62B651;
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+.amap-main .amap_lib_placeSearch_page{
+    height: 32px;
+    padding-top: 5px;
+}
+.amap-main .result-cue{
+    margin-top: 10px;
+    display: block;
+    text-align: center;
+}
+.amap-main .cityList{
+    position: absolute;
+    top: 76px;
+    height: 356px;
+    background: #fff;
+    border: 1px solid #62b651;
+    width: 80%;
+    right: 12px;
+    z-index: 99;
+    overflow-y: auto;
+}
+.amap-main .cityList>div{
+    padding: 10px 0;
+    margin: 0 10px;
+    border-bottom: 1px solid #62b651;
+}
+.amap-main .cityList>table{
+    padding: 10px 0;
+    margin: 0 10px;
+}
+.amap-main .cityList a {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 6px;
+    color: #0075c2;
+    text-decoration: none;
+}
+.amap-main .cityList .title a{
+    position: absolute;
+    right: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #62b651;
+    margin: 0;
+}
+.amap-main .cityList th {
+    width: 48px;
+    font-weight: normal;
+    vertical-align: top;
+    padding: 8px 0 0;
+    text-align: left;
+}
+#tbodyAllCities td {
+    padding: 2px 0;
+}
+.amap-main .cityList>table .title{
+    border-bottom: 1px solid #62b651;
+    padding-bottom: 10px;
+}
+#txtCoordinate{
+    border: 1px solid #62b651;
+    border-radius: 2px;
+    outline: none;
+    height: 18px;
+}
+.hide{
+    display: none;
+}
+#divCoordinate{
+    position: fixed;
+    background: #ffffff;
+    padding: 10px;
+    z-index: 999;
+    border: 1px solid #62b651;
+    width: 160px;
+}

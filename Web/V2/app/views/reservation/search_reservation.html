@@ -1,0 +1,102 @@
+
+<title>予約管理 - 予約管理</title>
+<div class="page-header">
+	<h1>
+		予約管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 予約管理
+		</small>
+  </h1>
+  <div id="app">
+    検索結果
+  </div>
+<!-- /.page-header -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/gantt-schedule-timeline-calendar"></script> -->
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+<link rel="stylesheet" href="/style/assets/css/timeline.css" />
+<link rel="stylesheet" href="/style/assets/css/style.css" />
+<link rel="stylesheet" href="/style/assets/css/jquery.stackbox.min.css" />
+
+<script>
+  $(function(){
+    //这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+    //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+    //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+    $('.btn-search').click(function(){
+      var url = $.searchURL( location.href );
+      location.href = url;
+    });
+  });
+  
+  laydate.render({
+    elem: '#start_time',
+    type: 'datetime',
+    format: 'yyyy-MM-dd HH:mm'
+  });
+  laydate.render({
+      elem: '#end_time',
+    type: 'datetime',
+    format: 'yyyy-MM-dd HH:mm'
+  });
+  </script>
+<div>
+</div>
+<div class="chart-container">
+  <div class="datetime-selector">
+    検査結果
+  </div>
+  <div id="app">
+    <div class="search_container">
+      <div class="">
+        <table>
+          <tbody>
+            <{foreach $list as $floor}>
+            <tr>
+              <{foreach $floor as $shop}>
+              <td>
+                <div class="time_header">
+                  <{date("Y年m月d日 H:i", strtotime($shop.start_time))}>
+                </div>
+              </td>
+              <{/foreach}>
+            </tr>
+            <{/foreach}>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div >検索状況</div>
+        </div>
+        <div class="panel-body">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="my-content">
+<!-- <div class="stackbox"> -->
+  <div class="stackbox-body px-2">
+    <div class="panel panel-default reserv-dialog">
+      <div class="title text-center panel-heading"></div>
+      <div class="panel-body">
+        <!-- <p class="prev_date"></p> -->
+        <p class="date"></p>
+        <p class="name"></p>
+        <p class="trade_type"></p>
+        <p class="remark"></p>
+        <input type="hidden" id="reservation_id"/>
+      </div>
+      <div class="panel-footer">
+        <div class="modal_btn_wrapper">
+          <button class="btn bg-gray modal_btn dialog-box-close" id="cancel" data-close-stackbox="true">削除</button>
+          <button class="btn btn-info modal_btn" id="trigger1">編集</button>
+          <button class="btn btn-info modal_btn" style="display: none;" id="trigger2">編集完了</button>
+          <button class="btn btn-yellow modal_btn cash_edit" style="display: none;" id="cash_edit">現金支払い編集</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

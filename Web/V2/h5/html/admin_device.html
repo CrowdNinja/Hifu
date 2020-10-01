@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>设备管理</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.bottom_img {
+			width: 100%;
+			height: 2rem;
+			background: url(../img/yuyue.png) no-repeat;
+			background-size: 100% 100%;
+		}
+	</style>
+
+	<body class="bigBox">
+		<article class="flex1 pt100 plr90">
+			<div class="ptb40 plr30 bg_green flex_aj colw border-r1 font15" id="scanner" style="margin-left: 1rem;margin-right: 1rem;margin-top: 2rem;">设备管理
+			</div>
+		</article>
+		<div class="bottom_img"></div>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
+<script type="text/javascript" src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.inc.min.js"></script>
+<script>
+	if(isWeiXin()) {
+		dlc_request('getTicket', {}, function(res) {
+			console.log(res);
+			if(res.data.errmsg == 'ok') {
+				var timestamp = (new Date().getTime() / 1000).toFixed(0);
+				var nonceStr = Math.random().toString(36).substr(2);
+				var ticket = wx_js(res.data.ticket, timestamp, nonceStr);
+				wx.config({
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端//alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId: res.data.appid, // 必填，公众号的唯一标识
+					timestamp: timestamp, // 必填，生成签名的时间戳
+					nonceStr: nonceStr, // 必填，生成签名的随机串
+					signature: ticket, // 必填，签名，见附录1
+					jsApiList: ['checkJsApi',
+						'onMenuShareTimeline',
+						'onMenuShareAppMessage',
+						'onMenuShareQQ',
+						'onMenuShareWeibo',
+						'hideMenuItems',
+						'showMenuItems',
+						'hideAllNonBaseMenuItem',
+						'showAllNonBaseMenuItem',
+						'translateVoice',
+						'startRecord',
+						'stopRecord',
+						'onRecordEnd',
+						'playVoice',
+						'pauseVoice',
+						'stopVoice',
+						'uploadVoice',
+						'downloadVoice',
+						'chooseImage',
+						'previewImage',
+						'uploadImage',
+						'downloadImage',
+						'getNetworkType',
+						'openLocation',
+						'getLocation',
+						'hideOptionMenu',
+						'showOptionMenu',
+						'closeWindow',
+						'scanQRCode',
+						'chooseWXPay',
+						'openProductSpecificView',
+						'addCard',
+						'chooseCard',
+						'openCard'
+					] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+				});
+				wx.ready(function() {
+					$('#scanner').on('click', function() {
+						wx.scanQRCode({
+							needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+							scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+							success: function(res) {
+								if(res.resultStr.indexOf('macno') != -1 && getUrlParam('macno', '', res.resultStr)) {
+									var macno = getUrlParam('macno','',res.resultStr);
+									location.href='admin_order.html?macno='+macno;
+								} else {
+									dlctipbox.show('当前二维码无效');
+								}
+							},
+							error: function(err) {
+								console.log(err);
+							}
+						});
+					});
+				});
+			}
+		})
+	} else {
+		$('#scanner').on('click', function() {
+			//调用支付宝扫一扫
+			ready(function() {
+				AlipayJSBridge.call('scan', {
+					type: 'qr'
+				}, function(result) {
+					var macno = getUrlParam('macno', '', result.codeContent);
+					location.href='admin_order.html?macno='+macno;
+				})
+			});
+		});
+
+		function ready(callback) {
+			// 如果jsbridge已经注入则直接调用
+			if(window.AlipayJSBridge) {
+				callback && callback();
+			} else {
+				// 如果没有注入则监听注入的事件
+				document.addEventListener('AlipayJSBridgeReady', callback, false);
+			}
+		}
+	}
+
+	function isWeiXin() {
+		var ua = window.navigator.userAgent.toLowerCase();
+		console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+		if(ua.match(/MicroMessenger/i) == 'micromessenger') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+</script>

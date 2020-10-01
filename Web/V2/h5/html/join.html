@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>合作申请</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+
+	<body class="bigBox">
+		<article class="plr20">
+			<div class="bw lh100 border-r1 flex plr20 mt30">
+				<i class="w200">您的姓名</i>
+				<input class="flex1" / placeholder="请输入您的姓名" id="name">
+			</div>
+			<div class="bw lh100 border-r1 flex plr20 mt30">
+				<i class="w200">联系方式</i>
+				<input class="flex1" / placeholder="请输入您的联系方式" id="phone">
+			</div>
+			<div class="bw lh100 border-r1 flex plr20 mt30">
+				<i class="w200">公司名称</i>
+				<input class="flex1" / placeholder="请输入您的公司名称" id="company">
+			</div>
+			<div class="bw lh100 border-r1 flex plr20 mt30">
+				<i class="w200">邮箱</i>
+				<input class="flex1" / placeholder="请输入您的邮箱" id="email">
+			</div>
+			<div class="bw lh100 border-r1 flex plr20 mt30">
+				<i class="w200">所在位置</i>
+				<input class="flex1" / placeholder="请输入您合作的城市" id="city">
+			</div>
+
+			<div class="ptb30 bg_green colw flex_aj border-r6 font15 mt100 mta">提交</div>
+		</article>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script>
+	$('.bg_green').on('click', function() {
+		var name = $('#name').val();
+		var phone = $('#phone').val();
+		var company = $('#company').val();
+		var email = $('#email').val();
+		var city = $('#city').val();
+		dlc_request('collaborate_apply',{'name':name,'phone':phone,'company_name':company,'mail':email,'city':city},function(res) {
+			console.log(res);
+			if (res.code == 1) {
+				dlctipbox.show(res.msg);
+				setTimeout(function() {
+					history.go(-1);
+				},1000);
+			} else{
+				dlctipbox.show(res.msg);
+			}
+		})
+	});
+</script>

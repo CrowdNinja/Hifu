@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>WIFI配置</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" type="text/css" href="../css/mobiscroll.jquery.min.css" />
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/main.css" />
+	</head>
+	<style>
+		.bg_set {
+			background: url(../img/bg_wifi2.png);
+			background-size: 100% 100%;
+		}
+	</style>
+
+	<body class="device_details bg_set flex">
+		<section class="pt100 plr30 mt100">
+			<div class="border-r1 bw plr20 pt20">
+				<p class="col9 font13 mt50">WIFI设置</p>
+				<div class="plr20 mt20 border-r1" style="border:1px solid #20CFBB">
+					<div class="flex_sb h100 plr30 bdb">
+						<span class="col9 mr20">设备编号</span>
+						<input type="text" class="ml20 flex1 tae" placeholder="请输入设备编号" id="macno">
+					</div>
+					<label class="flex_a h100 plr30 bdb">
+                <span class="col9">wifi账号</span>
+                <input type="text" class="ml20 flex1 tae" placeholder="请输入wifi账号" id="ssid">
+            </label>
+					<label class="flex_a h100 plr30 bdb">
+                <span class="col9">wifi密码</span>
+                <input type="password" class="ml20 flex1 tae" placeholder="请输入wifi密码" id="pass">
+            </label>
+					<div class="ptb30">
+						<div class="bg_green colw font17 lh90 border-r6 tac mta" id="btn_wifi">确定</div>
+					</div>
+				</div>
+				<p class="ptb50 mb20 col9 font13">以上三项字符长度不超过20个字符，不包含特殊符号，其中wifi账号不能为空。<br/>*如无密码请输入一个空格键*</p>
+			</div>
+		</section>
+	</body>
+
+</html>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../js/dlc.js" ></script>
+<script>
+	if(getUrlParam('macno')) {
+		$('#macno').val(getUrlParam('macno'));
+	}
+	$('#btn_wifi').click(function() {
+		var macno = $('#macno').val();
+		var ssid = $('#ssid').val();
+		var pass = $('#pass').val();
+		if(isNull(macno)) {
+			dlctipbox.show('请输入设备编号');
+		} else if(isNull(ssid)) {
+			dlctipbox.show('请输入WiFi账号');
+		} else {
+			dlc_request('/device_set_wifi', {
+				'shop_token':get_save('token'),
+				'macno': macno,
+				'username': ssid,
+				'password': pass
+			}, function(res) { //一键启动
+				console.log(res);
+				if(res.code == 1) { //发送成功
+//					if(res.data == 1) { //设置成功
+//
+//					}
+				} else {
+					// dlctipbox.show(res.msg);
+				}
+				dlctipbox.show(res.msg);
+			});
+		}
+	});
+</script>

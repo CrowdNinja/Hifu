@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>开门成功</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.bottom_img {
+			width: 100%;
+			height: 2rem;
+			background: url(../img/yuyue.png) no-repeat;
+			background-size: 100% 100%;
+		}
+	</style>
+
+	<body class="bigBox">
+		<article class="flex1 pt140">
+			<div class="tac mtb80 list">
+				<div class="success">
+					<p><img src="../img/success.png" / style="width: 1.3rem;"> </p>
+					<p class="col_time mt30">干衣机柜门</p>
+					<p class="col_time">已打开</p>
+				</div>
+			</div>
+			<div class="plr90 pt80">
+				<div class="ptb40 plr40 mlr24 border-r1 bg_green colw tac mta" id="open">
+					<p class="font18">门未开，点此按钮重试</p>
+				</div>
+				<p class="plr40 mt30 col6 tac">若干衣机柜门还是无法开启，</p>
+				<p class="plr40 col6 tac">请用物理钥匙开门</p>
+			</div>
+		</article>
+		<div class="bottom_img"></div>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script>
+	$('.mta').on('click', function() {
+		dlc_request('admin_open_box', {
+			'shop_token': get_save('token'),
+			'macno': getUrlParam('macno')
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				dlctipbox.alert(res.msg);
+				setTimeout(function() {
+					location.replace('admindoor_success.html?macno=' + getUrlParam('macno'));
+				}, 1000);
+			} else if(res.code == -88) {
+				dlctipbox.show(res.msg);
+				setTimeout(function() {
+					location.replace('admindoor_fail.html?macno=' + getUrlParam('macno'));
+				}, 1000);
+			} else {
+				dlctipbox.alert(res.msg);
+			}
+		})
+	});
+</script>

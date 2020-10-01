@@ -1,0 +1,249 @@
+
+<title><{translate('サブスクメニューの管理')}> - <{translate('サブスク約款の管理')}></title>
+<!--<div class="page-header">-->
+	<!--<h1>-->
+		<!--员工管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 员工列表-->
+		<!--</small>-->
+	<!--</h1>-->
+<!--</div>-->
+<!-- /.page-header -->
+
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+
+<div class="row">
+	<div class="col-xs-12">
+    <h3>サブスク約款の管理</h3>
+ <!--    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_agreement/<{$page}>"><{translate('员工列表')}></a></li>
+    </ul> -->
+    <br />
+    <a href="/admin_system#page/admin_agreement/edit/" class="btn btn-complete mb-5">約款を新規追加</a>
+
+
+		<div class="panel panel-success">
+			<div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('筛选')}></div>
+			<div class="panel-body" style="display:">
+
+            <div class="form-group form-search form-inline">
+
+
+			<{if $aid==1}>
+				<label class="control-label">約款名</label>
+				<input  class="form-control" id="name" name="name" value="<{$get.name}>" style="width:120px" />
+				<label class="control-label">適応するメニュー名</label>
+				<input  class="form-control" id="name" name="name" value="<{$get.name}>" style="width:120px" />
+			<{/if}>
+                <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('搜索')}></button>
+				<!--<button id="importBtn" class="btn btn-sm btn-primary"><i class="fa fa-download"></i> 下载二维码</button>-->
+            </div>
+
+    </div>
+
+    </div>
+<script>
+$(function () {
+    $('.agent_id').chosen();
+    $('.seller_id').chosen();
+
+    $("#corpid").select2({
+        ajax: {
+            url: "/admin_corp/search",
+            data: function (params) {
+							return {
+									keywords: params
+							};
+            },
+            results:function(data,pageNo){
+                if(data.data.length){
+                    data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+                }else{
+                    data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                }
+                return {
+                    results:data.data
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            type: 'post',
+            dataType: 'json'
+        },
+        initSelection: function(elem, cbfunc){
+        },
+        allowClear: false,
+        openOnEnter: false,
+        minimumInputLength: 1,
+    });
+<{if $get.corpid}>$('#corpid').select2('data', {id:"<{$get.corpid}>", text:"<{$get_corpid_account}>"}).select2('val', ["<{$get.corpid}>"]);<{/if}>
+
+        $("#adminid").select2({
+            ajax: {
+                url: "/admin_shop/search",
+                data: function (params) {
+                    return {
+                        keywords: params
+                    };
+                },
+                results:function(data,pageNo){
+                    if(data.data.length){
+                        data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+                    }else{
+                        data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                    }
+                    return {
+                        results:data.data
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                type: 'post',
+                dataType: 'json'
+            },
+            initSelection: function(elem, cbfunc){
+            },
+            allowClear: false,
+            openOnEnter: false,
+            minimumInputLength: 1,
+        });
+    <{if $get.adminid}>$('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);<{/if}>
+
+        });
+</script> 
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>
+
+		<form class="form-horizontal" role="form" id="submitform" method="post" action="/admin_device/import" enctype="multipart/form-data">
+					<table class="table table-hover table-striped">
+						<thead>
+							<tr>
+								<th></th>
+								<th>約款名</th>
+								<th>約款内容</th>
+								<th>編集</th>
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $agreements.list as $k => $v}>
+							<tr class="alert1" align="left">
+								<td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+								<td><{$v['title']}></td>
+								<!--<td><{$v['price']}></td>-->
+                                <td>
+                                    <ul>
+                                        <{$v['content']}>
+                                    </ul>
+                                </td>
+
+								<td align="justify" >
+									<{if chkcommand('/admin_agreement/edit')}>
+									<a href="admin_system#page/admin_agreement/edit/<{$v['id']}>" class="btn btn-success btn-xs"> <i class="fa fa-edit"></i>修改</a>
+									<{/if}>
+								</td>
+							</tr>
+							<{/foreach}>
+							<tr>
+								<td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">
+									<input id="btnDelete" class="btn btn-default" value="<{translate('删除')}>" type="button">
+																<a href="/admin_system#page/admin_agreement/edit/" class="btn btn-complete">予約を新規追加</a>
+								</td>
+							</tr>
+
+						</tbody>
+					</table>
+                    <!--  <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$list.total}> <{translate('条记录')}> <{$list.pages}>  </td></tr></table> -->
+					
+				</form>
+                </div>
+			</div>
+		</div>
+
+<script src="/style/js/jquery.dialogBox.js"></script>
+<div id="dialog-box-mask" style="height: 400px; display: none;"></div>
+<div class="getinfo-box"></div>
+	<script type="text/javascript">
+ 	var isbusy = false;
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+
+        $('.listpage').find('a').each(function(){
+            var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+            $(this).attr('href', url);
+        });
+		//YYYY-MM-DD HH:mm:ss
+		/*$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD',
+			language: 'zh-CN',
+			pickDate: true,
+			pickTime: true,
+			hourStep: 1,
+			minuteStep: 15,
+			secondStep: 30,
+			inputMask: true
+		});*/
+
+
+		$('#btnDelete').click(function(){
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(!ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+			tooltipbox.confirm("利用約款を削除します<br/><span>の支払い削除します</span><br/><span class='alert-red'>＊この作業は取り消せません</span>", function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_agreement/delete', data, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			}, false, { 'ids': ckvals });
+		});
+		$('#btnClear').click(function(){
+			tooltipbox.confirm('确定永久清空所有数据？', function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_agreement/clear', { }, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(a, b, c){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			});
+		});
+    });
+</script>
+
+<script>
+    laydate.render({
+        elem: '#createtime1',
+    });
+    laydate.render({
+        elem: '#createtime2'
+    });
+</script>

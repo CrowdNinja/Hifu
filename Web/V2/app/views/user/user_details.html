@@ -1,0 +1,178 @@
+
+<title>会员管理 - 消费明细记录</title>
+<div class="page-header">
+    <h1>
+        会员管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 消费明细
+    </small>
+    </h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <ul class="nav nav-tabs">
+            <li ><a href="/admin_system#page/admin_user?page=<{$p}>">会员列表</a></li>
+            <li class="active"><a href="/admin_system#page/admin_user/user_details">消费明细</a></li>
+        </ul>
+        <br />
+
+        <div class="panel panel-success">
+            <div class="panel-heading">筛选</div>
+            <div class="panel-body">
+
+                <div class="form-group form-search form-inline">
+                    <label class="control-label">类型</label>
+                    <select class="form-control" id="type" name="type">
+                        <option value="">--请选择--</option>
+                        <option value='0' <{if is_numeric($get.type)&&$get.type == 0}>selected<{/if}>> 消费</option>
+                        <option value='1' <{if is_numeric($get.type)&&$get.type == 1}>selected<{/if}>> 充值</option>
+                        <option value='2' <{if is_numeric($get.type)&&$get.type == 2}>selected<{/if}>> 订单退款</option>
+
+                    </select>
+                    <label class="control-label">日期</label>
+                    <input class="form-control " name="createtime1" id="createtime1" type="text" value="<{$get.createtime1}>" placeholder="">
+                    <label class="control-label">至</label>
+                    <input class="form-control " name="createtime2" id="createtime2" type="text" value="<{$get.createtime2}>" placeholder="">
+
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> 搜索</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <script>
+            $(function(){
+                laydate.render({
+                    elem: '#createtime1',
+                });
+                laydate.render({
+                    elem: '#createtime2',
+                });
+                //这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+                //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+                //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+                $('.btn-default').click(function(){
+                    var url = $.searchURL( location.href );
+                    location.href = url;
+                });
+            });
+        </script>
+
+        <form class="form-horizontal" role="form" id="submitform">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>类型</th>
+                    <th>订单号</th>
+                    <th>金额</th>
+                    <th>时间</th>
+                    <!--<th>操作</th>-->
+
+                </tr>
+                </thead>
+                <tbody>
+                <{foreach $list.list as $k => $v}>
+                <tr class="alert1 success" align="left">
+                    <td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+                    <td><{$v['type_name']}></td>
+                    <td><{if $v['type']==0 || $v['type']==2 }>
+                        <{$v['order_no']}><a href="admin_system#page/admin_trade/?tradeno=<{$v['order_no']}>"><i class="fa fa-eye"></i></a>
+                        <{elseif $v['type']==1}>
+                        <{$v['order_no']}><a href="admin_system#page/admin_recharge/?rechargeno=<{$v['order_no']}>"><i class="fa fa-eye"></i></a>
+                        <{/if}>
+                    </td>
+                    <td>￥<{$v['money']}></td>
+                    <td><{if $v['type']==0}>
+                        开始时间:<{$v['order']['start_time']}><br/>
+                        结束时间:<{$v['order']['end_time']}><br/>
+                        <{else if $v['type']==1}>
+                        创建时间;<{formattime($v['order']['createtime'])}><br/>
+                        支付时间:<{formattime($v['order']['paytime'])}>
+                        <{else}>
+                        <{$v['ctime']}>
+                        <{/if}>
+                    </td>
+                    <!--<td >
+                    <{if $v['type']==5 || $v['type']==4}>
+                    <a href="admin_system#page/admin_order/?user_id=<{$v['user_id']}>" class="btn btn-primary btn-xs">详情</a>
+                    <{else}>
+                    <a href="admin_system#page/admin_finance/recharge/?user_id=<{$v['user_id']}>" class="btn btn-primary btn-xs">详情</a>
+                    <{/if}>-->
+
+
+                </tr>
+                <{/foreach}>
+
+                <tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+                    <td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">
+                        <{if chkcommand('/admin_user/deleteDetails')}>
+                        <input id="btnDelete" class="btn btn-lg btn-default" value="删除" type="button">
+                        <{/if}>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <a href="admin_system#page/admin_user?page=1" class="btn btn-primary btn-lg">返回</a>
+            <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$list.total}> <{translate('条记录')}> <{$list.pages}>  </td></tr></table>
+
+        </form>
+    </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+    var isbusy = false;
+    //这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+    //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+    //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+    $(function(){
+        $('.listpage').find('a').each(function(){
+            var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+            $(this).attr('href', url);
+        });
+
+        $('#btnDelete').click(function(){
+            var ckvals = $.selectCK('input[name="id[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+                tooltipbox.show('正在执行操作...');
+                $.post('/admin_user/deleteDetails', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            }, false, { 'ids': ckvals });
+        });
+        $('#btnClear').click(function(){
+            tooltipbox.confirm('确定永久清空所有数据？', function(data){
+                tooltipbox.show('正在执行操作...');
+                $.post('/admin_user/clear', { }, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(a, b, c){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            });
+        });
+    });
+</script>
+
+

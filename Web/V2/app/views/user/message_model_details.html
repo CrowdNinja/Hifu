@@ -1,0 +1,76 @@
+<!-- /.page-header -->
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="javascript:;" class="back"><{translate('消息列表')}></a></li>
+        <li class="active"><a href="/admin_system#page/admin_user/message_model"><{translate('消息详情')}></a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_user/message_model/<{$row['id']}>" method="post" accept-charset="utf-8">
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('图片')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                            <div class="upfile_imgthumb">
+                                                <img src="<{$row['img']}>"    class="img-prefile">
+                                            </div>
+                            </span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('标题')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                <input type="text" name="title" value="<{$row['title']}>" class="form-control input-width" />
+                            </span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('内容')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<textarea id="content" type="text" name="content"  style="height: 150px;" class="form-control input-width" ><{$row['content']}> </textarea>
+			</span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+
+                    <div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button"  class=" back btn  btn-primary btn-lg"><{translate('返回')}></button>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('.back').click(function(){
+        history.back(-1);
+	});
+    $('.img-prefile').viewer('destroy').viewer({});
+    $('.img-prefile').parent().off('click', '.viewer-canvas').on('click', '.viewer-canvas', function(e){
+        var _con = $(this).find('img');
+        if(_con && !_con.is(e.target) && _con.has(e.target).length === 0){
+            $('.img-prefile').viewer('hide');
+        }
+    });
+});
+</script> 

@@ -1,0 +1,38 @@
+@charset "utf-8";
+.categorys-selector{position:relative;float:left;z-index:2;height:26px;margin-right:6px;width:100%;}
+.categorys-selector dl,.categorys-selector dt,.categorys-selector dd{float:none;color:#999}
+.categorys-selector dl{position:absolute;top:23px;z-index:1;width:358px;width:358px;padding:5px;border:1px solid #ddd;background:#fff;display:none;-moz-box-shadow:0 0 5px #ddd;-webkit-box-shadow:0 0 5px #ddd;box-shadow:0 0 5px #ddd}
+.categorys-selector dt{padding:6px 0 10px;color:#999}
+.categorys-selector dd{padding-bottom:5px;line-height:18px}
+.categorys-selector a:link,.categorys-selector a:visited{color:#005aa0}
+.categorys-selector a:hover,.categorys-selector a:active{background:#005aa0;color:#fff}
+.categorys-selector .categorys-text{float:left;+float:none;_float:left;width:100%;position:relative;top:0;z-index:2;height:27px;background:#fff;border:1px solid #CECBCE;padding:0 15px 0 4px;line-height:27px;overflow:hidden}
+.categorys-selector .categorys-text b{display:block;position:absolute;top:0;right:0;overflow:hidden;width:17px;height:24px;background:url(btn20121210.png) 0 1px no-repeat}
+.categorys-selector .categorys-text i{display:inline-block;overflow:hidden;width:17px;height:24px;background:url(btn20121211.png) 0 0 no-repeat;float:right;cursor:pointer;}
+.categorys-selector .categorys-close{display:none;position:absolute;z-index:2;top:19px;left:380px;opacity:1;cursor:pointer;width:17px;height:17px;background:url(20120418.png) no-repeat -40px 0}
+.categorys-selector a:hover{background:#B79567;color:#fff;cursor:pointer}
+.categorys-selector.hover .categorys-text{border-bottom:0}
+.categorys-selector.hover dl{display:block}
+.categorys-selector.hover .categorys-close{display:block}
+.categorys-selector .categorys-content{display:none;position:absolute;top:27px;left:0;border:1px solid #cecbce;width:390px;padding:15px;background:#fff;-moz-box-shadow:0 0 5px #ddd;-webkit-box-shadow:0 0 5px #ddd;box-shadow:0 0 5px #ddd}
+.categorys-selector .categorys-content select{float:left;width:120px;border:1px solid #cecbce;margin-right:15px}
+.categorys-selector .categorys-content .select3{margin-right:0}
+.categorys-selector.hover .categorys-content,.categorys-selector.hover .categorys-close{display:block}
+.categorys-stock{position:relative;margin-bottom:0}
+.categorys-stock .tab{width:100%;height:25px;float:left;margin:0;border-bottom:2px solid #edd28b;overflow:visible;*overflow:hidden}
+.categorys-stock .tab li{ list-style:none; float:left;clear:none;height:23px;padding:1px 1px 0;border:1px solid #ddd;border-bottom:0;margin-right:3px;background-color:#fff;line-height:22px;text-decoration:none}
+.categorys-stock .tab .curr{*position:relative;height:25px;padding:0;border:2px solid #edd28b;border-bottom:0}
+.categorys-stock .tab a{position:relative;float:left;height:23px;padding:0 20px 1px 10px; white-space:nowrap;width:90%; overflow:hidden; line-height:23px;text-align:center;text-decoration:none;cursor:pointer;color:#005AA0;outline:0;*blr:expression(this.onFocus=this.blur())}
+.categorys-stock .tab a em {width:99%; display:inline-block; overflow:hidden; text-overflow:ellipsis;}
+.categorys-stock .tab a:hover{background:0;color:#005AA0}
+.categorys-stock .tab a i{position:absolute;right:5px;top:10px;*top:9px;display:block;width:7px;height:5px;overflow:hidden;background:url(20130606B.png) no-repeat -76px -34px;opacity:.5;filter:alpha(opacity=50)}
+.categorys-stock .tab .curr i,.categorys-stock .tab a:hover i{opacity:1;filter:alpha(opacity=100)}
+.categorys-stock .categorys-list{padding-top:5px; margin:0;}
+.categorys-stock .categorys-list li{ list-style:none; float:left;width:80px;padding:5px 0 0 15px;clear:none}
+.categorys-stock .categorys-list li a{float:left;padding:2px 4px;*padding:0 4px;color:#005aa0;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 68px;}
+.categorys-stock .categorys-list li a:hover{color:#fff}
+.categorys-stock .categorys-list li a.hover {background-color: #8FBC8F;color: #fff;border-radius: 2px;}
+.categorys-stock .categorys-list .longer-area{width:370px}
+.categorys-stock .categorys-list .long-area{width:170px}
+.categorys-multiple div {border:1px #428bca solid; background:#428bca; padding:2px 5px; float:left; margin:0 8px 5px 0; color:#fff; cursor:pointer; }
+.categorys-multiple div i{display:inline-block;overflow:hidden;width:17px;height:22px;background:url(btn20121211.png) 0 0 no-repeat;float:right;margin:-3px 0 0;cursor:pointer;}

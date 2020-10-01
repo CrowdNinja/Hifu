@@ -1,0 +1,297 @@
+<title><{translate('店舗管理')}> - <{if $row['id']}><{translate('編集')}><{else}><{translate('添加')}><{/if}><{translate('メニュー')}> </title>
+<div class="page-header">
+    <h1>
+        <{translate('店舗管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{if $row['id']}><{translate('編集')}><{else}><{translate('追加する')}><{/if}><{translate('メニュー')}>
+    </small>
+    </h1>
+</div>
+<!-- /.page-header -->
+<script>window.UEDITOR_HOME_URL = '/app/third_party/ueditor1_4_3_3-utf8-php/';</script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.all.min.js"> </script>
+<!--<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>-->
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>
+<script type="text/plain" id="j_ueditorupload" style="height:5px;display:none;" ></script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.upload.js"></script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="main">
+            <ul class="nav nav-tabs">
+                <li><a href="/admin_system#page/admin_pack"><{translate('メニューリスト')}></a></li>
+                <li class="active"><a href="/admin_system#page/admin_pack/edit/<{$row['id']}>"><{if $row['id']}><{translate('編集')}><{else}><{translate('追加する')}><{/if}><{translate('メニュー')}></a></li>
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body table-responsive">
+
+                    <form class="form-horizontal" role="form" id="submitform" action="/admin_pack/edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+
+                        <div class="form-group">
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('写真')}></label>
+                            <input type="hidden" name="img" value="<{$row['img']}>" />
+                            <div class="col-xs-12 col-sm-5">
+                                <div class="upfile_imgthumb">
+                                    <img src="<{if $row['img']}><{$row['img']}><{else}>/style/xin_inselimg.png<{/if}>" data-default="/style/xin_inselimg.png" class="btn-upfile">
+                                    <div class="upfile_imgcaption">
+                                        <a href="javascript:;" class="btn btn-primary btn-xs btn-upfile"><{translate('アップロード')}></a>
+                                        <a href="javascript:;" class="btn btn-default btn-xs btn-upremove"><{translate('削除する')}></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="help-block inline"></div>
+                        </div>
+
+                        <{if !$row['id']}>
+                        <div class="form-group">
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('店舗名')}>*:</label>
+                            <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                <input id="adminid" name="adminid" value="<{$row['adminid']}>" style="width:100%" required />
+                            </span>
+                            </div>
+                            <div class="help-block inline"></div>
+                        </div>
+                        <{/if}>
+
+
+                        <div class="form-group">
+                            <{if $gid==1}>
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('メニュータイトル')}>:</label>
+                                <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <input id="title" name="title" value="<{$row['title']}>" class="form-control input-width" required />
+                                    </span>
+                                </div>
+                            <{else}>
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('メニュータイトル')}>:</label>
+                            <input type="hidden" name="title" value="<{$row['title']}>" />
+                                <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <{$row['title']}>
+                                    </span>
+                                </div>
+                            <{/if}>
+                            <div class="help-block inline"></div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <{if $gid==1}>
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('メニュー価格')}>:</label>
+                                <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <input id="price" name="price" value="<{$row['price']}>" min="0" class="form-control input-width" required />
+                                    </span>
+                                </div>
+                            <{else}>
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('メニュー価格')}>:</label>
+                            <input type="hidden" name="price" value="<{$row['price']}>" />
+                                <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <{$row['price']}>
+                                    </span>
+                                </div>
+                            <{/if}>
+                            <div class="help-block inline"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <{if $gid==1}>
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('有効期限')}>:</label>
+                            <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <input id="validity_time" name="validity_time" value="<{$row['validity_time']}>"  class="form-control input-width"  />
+                                    </span>
+                            </div>
+                            <{else}>
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('有効期限')}>:</label>
+                            <input type="hidden" name="validity_time" value="<{$row['validity_time']}>" />
+                                <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <{$row['validity_time']}>
+                                    </span>
+                                </div>
+                            <{/if}>
+                            <div class="help-block inline"></div>
+                        </div>
+
+                     <!--   <div class="form-group">
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('使用人数')}>:</label>
+                            <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <input id="number" name="number" value="<{$row['number']}>" min="1" class="form-control input-width"  />
+                                    </span>
+                            </div>
+                            <div class="help-block inline"></div>
+                        </div>-->
+
+                        <div class="form-group">
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('予約情報')}>:</label>
+                            <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <textarea id="reservation_info" name="reservation_info"  class="form-control input-width"  style="height: 128px;"><{$row['reservation_info']}></textarea>
+                                    </span>
+                            </div>
+                            <div class="help-block inline"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('メニュー紹介')}>:</label>
+                            <div class="col-xs-12 col-sm-4">
+                                    <span class="block">
+                                        <textarea id="service_process" name="service_process"  class="form-control input-width"  style="height: 128px;"><{$row['service_process']}></textarea>
+                                    </span>
+                            </div>
+                            <div class="help-block inline"></div>
+                        </div>
+
+                        <div class="form-group" id="mark">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <button type="button" id="saveedit" class="btn  btn-primary btn-lg"><{translate('確定')}></button>
+                            </div>
+                        </div>
+                        <{if false}>
+                        <div class="form-group" >
+                            <div class="col-sm-offset-0 col-sm-9">
+                               <a href="admin_system#page/admin_pack/item_edit/<{$row['id']}>" class="btn btn-success btn-xs"> + <{translate('添加套餐项目')}></a>
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th><{translate('项目名称')}></th>
+                                <th><{translate('类型')}></th>
+                                <th><{translate('次数')}></th>
+                                <th><{translate('每次多少刀')}></th>
+                                <th width="1000px"><{translate('服务内容')}></th>
+                                <th><{translate('创建时间')}></th>
+                                <th><{translate('操作')}></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <{foreach $item as $v}>
+                            <tr class="alert1 success" align="left">
+                                <td><{$v['title']}></td>
+                                <td><{$item_type[$v['type']]}></td>
+                                <td><{$v['num']}> <{translate('次')}></td>
+                                <td><{$v['knife']}> <{translate('刀')}></td>
+                                <td><{$v['text']}></td>
+                                <td><{$v['ctime']}></td>
+                                <td >
+                                    <{if chkcommand('/admin_pack/item_edit')}>
+                                    <a href="admin_system#page/admin_pack/item_edit/<{$row['id']}>/<{$v['id']}>" class="btn btn-success btn-xs"> <i class="fa fa-edit"></i>  <{translate('修改')}></a>
+                                    <{/if}>
+                                    <{if chkcommand('/admin_pack/item_delete')}>
+                                    <a href="javascript:;" class="btn btn-danger btn-xs delete" data-id="<{$v['id']}>"> <i class="fa fa-times"></i> <{translate('删除')}> </a>
+                                    <{/if}>
+                                </td>
+                            </tr>
+                            <{/foreach}>
+
+                            </tbody>
+                        </table>
+                        <{/if}>
+
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=<{$geocoder_key}>&plugin=AMap.Geocoder"></script>
+<script type="text/javascript">
+    var isbusy = false;
+
+    $(function(){
+        laydate.render({
+            elem: '#validity_time',
+        });
+        $('.delete').click(function(){
+            var id=$(this).data('id');
+
+            tooltipbox.confirm("<{translate('确定永久删除？')}>", function(data){
+                tooltipbox.show('正在执行操作...');
+                $.post('/admin_pack/item_delete', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            }, false, { 'id': id });
+        });
+        $("#adminid").select2({
+            ajax: {
+                url: "/admin_shop/search",
+                data: function (params) {
+                    return {
+                        keywords: params,
+                    };
+                },
+                results:function(data,pageNo){
+                    if(data.data.length){
+                        data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+                    }else{
+                        data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                    }
+                    return {
+                        results:data.data
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                type: 'post',
+                dataType: 'json'
+            },
+            initSelection: function(elem, cbfunc){
+            },
+            allowClear: false,
+            openOnEnter: false,
+            minimumInputLength: 1,
+        });
+    <{if $row['adminid']}>$('#adminid').select2('data', {id:"<{$row['adminid']}>", text:"<{$row['shop_name']}>"}).select2('val', ["<{$row['adminid']}>"]);<{/if}>
+
+        $('#submitform').validate({
+            errorElement: 'div',
+            errorClass: 'help-block',
+            focusInvalid: true,
+            rules: {
+                title: {
+                    required: true
+                }
+            }
+        });
+
+        $('#saveedit').click(function(){
+            if(!$('#submitform').valid())return false;
+            if(isbusy)return false;
+            isbusy = true;
+            tooltipbox.show("<{translate('正在执行操作？')}>");
+            $.post('/admin_pack/edit/<{$row['id']}>', $('#submitform').serialize(), function(res){
+                if(res.status == '1'){
+                    tooltipbox.show("<{translate('操作完成')}>");
+                    location.href = '/admin_system#page/admin_pack/';
+                }else if(res.status == '0'){
+                    tooltipbox.alert(res.msg);
+                }else{
+                    tooltipbox.show(res);
+                }
+                isbusy = false;
+            }, 'json').error(function(a, b, c){
+                tooltipbox.show("<{translate('数据或网络错误')}>");
+                isbusy = false;
+            });
+        });
+    });
+</script>

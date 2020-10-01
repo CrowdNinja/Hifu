@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>WIFI配置</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/commonsecond.css"/>
+    <link rel="stylesheet" href="../css/main.css"/>
+    <style>
+        .list .item + .item {
+            margin-top: .5rem;
+        }
+        .bg_wifi{
+        	background: url(../img/bg_wifi.png);
+        	background-size: 100% 100%;
+        }
+    </style>
+</head>
+<body class="bgf5">
+<article class="bigBox bg_wifi">
+    <section class="container">
+        <p class="tac ptb30">配置设备WIFI联网步骤</p>
+        <ul class="plr24 list">
+            <li class="item">
+                <p class="col9">第一步</p>
+                <p class="mt10 font15">设备先插上SIM卡</p>
+            </li>
+            <li class="item">
+                <p class="col9">第二步</p>
+                <p class="mt10 font15">设备通电 电源灯常亮并联网</p>
+            </li>
+            <li class="item">
+                <p class="col9">第三步</p>
+                <p class="mt10 font15">输入wifi帐号、密码 点击确定连接</p>
+                <p class="col9">如wifi不需要输入密码，请输入一个空格键</p>
+            </li>
+            <li class="item">
+                <p class="col9">第四步</p>
+                <p class="mt10 font15">设备联网灯保持快闪联网成功。</p>
+            </li>
+        </ul>
+         <footer class="plr40 ptb20 mt100">
+        <a class="bg_green colw lh90 border-r6 btn_tap tac db" id="start">开始配置设备</a>
+    </footer>
+    </section>
+   
+</article>
+</body>
+</html>
+<script type="text/javascript" src="../js/dlc.js" ></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js" ></script>
+<script>
+        $('#start').click(function(){
+            location.href = './wifi_set.html?macno='+getUrlParam('macno');
+        });
+</script>
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

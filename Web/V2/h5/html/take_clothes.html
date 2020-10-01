@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>我要取衣</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<link rel="stylesheet" href="../css/swiper.min.css" />
+	</head>
+
+	<body>
+		<article>
+			<section class="swiper-container">
+				<div class="swiper-wrapper" id="slide">
+					<!--<div class="swiper-slide">
+						<img src="../img/0.png" style="width:100%;height: 4rem;" />
+					</div>-->
+				</div>
+				<!-- Add Pagination -->
+				<div class="swiper-pagination"></div>
+				<!-- Add Arrows -->
+			</section>
+			<div class="plr20 mt20">
+				<div class="border-r1 bw plr20 pb30">
+					<div class="lh80 bdb font15">
+						<span class="col6">订单编号：</span><i class="order_num"></i>
+					</div>
+					<div class="plr10">
+						<div class="flex mt20"><span class="w200 col6">设备号：</span><i class="macno"></i></div>
+						<div class="flex mt10"><span class="w200 col6">使用套餐：</span><i class="pack"></i></div>
+						<div class="flex mt10"><span class="w200 col6">套餐金额：</span><i class="money"></i></div>
+						<div class="flex mt10"><span class="w200 col6">结束时间：</span><i class="over_time"></i></div>
+						<div class="flex mt10"><span class="w200 col6">免费取衣时间：</span><i class="free_time"></i></div>
+					</div>
+				</div>
+			</div>
+			<div class="ptb30 plr30 bg_green mlr24 flex_aj colw border-r6 mt100 font15" id="scanner">我要取衣</div>
+		</article>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
+<script type="text/javascript" src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.inc.min.js"></script>
+<script>
+	if(isWeiXin()) {
+		dlc_request('getTicket', {}, function(res) {
+			console.log(res);
+			if(res.data.errmsg == 'ok') {
+				var timestamp = (new Date().getTime() / 1000).toFixed(0);
+				var nonceStr = Math.random().toString(36).substr(2);
+				var ticket = wx_js(res.data.ticket, timestamp, nonceStr);
+				wx.config({
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端//alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId: res.data.appid, // 必填，公众号的唯一标识
+					timestamp: timestamp, // 必填，生成签名的时间戳
+					nonceStr: nonceStr, // 必填，生成签名的随机串
+					signature: ticket, // 必填，签名，见附录1
+					jsApiList: ['checkJsApi',
+						'onMenuShareTimeline',
+						'onMenuShareAppMessage',
+						'onMenuShareQQ',
+						'onMenuShareWeibo',
+						'hideMenuItems',
+						'showMenuItems',
+						'hideAllNonBaseMenuItem',
+						'showAllNonBaseMenuItem',
+						'translateVoice',
+						'startRecord',
+						'stopRecord',
+						'onRecordEnd',
+						'playVoice',
+						'pauseVoice',
+						'stopVoice',
+						'uploadVoice',
+						'downloadVoice',
+						'chooseImage',
+						'previewImage',
+						'uploadImage',
+						'downloadImage',
+						'getNetworkType',
+						'openLocation',
+						'getLocation',
+						'hideOptionMenu',
+						'showOptionMenu',
+						'closeWindow',
+						'scanQRCode',
+						'chooseWXPay',
+						'openProductSpecificView',
+						'addCard',
+						'chooseCard',
+						'openCard'
+					] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+				});
+				wx.ready(function() {
+					$('#scanner').on('click', function() {
+						wx.scanQRCode({
+							needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+							scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+							success: function(res) {
+								if(res.resultStr.indexOf('macno') != -1 && getUrlParam('macno', '', res.resultStr)) {
+									var macno = getUrlParam('macno', '', res.resultStr);
+									location.href = 'take_notice.html?macno=' + macno + '&order_id=' + getUrlParam('order_id');
+								} else {
+									dlctipbox.show('当前二维码无效');
+								}
+							},
+							error: function(err) {
+								console.log(err);
+							}
+						});
+					});
+				});
+			}
+		})
+	} else {
+		$('#scanner').on('click', function() {
+			//调用支付宝扫一扫
+			ready(function() {
+				AlipayJSBridge.call('scan', {
+					type: 'qr'
+				}, function(result) {
+					if(result.error == 10) {
+
+					} else if(result.error == 11) {
+
+					} else {
+						var macno = getUrlParam('macno', '', result.codeContent);
+						location.href = 'take_notice.html?macno=' + macno + '&order_id=' + getUrlParam('order_id');
+					}
+				})
+			});
+		});
+
+		function ready(callback) {
+			// 如果jsbridge已经注入则直接调用
+			if(window.AlipayJSBridge) {
+				callback && callback();
+			} else {
+				// 如果没有注入则监听注入的事件
+				document.addEventListener('AlipayJSBridgeReady', callback, false);
+			}
+		}
+	}
+
+	function isWeiXin() {
+		var ua = window.navigator.userAgent.toLowerCase();
+		console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+		if(ua.match(/MicroMessenger/i) == 'micromessenger') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	//轮播图
+	dlc_request('/get_device_img', {
+		'macno': get_save('macno')
+	}, function(res) {
+		console.log(res);
+		if(res.code == 1) {
+			var res = res.data;
+			var str = '';
+			for(var i in res) {
+				str += '<div class="swiper-slide"><a><img class="img" src="' + res[i] + '" style="width:100%;height: 4rem;" /></a></div>';
+			}
+			$('#slide').html(str);
+			var swiper = new Swiper('.swiper-container', {
+				pagination: '.swiper-pagination',
+				slidesPerView: 1,
+				paginationClickable: true,
+				spaceBetween: 30,
+				autoplay: 3000,
+				autoplayDisableOnInteraction: false, //falase,用户操作后，定时滑动
+				loop: true
+			});
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+	dlc_request('finish_order_info', {
+		'order_id': getUrlParam('order_id')
+	}, function(res) {
+		console.log(res);
+		if(res.code == 1) {
+			$('.order_num').text(res.data.tradeno);
+			$('.macno').text(res.data.macno);
+			$('.pack').text(res.data.pack_title);
+			$('.money').text(res.data.price + '元');
+			$('.over_time').text(res.data.end_time);
+			$('.free_time').text(res.data.free_charge_time);
+		} else {
+			dlctipbox.alert(res.msg);
+		}
+	});
+</script>

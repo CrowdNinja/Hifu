@@ -1,0 +1,192 @@
+
+<title>评价管理 - 评价列表</title>
+<div class="page-header">
+	<h1>
+		评价管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 评价列表
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+
+    <ul class="nav nav-tabs">
+        <!--<li><a href="/admin_system#page/admin_shop/">商家列表</a></li>-->
+        <li class="active"><a href="/admin_system#page/admin_comment">评价列表</a></li>
+    </ul>
+    <br />
+    
+
+    
+     <div class="panel panel-info">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> 筛选</div>
+    <div class="panel-body" style="display:">
+      
+            <div class="form-group form-search form-inline">
+                <label class="control-label">状态</label>
+				<select name="status" id="status" class="form-control">
+					<option value="">请选择</option>
+					<{foreach $comment_status as $k => $v}>
+					<option value="<{$k}>" <{if $get.status==strval($k)}>selected<{/if}>><{$v}></option>
+					<{/foreach}>
+				</select>
+                <label class="control-label">评价日期</label>
+                    <input class="form-control datetimepicker" name="createtime1" id="createtime1" type="text" value="<{$get.createtime1}>" placeholder="">
+                <label class="control-label">至</label>
+                    <input class="form-control datetimepicker" name="createtime2" id="createtime2" type="text" value="<{$get.createtime2}>" placeholder="">
+              
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> 搜索</button>
+
+			</div>
+       
+    </div>
+ 
+    </div>
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>                 
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th></th>
+								<th>商家</th>
+								<th>会员</th>
+								<th>星级</th>
+								<th>内容</th>
+								<th>日期</th>
+								<th>状态</th>
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $comment.list as $v}>
+							<tr class="alert1" align="left">
+								<td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+								<td><{$v['_adminid']}></td>
+                                <td><{$v['_userid']}></td>
+                                <td><{$v['grade']}></td>
+                                <td><{$v['text']}></td>
+                                <td><{formattime($v['createtime'])}></td>
+                                <td><select name="status[<{$v['id']}>]" class="form-control">
+					<{foreach $comment_status as $kk => $vv}>
+					<option value="<{$kk}>" <{if $v['status']==$kk}>selected<{/if}>><{$vv}></option>
+					<{/foreach}>
+				</select></td>
+							</tr>
+							<{/foreach}>
+					<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+						<td style="border:none" colspan="9"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$(':checkbox').each(function(){this.checked = ck});">
+						   	<{if chkcommand('/admin_comment/update')}>
+							<input id="btnUpdate" class="btn btn-lg btn-success" value="更新状态" type="button">
+                            <{/if}>
+                            <{if chkcommand('/admin_comment/delete')}>
+							<input id="btnDelete" class="btn btn-lg btn-default" value="删除" type="button">
+                            <{/if}>
+                            <{if chkcommand('/admin_comment/clear')}>
+							<input id="btnClear" class="btn btn-lg btn-default" value="清空" type="button"> 
+                            <{/if}>
+						</td>
+					</tr>
+
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$comment.total}> <{translate('条记录')}> <{$comment.pages}>  </td></tr></table>
+					
+				</form>
+                </div>
+			</div>
+		</div>
+
+ 
+	<script type="text/javascript">
+ 	var isbusy = false;
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+		$('.listpage').find('a').each(function(){
+			var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+			$(this).attr('href', url);
+		});
+		//YYYY-MM-DD HH:mm:ss
+		$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD',
+			language: 'zh-CN',
+			pickDate: true,
+			pickTime: true,
+			hourStep: 1,
+			minuteStep: 15,
+			secondStep: 30,
+			inputMask: true
+		});	
+		$('#btnUpdate').click(function(){
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(!ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+			tooltipbox.confirm('确定要执行更新操作？', function(){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_comment/update', $('#submitform').serialize(), function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(a,b,c){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			});
+		});
+		$('#btnDelete').click(function(){
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(!ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+			tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_comment/delete', data, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			}, false, { 'ids': ckvals });
+		});
+		$('#btnClear').click(function(){
+			tooltipbox.confirm('确定永久清空所有数据？', function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_comment/clear', { }, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(a, b, c){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			});
+		});
+	});
+</script>
+ 
+ 

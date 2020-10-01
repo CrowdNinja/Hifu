@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>WIFI配置</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,address=no"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../css/common.css"/>
+    <link rel="stylesheet" href="../css/main.css"/>
+    <style>
+        .list .item + .item{
+            margin-top: .5rem;
+        }
+    </style>
+</head>
+<body class="bgf5">
+    <article class="bigBox">
+        <section class="container">
+            <p class="tac ptb30">配置设备WIFI联网步骤</p>
+            <ul class="plr24 list">
+                <li class="item">
+                    <p class="col9">第一步</p>
+                    <p class="mt10 font15">手机需先连上WIFI</p>
+                </li>
+                <li class="item">
+                    <p class="col9">第二步</p>
+                    <p class="mt10 font15">设备通电，电源灯常亮</p>
+                </li>
+                <li class="item">
+                    <p class="col9">第三步</p>
+                    <p class="mt10 font15">将设备上的wifi开关按下1秒后松开</p>
+                </li>
+                <li class="item">
+                    <p class="col9">第四步</p>
+                    <p class="mt10 font15">输入wifi帐号、密码 点击确定连接</p>
+                    <p class="col9">如wifi不需要输入密码，请输入一个空格键</p>
+                </li>
+                <li class="item">
+                    <p class="col9">第五步</p>
+                    <p class="mt10 font15">设备联网灯保持快闪联网成功。</p>
+                </li>
+            </ul>
+        </section>
+        <footer class="plr40 ptb20">
+            <a class="bg_blue colw lh90 border-r6 btn_tap tac db" id="start">开始配置设备</a>
+        </footer>
+    </article>
+</body>
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+    dlc_request('/getTicket', {}, function (res) {
+        console.log(res);
+        if (res.data.errmsg == 'ok') {
+            var timestamp = (new Date().getTime() / 1000).toFixed(0);
+            var nonceStr = Math.random().toString(36).substr(2);
+            var ticket = wx_js(res.data.ticket, timestamp, nonceStr);
+            wx.config({
+                beta: true,
+                debug: false,
+                appId: res.data.appid,
+                timestamp: timestamp,
+                nonceStr: nonceStr,
+                signature: ticket,
+                jsApiList: [
+                    'configWXDeviceWiFi'
+                ]
+            });
+            wx.ready(function(){
+                $('#start').click(function(){
+                    WeixinJSBridge.invoke('configWXDeviceWiFi', {}, function(res){
+                       // alert(JSON.stringify(res));
+                        if(res.err_msg == 'configWXDeviceWiFi:ok'){
+                            dlctipbox.alert('配置成功',function(flag){
+                                if(flag == 1){
+                                    wx.closeWindow();
+                                }
+                            });
+                        }else if(res.err_msg == 'configWXDeviceWiFi:fail'){
+                            dlctipbox.alert('配置超时',function(flag){});
+                        } else if(res.err_msg == 'configWXDeviceWiFi:cancel'){
+//                            dlctipbox.alert('您取消了配置',function(flag){
+//                                if(flag == 1){
+//                                    wx.closeWindow();
+//                                }
+//                            });
+                        }
+                    });
+                });
+            });
+            wx.error(function (err) {
+                console.log(err);
+            });
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

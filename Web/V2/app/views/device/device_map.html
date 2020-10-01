@@ -1,0 +1,112 @@
+
+<div class="row">
+	<div class="col-xs-12">
+		<{if $return==1}>
+		<br/>
+		<a href="admin_system#page/admin_device?page=<{$page}>" class="btn btn-primary btn-sm" > <i class="fa fa-mail-reply"></i> 返回</a>
+		<{else}>
+		<div class="panel panel-info">
+			<div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> 筛选</div>
+			<div class="panel-body" style="display:none">
+
+				<div class="form-group form-search form-inline">
+					<label class="control-label">设备编号：</label>
+					<input id="macno" class="form-control input-width" name="macno" value="<{$smarty.get.macno}>" style="width:200px" />
+
+					<{if $gid==1}>
+					<label class="control-label">代理：</label>
+					<select id="agent_id" name="agent_id" class="form-control">
+						<option value="">请选择</option>
+						<{foreach $arrAgent as $v}>
+						<option value="<{$v['id']}>" <{if $smarty.get.agent_id==$v['id']}>selected="selected"<{/if}>><{$v['nickname']}></option>
+						<{/foreach}>
+					</select>
+					<{elseif $gid==1 || $gid==3}>
+					<label class="control-label">商家：</label>
+					<select id="adminid" name="adminid" class="form-control">
+						<option value="">请选择</option>
+						<{foreach $sellEr as $v}>
+						<option value="<{$v['id']}>" <{if $smarty.get.adminid==$v['id']}>selected="selected"<{/if}>><{$v['nickname']}></option>
+						<{/foreach}>
+					</select>
+					<{/if}>
+					<button class="btn btn-default btn-sm"><i class="fa fa-search"></i> 搜索</button>
+				</div>
+
+			</div>
+
+		</div>
+		<{/if}>
+		<div id="allmap" style="height: 750px;"></div>
+
+
+	</div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('.btn-default').click(function(){
+            var url = $.searchURL( location.href );
+            location.href = url;
+        });
+    });
+     var lng="<{$lng}>";
+     var lat="<{$lat}>";
+     var type="<{$return}>";
+	if(type!=1){//默认
+         lat=23.13;
+         lng=113.75;
+	}
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+	var	point = new BMap.Point(lng, lat);
+	var routeno = [];
+	map.centerAndZoom(point, 12);	
+	map.setCurrentCity("东莞");
+	map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
+	map.enableContinuousZoom();    //启用地图惯性拖拽，默认
+	
+	tagAtMap()//初始化
+
+	function tagAtMap(){
+		// 百度地图API功能
+		
+		// 编写自定义函数,创建标注
+		function addMarker(point,label,routeno){
+		  var marker = new BMap.Marker(point);
+		  var opts = {
+			  width : 200,     // 信息窗口宽度
+			  height: 100,     // 信息窗口高度
+			  title : "设备信息↓↓" , // 信息窗口标题
+			  enableMessage:true,//设置允许信息窗发送短息
+			  message:"亲耐滴，晚上一起吃个饭吧？戳下面的链接看下地址喔~"
+			}
+            var html="设备编号："+routeno['macno']+"<br> 设备地址："+routeno['address']+" <br/> 所属代理："+routeno['agentname']+" <br/> 所属商家："+routeno['sellername'];
+             var infoWindow = new BMap.InfoWindow(html, opts);  // 创建信息窗口对象
+		  marker.addEventListener("click", function(){
+			  map.openInfoWindow(infoWindow,point); //开启信息窗口
+//			 location.href = "/admin_system#page/admin_device/edit/"+routeno;//location.href实现客户端页面的跳转
+			 //alert(routeno);
+		  });
+		  //var label = new BMap.Label(num,{offset:new BMap.Size(20,-10)});
+			marker.setLabel(label);
+			
+		  	map.addOverlay(marker);	
+		  	setTimeout(function(){
+		  		//map.removeOverlay(marker);
+		  	},4995)
+		  	
+		}
+
+		var obj = eval('<{$list}>');
+		for(var i = 0; i < obj.length; i++){
+			//var point = new BMap.Point(obj.data[i].lng * 0.9 * Math.random()*100,obj.data[i].lat * 0.9 * Math.random()*100);
+			var point = new BMap.Point(obj[i].lng,obj[i].lat);
+			//console.info(point);
+			var label = new BMap.Label(obj[i].macno,{offset:new BMap.Size(20,-10)});
+
+			addMarker(point,label,obj[i].info);
+			
+		}
+
+	}
+</script>

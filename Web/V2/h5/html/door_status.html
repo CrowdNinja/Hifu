@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>开门状态</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.bottom_img {
+			width: 100%;
+			height: 2rem;
+			background: url(../img/yuyue.png) no-repeat;
+			background-size: 100% 100%;
+		}
+	</style>
+
+	<body class="bigBox">
+		<article class="flex1 pt140">
+			<div class="tac mtb80 list">
+				<div class="success">
+					<!--<p><img src="../img/success.png" / style="width: 1.3rem;"> </p>
+					<p class="col_time mt30">干衣机门已打开</p>
+					<p class="mt20">请带走所有衣物，</p>
+					<p>并记得关门喔！</p>-->
+				</div>
+				<!--<div class="fail dpn">
+					<p><img src="../img/fail.png" / style="width: 1.3rem;"> </p>
+					<p class="mt30">干衣机柜门</p>
+					<p class="mt20">打开失败</p>
+				</div>-->
+			</div>
+			<div class="plr90 pt80">
+				<div class="ptb20 plr40 mlr24 border-r1 bg_green colw tac" id="open">
+					<p class="font18">再次开门</p>
+					<p>若干衣机柜门未开，点击此处</p>
+				</div>
+				<p class="plr40 mt30 col6">若遇到问题没有打开可以联系酒店前台</p>
+			</div>
+		</article>
+		<div class="bottom_img"></div>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+	dlctipbox.loading('请稍后');
+	setTimeout(function() {
+		door_status();
+		dlctipbox.clear();
+	}, 3000);
+
+	function door_status() {
+		dlc_request('get_takes_status', {
+			'order_id': getUrlParam('order_id')
+		}, function(res) {
+			console.log(res)
+			if(res.code == 1) {
+				if(res.data == 1) {
+					$('.success').html('<p>' + '<img src="../img/success.png" / style="width: 1.3rem;">' + '</p>' +
+						'<p class="col_time mt30">干衣机门已打开' + '</p>' +
+						'<p class="mt20">请带走所有衣物，' + '</p>' +
+						'<p>并记得关门喔！' + '</p>'
+					);
+				} else {
+					$('.success').html('<p>' + '<img src="../img/fail.png" / style="width: 1.3rem;">' + '</p>' +
+						'<p class="mt30">干衣机柜门' + '</p>' +
+						'<p class="mt20">打开失败' + '</p>'
+					)
+				}
+			} else {
+				dlctipbox.alert(res.msg);
+			}
+		});
+	}
+
+	$('#open').on('click', function() {
+		dlctipbox.loading('请稍后');
+		dlc_request('anew_open_box', {
+			'order_id': getUrlParam('order_id')
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				dlctipbox.clear();
+				dlctipbox.alert(res.msg);
+				$('.success').html('<p>' + '<img src="../img/success.png" / style="width: 1.3rem;">' + '</p>' +
+					'<p class="col_time mt30">干衣机门已打开' + '</p>' +
+					'<p class="mt20">请带走所有衣物，' + '</p>' +
+					'<p>并记得关门喔！' + '</p>'
+				);
+			} else if(res.code == -88) {
+				dlctipbox.clear();
+				dlctipbox.alert(res.msg);
+				$('.success').html('<p>' + '<img src="../img/fail.png" / style="width: 1.3rem;">' + '</p>' +
+					'<p class="mt30">干衣机柜门' + '</p>' +
+					'<p class="mt20">打开失败' + '</p>'
+				)
+			} else {
+				dlctipbox.clear();
+				dlctipbox.alert(res.msg);
+			}
+		});
+	});
+		$(function() {
+		pushHistory();
+		window.addEventListener("popstate", function(e) {
+			//			alert("我监听到了浏览器的返回按钮事件啦"); //根据自己的需求实现自己的功能 
+			if(isWeiXin()) {
+				setTimeout(function() {
+					//这个可以关闭安卓系统的手机
+					document.addEventListener(
+						"WeixinJSBridgeReady",
+						function() {
+							WeixinJSBridge.call("closeWindow");
+						},
+						false
+					);
+					//这个可以关闭ios系统的手机
+					WeixinJSBridge.call("closeWindow");
+				}, 300);
+			} else {
+				setTimeout(function() {
+					//这个可以关闭安卓系统的手机
+					document.addEventListener(
+						"AlipayJSBridgeReady",
+						function() {
+							AlipayJSBridge.call('closeWebview');
+						},
+						false
+					);
+					//这个可以关闭ios系统的手机
+					AlipayJSBridge.call('closeWebview');
+				}, 300);
+			}
+
+		}, false);
+
+		function pushHistory() {
+			var state = {
+				title: "title",
+				url: "#"
+			};
+			window.history.pushState(state, "title", "#");
+		}
+	});
+
+	function isWeiXin() {
+		var ua = window.navigator.userAgent.toLowerCase();
+		console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+		if(ua.match(/MicroMessenger/i) == 'micromessenger') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+</script>

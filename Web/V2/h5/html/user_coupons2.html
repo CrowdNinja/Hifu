@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>优惠卷</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+		<style>
+			.coup_cont {
+				margin-top: 0.2rem;
+			}
+			
+			.coup_cont>img {
+				width: 100%;
+			}
+			
+			.coup_text {
+				width: 6.9rem;
+			}
+			
+			.coup_col {
+				color: #FF5B59;
+			}
+			
+			.coup_cola {
+				color: #C2C2C2;
+			}
+			
+			.coup_a1 {
+				font-weight: 400;
+				font-size: 0.4rem;
+			}
+			
+			.coup_a2 {
+				font-weight: 700;
+				font-size: 1rem;
+			}
+			
+			.coup_text {
+				position: absolute;
+			}
+			
+			.coup_img {
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
+			/* margin-left:5.4rem;margin-top: -1.5rem;*/
+			
+			.coup_img>img {
+				width: 1.5rem;
+			}
+			
+			.coup_qian {
+				text-align: center;
+				margin-left: 1rem;
+				margin-top: 0.2rem;
+			}
+			
+			.coup_p {
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<section class="bgcola">
+		<article class="plr30 content">
+			<!--<div class="coup_cont">-->
+			<!--<div class="coup_text">-->
+			<!--<div class="coup_col">-->
+			<!--<div class="coup_qian">-->
+			<!--<span class="coup_a1">￥</span>-->
+			<!--<span class="coup_a2">10</span>-->
+			<!--<span class="coup_img">-->
+			<!--<img src="../img/21a.png">-->
+			<!--</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--<p class="coup_p coup_col">有效期：2018-12-23</p>-->
+			<!--</div>-->
+			<!--<img src="../img/20a.png">-->
+			<!--</div>-->
+			<!--<div class="coup_cont">-->
+			<!--<div class="coup_text">-->
+			<!--<div class="coup_cola">-->
+			<!--<div class="coup_qian">-->
+			<!--<span class="coup_a1">￥</span>-->
+			<!--<span class="coup_a2">10</span>-->
+			<!--<span class="coup_img">-->
+			<!--<img src="../img/24.png">-->
+			<!--</span>-->
+			<!--</div>-->
+
+			<!--</div>-->
+			<!--<p class="coup_p coup_cola">有效期：2018-12-23</p>-->
+			<!--</div>-->
+			<!--<img src="../img/23a.png">-->
+			<!--</div>-->
+			<!--<div class="coup_cont">-->
+			<!--<div class="coup_text">-->
+			<!--<div class="coup_cola">-->
+			<!--<div class="coup_qian">-->
+			<!--<span class="coup_a1">￥</span>-->
+			<!--<span class="coup_a2">10</span>-->
+			<!--<span class="coup_img">-->
+			<!--<img src="../img/25.png">-->
+			<!--</span>-->
+			<!--</div>-->
+
+			<!--</div>-->
+			<!--<p class="coup_p coup_cola">有效期：2018-12-23</p>-->
+			<!--</div>-->
+			<!--<img src="../img/23a.png">-->
+			<!--</div>-->
+		</article>
+		</section>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script type="text/javascript">
+	var con_id = getUrlParam('con_id'); //从支付页面套餐id
+	var seller_id = getUrlParam('seller_id'); //从支付页面设备商家id
+	var page = 0;
+	$('.bgcola').dropload({
+		scrollArea: window,
+		domUp: {
+			domClass: 'dropload-up',
+			domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate: '<div class="dropload-update">↑释放更新</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>'
+		},
+		domDown: {
+			domClass: 'dropload-down',
+			domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+			domNoData: '<div class="dropload-noData">暂无更多数据</div>'
+		},
+
+		loadUpFn: function(me) {
+			page = 1;
+			dlc_request('user_coupon', {
+				'page': page
+			}, function(res) {
+				console.log(res);
+				if(res.code == 1) {
+					var str = '';
+					if(res.data.totalpage < page) {
+						me.lock();
+						me.noData();
+					} else if(res.data.list.length > 0) {
+						var data = res.data.list;
+						for(var i in data) {
+							if(data[i].status == 1) { //未使用
+								str += '<div class="coup_cont coup_user" data-id="' + data[i].id + '" data-money="' + data[i].money+ '">' + //优惠卷id
+										'<div class="coup_text">' +
+										'<div class="coup_col">' +
+										'<div class="coup_qian">' +
+										'<span class="coup_a1">￥</span>' +
+										'<span class="coup_a2">' + data[i].money+ '</span>' +
+										'<span class="coup_img">' +
+										'<img src="../img/bg_wei.png"> ' +
+										'</span>' +
+										'</div>' +
+										'</div>' +
+										'<p class="coup_p coup_col pl160 tac">'+'<span>有效期：' + format(data[i].end_time, "Y-m-d") + '</span>' + '</p>' +
+										'</div>' +
+										'<img src="../img/bg_youhu.png">' +
+										'</div>';
+							} else if(data[i].status == 2) { //已使用
+								str += '<div class="coup_cont">' +
+									'<div class="coup_text">' +
+									'<div class="coup_cola">' +
+									'<div class="coup_qian">' +
+									'<span class="coup_a1">￥</span>' +
+									'<span class="coup_a2">' + data[i].money+ '</span>' +
+									'<span class="coup_img">' +
+									'<img src="../img/24.png">' +
+									'</span>' +
+									'</div>' +
+									'</div>' +
+									'<p class="coup_p coup_cola pl160">有效期：' + format(data[i].end_time, "Y-m-d") + '</p>' +
+									'</div>' +
+									'<img src="../img/23a.png">' +
+									'</div>';
+							} else if(data[i].status == 3) { //已过期
+								str += '<div class="coup_cont">' +
+									'<div class="coup_text">' +
+									'<div class="coup_cola">' +
+									'<div class="coup_qian">' +
+									'<span class="coup_a1">￥</span>' +
+									'<span class="coup_a2">' + data[i].money+ '</span>' +
+									'<span class="coup_img">' +
+									'<img src="../img/25.png">' +
+									'</span>' +
+									'</div>' +
+									'</div>' +
+									'<p class="coup_p coup_cola pl160">有效期：' + format(data[i].end_time, "Y-m-d") + '</p>' +
+									'</div>' +
+									'<img src="../img/23a.png">' +
+									'</div>';
+							}
+						}
+					} else {
+						me.lock();
+						me.noData();
+					}
+					setTimeout(function() {
+						$('.content').html(str);
+						me.resetload();
+						me.unlock();
+						me.noData(false);
+					}, 1000);
+
+				} else {
+					dlctipbox.show(res.msg);
+				}
+			});
+
+		},
+
+		loadDownFn: function(me) {
+			page++;
+			dlc_request('user_coupon', {
+				'page': page
+			}, function(res) {
+				console.log(res);
+				if(res.code == 1) {
+					var str = '';
+					if(res.data.totalpage < page) {
+						me.lock();
+						me.noData();
+					} else if(res.data.list.length > 0) {
+						var data = res.data.list;
+						for(var i in data) {
+							if(data[i].status == 1) { //未使用
+								str += '<div class="coup_cont coup_user" data-id="' + data[i].id + '" data-money="' + data[i].money+ '">' + //优惠卷id
+										'<div class="coup_text">' +
+										'<div class="coup_col">' +
+										'<div class="coup_qian">' +
+										'<span class="coup_a1">￥</span>' +
+										'<span class="coup_a2">' + data[i].money+ '</span>' +
+										'<span class="coup_img">' +
+										'<img src="../img/bg_wei.png"> ' +
+										'</span>' +
+										'</div>' +
+										'</div>' +
+										'<p class="coup_p coup_col pl160 tac">'+'<span>有效期：' + format(data[i].end_time, "Y-m-d") + '</span>' + '</p>' +
+										'</div>' +
+										'<img src="../img/bg_youhu.png">' +
+										'</div>';
+							} else if(data[i].status == 2) { //已使用
+								str += '<div class="coup_cont">' +
+									'<div class="coup_text">' +
+									'<div class="coup_cola">' +
+									'<div class="coup_qian">' +
+									'<span class="coup_a1">￥</span>' +
+									'<span class="coup_a2">' + data[i].money+ '</span>' +
+									'<span class="coup_img">' +
+									'<img src="../img/24.png">' +
+									'</span>' +
+									'</div>' +
+									'</div>' +
+									'<p class="coup_p coup_cola pl160">有效期：' + format(data[i].end_time, "Y-m-d") + '</p>' +
+									'</div>' +
+									'<img src="../img/23a.png">' +
+									'</div>';
+							} else if(data[i].status == 3) { //已过期
+								str += '<div class="coup_cont">' +
+									'<div class="coup_text">' +
+									'<div class="coup_cola">' +
+									'<div class="coup_qian">' +
+									'<span class="coup_a1">￥</span>' +
+									'<span class="coup_a2">' + data[i].money + '</span>' +
+									'<span class="coup_img">' +
+									'<img src="../img/25.png">' +
+									'</span>' +
+									'</div>' +
+									'</div>' +
+									'<p class="coup_p coup_cola pl160">有效期：' + format(data[i].end_time, "Y-m-d") + '</p>' +
+									'</div>' +
+									'<img src="../img/23a.png">' +
+									'</div>';
+							}
+						}
+					} else {
+						me.lock();
+						me.noData();
+					}
+					setTimeout(function() {
+						$('.content').append(str);
+						me.resetload();
+						me.unlock();
+						me.noData(false);
+					}, 1000);
+				} else {
+					dlctipbox.show(res.msg);
+				}
+			});
+		},
+		threshold: 50
+	});
+</script>

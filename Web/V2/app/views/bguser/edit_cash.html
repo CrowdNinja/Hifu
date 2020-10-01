@@ -1,0 +1,269 @@
+<title>会员提现 - <{if $row['id']}>编辑<{else}>添加<{/if}>提现 </title>
+<div class="page-header">
+	<h1>
+		会员提现 <small> <i class="ace-icon fa fa-angle-double-right"></i> <{if $row['id']}>编辑<{else}>添加<{/if}>提现
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+	<script>window.UEDITOR_HOME_URL = '/app/third_party/ueditor1_4_3_3-utf8-php/';</script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>
+	<script type="text/plain" id="j_ueditorupload" style="height:5px;display:none;" ></script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.upload.js"></script>
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_cash/">提现列表</a></li>
+        <li class="active"><a href="/admin_system#page/admin_cash/edit/<{$row['id']}>"><{if $row['id']}>编辑<{else}>添加<{/if}>提现</a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+        
+    
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_user/edit_cash/<{$row['id']}>" method="post" accept-charset="utf-8">
+    
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right">会员*:</label>
+		<div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="userid" name="userid" value="<{$row['userid']}>" style="width:100%" <{if $row['id']}>readonly<{/if}> required />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+<script>
+$(function () {
+    $("#userid").select2({
+		ajax: {
+			url: "/admin_user/search",
+			data: function (params) {
+				return { 
+					keywords: params,
+				};
+			},
+			results:function(data,pageNo){
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) { 
+				return {
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},		
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $row['userid']}>$('#userid').select2('data', {id:"<{$row['userid']}>", text:"<{$row['user_account']}>"}).select2('val', ["<{$row['userid']}>"]);<{/if}>
+});
+</script>    
+
+
+ <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">提现编号*:</label>
+		<div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="cashno" name="cashno" value="<{if $row['cashno']}><{$row['cashno']}><{else}><{getrandno()}><{/if}>" class="form-control input-width" required />
+			</span>
+		</div>
+        <div class="col-xs-12 col-sm-1">
+        <a href="javascript:;" class=" check-cash btn  btn-primary btn-sm">检测重复</a>
+        </div>
+		<div class="help-block inline"></div>
+	</div>
+      
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right">金额*:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="money" type="text" name="money" value="<{$row['money']}>" class="form-control input-width" required <{if $row['id']}>readonly<{/if}> />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+      
+     
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right">手续费:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="fee" type="text" name="fee" value="<{$row['fee']}>" class="form-control input-width" <{if $row['id']}>readonly<{/if}> />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+      
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right">备注:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="desc" type="text" name="desc" value="<{$row['desc']}>" class="form-control input-width" />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+                   
+    
+      
+          
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right">处理状态:</label>
+        <input type="hidden" name="_status" value="<{$row['status']}>">
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+            	<select name="status" id="status" class="form-control">
+               		<{foreach $cash_status as $k => $v}>                 
+                		<option value="<{$k}>" <{if strval($row['status'])==strval($k)}>selected<{/if}>><{$v}></option>
+                	<{/foreach}>
+                    
+                </select> 
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right">申请时间:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="createtime" type="text" name="createtime" value="<{formattime($row['createtime'], 'Y-m-d H:i:s', formattime(time()))}>" class="form-control input-width datetimepicker" />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+    
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right">处理时间:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="lasttime" type="text" name="lasttime" value="<{formattime($row['lasttime'], 'Y-m-d H:i:s', '')}>" class="form-control input-width datetimepicker" />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+    
+          
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right">提现资料:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+            	<textarea name="bankdata" id="bankdata"  class="form-control input-width"><{$row['bankdata']}></textarea>
+			</span>
+		</div>
+		<div class="help-block inline">* 请填写收款银行/微信/支付宝信息</div>
+	</div>
+    
+    	 <div class="form-group">
+				<label class="col-xs-12 col-sm-3 control-label no-padding-right">处理截图:</label>
+    			<input type="hidden" name="thumb" value="<{$row['thumb']}>" />
+				<div class="col-xs-12 col-sm-5">
+                	<div class="upfile_imgthumb">
+                        <img src="<{if $row['thumb']}><{$row['thumb']}><{else}>/style/xin_inselimg.png<{/if}>" data-default="/style/xin_inselimg.png" class="btn-prefile">
+                        <div class="upfile_imgcaption">
+                                <a href="javascript:;" class="btn btn-primary btn-xs btn-upfile">上传</a> 
+                                <a href="javascript:;" class="btn btn-default btn-xs btn-upremove">删除</a>
+                        </div>
+                    </div>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+			 
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button" id="saveedit" class="btn  btn-primary btn-lg">提交</button>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			ignore: '',
+			rules: {
+				title: {
+					required: true
+				}
+			}
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker-date').datetimepicker({
+		format: 'YYYY-MM-DD',
+        language: 'zh-CN',
+        pickDate: true,
+        pickTime: false,
+        hourStep: 1,
+        minuteStep: 15,
+        secondStep: 30,
+        inputMask: true
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker').datetimepicker({
+		format: 'YYYY-MM-DD HH:mm:ss',
+        language: 'zh-CN',
+        pickDate: true,
+        pickTime: true,
+        hourStep: 1,
+        minuteStep: 15,
+        secondStep: 30,
+        inputMask: true
+	});
+	$('.check-cash').click(function(){
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_cash/check', { 'id': "<{$row['id']}>", 'cashno': $('#cashno').val() }, function(res){
+			if(res.status == '0'){
+				tooltipbox.alert('提现编号未添加');
+			}else if(res.status == '-1'){
+				tooltipbox.alert("<{translate('数据或网络错误')}>");
+			}else{
+				tooltipbox.alert('提现编号已经存在');	
+			}
+		}, 'json').error(function(){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+		});
+	});
+	$('#saveedit').click(function(){
+		if(!$('#submitform').valid())return false;
+		if(isbusy)return false;
+		isbusy = true;
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_cash/edit/<{$row['id']}>', $('#submitform').serialize(), function(res){
+			if(res.status == '1'){
+				tooltipbox.show('操作完成');
+				location.href = '/admin_system#page/admin_cash';
+			}else if(res.status == '0'){
+				tooltipbox.alert('相同记录已经存在');	
+			}else{
+				tooltipbox.show("<{translate('数据或网络错误')}>");
+			}
+			isbusy = false;
+		}, 'json').error(function(a, b, c){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+			isbusy = false;
+		});
+	});
+});
+</script> 

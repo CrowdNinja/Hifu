@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>订单记录</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style>
+		.address{
+			width: 0.24rem;
+			height: 0.27rem;
+			vertical-align: middle;
+		}
+	</style>
+
+	<body>
+		<section class="plr24 font_color container">
+			<header>
+				<div class="ml50 mr30 flex_sb font15 ptb20">
+					<div class="">设备地址</div>
+					<div class="">总收益（元）</div>
+				</div>
+			</header>
+			<article class="list">
+				<!-- <a href="/" class="flex_sb bw plr30 border-r1 mb10">
+					<div>
+						<span class="db font16 pt30 fw">如天酒店</span>
+						<span class="db pt20 pb30 col9"><img class="address mr10" src="../img/ico3.png" >东莞市南城区鸿福路25号</span>
+					</div>
+					<div class="font18 color_green mr30 tac" style="width: 1.2rem;">2282.0</div>
+				</a>
+				<a href="/" class="flex_sb bw plr30 border-r1">
+					<div>
+						<span class="db font16 pt30 fw">如天酒店</span>
+						<span class="db pt20 pb30 col9"><img class="address mr10" src="../img/ico3.png" >东莞市南城区鸿福路25号</span>
+					</div>
+					<div class="font18 color_green mr30 tac" style="width: 1.2rem;">222.0</div>
+				</a> -->
+			</article>
+		</section>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script>
+	var page = 0;
+		jerry = '';
+	
+	function get_list(){
+		dlc_request('/order_list', {
+				'page': page,
+				'shop_token':get_save('token')
+			}, function(res) {
+				console.log(res);
+				if(res.code == 1) {
+					var str = '';
+					if(res.data.totalpage < page) {
+						jerry.lock();
+						jerry.noData();
+					} else if(res.data.list.length > 0) {
+						var data = res.data.list;
+						for(var i in data) {
+							str += '<a href="./order_detail.html?param=' + data[i].shop_id + '" class="flex_sb bw plr30 border-r1 mb10">' +
+								'<div>' +
+								'<span class="db font16 pt30 fw">' + data[i].nickname + 
+								'</span>' +
+								'<span class="db pt20 pb30 col9">' +
+								'<img class="address mr10" src="../img/ico3.png" >' + data[i].address + 
+								'</span>' +
+								'</div>' +
+								'<div class="font18 color_green mr30 tac" style="width: 1.2rem;">' + data[i].total_money +
+								'</div>' +
+								'</a>';
+						}
+					} else {
+						jerry.lock();
+						jerry.noData();
+					}
+					setTimeout(function() {
+						if(page == 1) {
+							$('.list').html(str);
+						} else {
+							$('.list').append(str);
+						}
+						onOff = 0;
+						jerry.resetload();
+						jerry.unlock();
+						jerry.noData(false);
+					}, 1000);
+				} else {
+					dlctipbox.show(res.msg);
+				}
+			});
+	}
+	
+	$('.container').dropload({
+		scrollArea: window,
+		domUp: {
+			domClass: 'dropload-up',
+			domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate: '<div class="dropload-update">↑释放更新</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>'
+		},
+		domDown: {
+			domClass: 'dropload-down',
+			domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+			domNoData: '<div class="dropload-noData">暂无更多数据</div>'
+		},
+		loadUpFn: function(me) {
+			page = 1;
+			jerry = me;
+			get_list();
+		},
+		loadDownFn: function(me) {
+			page++;
+			jerry = me;
+			get_list();
+		},
+		threshold: 50
+	});
+</script>

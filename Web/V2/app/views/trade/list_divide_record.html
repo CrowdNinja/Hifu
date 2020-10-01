@@ -1,0 +1,186 @@
+<title><{translate('财务管理')}> - <{translate('分成记录列表')}></title>
+<!--<div class="page-header">-->
+<!--<h1>-->
+<!--财务管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 分成记录列表-->
+<!--</small>-->
+<!--</h1>-->
+<!--</div>-->
+<!-- /.page-header -->
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <a href="/admin_system#page/<{$url}>/index?page=<{$p}>"  class="btn btn-sm btn-primary"><i class="fa fa-mail-reply"></i> <{translate('返回')}></a>
+        <div class="col-xs-12" style="margin-bottom:20px;padding-left:0">
+
+        </div>
+
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="admin_system#page/admin_trade/divide_record/<{$id}>/<{$p}>/<{$url}>"><{translate('分成记录列表')}></a></li>
+        </ul>
+
+
+        <br/>
+
+
+        <div class="panel panel-success">
+            <div class="panel-heading"><{translate('筛选')}></div>
+            <div class="panel-body">
+
+                <div class="form-group form-search form-inline">
+                    <label class="control-label"><{translate('订单号')}></label>
+                    <input id="order_no" class="form-control" name="order_no" value="<{$smarty.get.order_no}>" style="width:200px" />
+
+                    <!--<{if $gid==1}>
+                    <label class="control-label">代理：</label>
+                    <select id="agent_id" name="agent_id" class="form-control">
+                        <option value="">请选择</option>
+                        <{foreach $agent as $v}>
+                        <option value="<{$v['id']}>" <{if $smarty.get.agent_id==$v['id']}>selected="selected"<{/if}>><{$v['agentname']}></option>
+                        <{/foreach}>
+                    </select>
+                    <{/if}>
+                    <{if $gid<3}>
+                    <label class="control-label">商户：</label>
+                    <select id="seller_id" name="seller_id" class="form-control">
+                        <option value="">请选择</option>
+                        <{foreach $seller_list as $v}>
+                        <option value="<{$v['id']}>" <{if $smarty.get.seller_id==$v['id']}>selected="selected"<{/if}>><{$v['agentname']}></option>
+                        <{/foreach}>
+                    </select>
+                    <{/if}>
+                    <br /><br />-->
+
+                    <label class="control-label"><{translate('分成日期')}></label>
+                    <input class="form-control " name="createtime1" id="createtime1" type="text" value="<{$smarty.get.createtime1}>" placeholder="">
+                    <label class="control-label"><{translate('至')}></label>
+                    <input class="form-control " name="createtime2" id="createtime2" type="text" value="<{$smarty.get.createtime2}>" placeholder="">
+
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('搜索')}></button>
+                    <br/>
+                    <br/>
+                    <span class="label label-warning arrowed arrowed-right"><{translate('总收益金额')}>：<{$total_money}> <{translate('元')}></span>
+                    <span class="label label-success arrowed arrowed-right"><{translate('正常收益金额')}>：<{$money}> <{translate('元')}></span>
+                    <span class="label label-danger arrowed arrowed-right"><{translate('已退款金额')}>：<{$refund_money}> <{translate('元')}></span>
+                    <!--<button id="importBtn" class="btn btn-sm btn-pink"><i class="fa fa-download"></i> 导出</button>-->
+                </div>
+
+            </div>
+
+        </div>
+        <script>
+            $(function(){
+                //这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+                //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+                //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+                $('.btn-default').click(function(){
+                    var url = $.searchURL( location.href );
+                    location.href = url;
+                });
+                laydate.render({
+                    elem: '#createtime1',
+                });
+                laydate.render({
+                    elem: '#createtime2'
+                });
+            });
+        </script>
+
+        <form class="form-horizontal" role="form" id="submitform">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th><{translate('序号')}></th>
+                    <th><{translate('收益人')}></th>
+                    <th><{translate('订单编号')}></th>
+                    <th><{translate('收益金额')}></th>
+                    <th><{translate('分成比例')}></th>
+                    <th><{translate('分成时间')}></th>
+                    <th><{translate('状态')}></th>
+                    <!--<th>操作</th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <{foreach $row.list as $k => $v}>
+                <tr class="alert1 success" align="left">
+                    <td><input type="checkbox" name="ids[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+                    <td><{$v['nickname']}></td>
+                    <td><{$v['order_no']}> <a href="admin_system#page/admin_trade/?tradeno=<{$v['order_no']}>" > <i class=" fa fa-eye"></i>
+                    </a></td>
+                    <td>￥<{$v['money']}></td>
+                    <td><{$v['proportion']}>%</td>
+                    <td><{$v['ctime']}></td>
+                    <td><{if $v['status']==-1}><b style="color:red;"><{translate('已退款')}></b>  <span class="label label-danger arrowed-in arrowed-in-right"><{$v['refund_time']}> </span> <{else}><{translate('正常')}><{/if}></td>
+                    <!--<td>-->
+                    <!--<a href="admin_system#page/admin_order/details/<{$v['id']}>/<{$page}>" class="btn btn-primary btn-xs"> 详情</a>-->
+                    <!--</td>-->
+                </tr>
+                <{/foreach}>
+                <!--<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">-->
+                <!--<td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">-->
+                <!--<input id="btnDelete" class="btn btn-default" value="删除" type="button">-->
+                <!--<input id="btnClear" class="btn btn-default" value="清空" type="button">-->
+                <!--</td>-->
+                <!--</tr>-->
+
+                </tbody>
+            </table>
+            <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$row.total}> <{translate('条记录')}> <{$row.pages}>  </td></tr></table>
+
+        </form>
+    </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+
+    //这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+    //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+    //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+    $(function(){
+        $('.listpage').find('a').each(function(){
+            var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+            $(this).attr('href', url);
+        });
+
+        $('#btnDelete').click(function(){
+            var ckvals = $.selectCK('input[name="ids[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_order/delete', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            }, false, { 'ids': ckvals });
+        });
+        $('#btnClear').click(function(){
+            tooltipbox.confirm('确定永久清空所有数据？', function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_order/clear', { }, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(a, b, c){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            });
+        });
+    });
+</script>
+
+

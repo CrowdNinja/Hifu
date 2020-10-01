@@ -1,0 +1,110 @@
+<!-- /.page-header -->
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="javascript:;" class="back"><{translate('评价列表')}></a></li>
+        <li class="active"><a href="/admin_system#page/admin_shop/evaluate_info"><{translate('评价详情')}></a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_device/edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('商家名称')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                <input type="text" name="shop_name" value="<{$row['shop_name']}>" class="form-control input-width" />
+                            </span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('评价内容')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<textarea id="content" type="text" name="content"  style="height: 150px;" class="form-control input-width" ><{$row['content']}> </textarea>
+			</span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('评价图片')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<{if $row['imgs']}>
+                                <{foreach explode("\n", str_replace("\r", "", $row['imgs'])) as $k => $v}>
+                                <div class="upfile_imgthumb">
+                                    <img src="<{$v}>" data-default="/style/xin_inselimgs.png"   class="img-prefile">
+
+                                </div>
+                                <{/foreach}>
+                <{else}> 无
+                            <{/if}>
+			</span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('评论级别')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input type="text" name="score" value="<{$row['score']}>" class="form-control input-width" />
+			</span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('评论人')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input type="text" name="nickname" value="<{$row['user']['nickname']}>" class="form-control input-width" />
+			</span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('评价时间')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+                            <span class="block">
+                                <input type="text" name="ctime" value="<{$row['ctime']}>" class="form-control input-width" />
+                            </span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+                    <div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button"  class=" back btn  btn-primary btn-lg"><{translate('返回')}></button>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('.back').click(function(){
+        history.back(-1);
+	});
+    $('.img-prefile').viewer('destroy').viewer({});
+    $('.img-prefile').parent().off('click', '.viewer-canvas').on('click', '.viewer-canvas', function(e){
+        var _con = $(this).find('img');
+        if(_con && !_con.is(e.target) && _con.has(e.target).length === 0){
+            $('.img-prefile').viewer('hide');
+        }
+    });
+});
+</script> 

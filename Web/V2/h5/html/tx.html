@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>提现</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<link rel="stylesheet" href="../js/drop/dropload.css" />
+	</head>
+	<style>
+		.col_gr {
+			color: #03C161;
+		}
+		
+		.col_bl {
+			color: #1C81D1;
+		}
+		
+		.col_or {
+			color: #FC9B3D;
+		}
+		
+		.col_red {
+			color: #FF4063;
+		}
+	</style>
+
+	<body class="bgf5 tx">
+		<article class="plr24 pt24">
+			<section class="bw plr24 border-r1">
+				<div class="h100 flex_sb bdb" id='bank_link'>
+					<span>提现至</span>
+					<div class="flex_a col9">
+						<span id="bank">请绑定微信</span>
+						<div class="arrow_right bank_tip"></div>
+					</div>
+				</div>
+				<div class="mt50 plr40">
+					<p class="font15">提现金额</p>
+					<div class="flex_a bdb ptb50 mt30">
+						<img src="../img/rmb.png" style="width: .32rem;">
+						<input type="number" placeholder="请输入" class="ml20 flex1 font17" id="tx_money">
+					</div>
+					<div class="ptb30 col9">
+						<span class="col9 font15" id="money"></span>
+						<cite class="color_green ml10 font13" id="tx_all">全部提现</cite>
+						<span class="fr"><img src="../img/daozhang.png" / style="width: .55rem;"> </span>
+					</div>
+				</div>
+				<div class="mt20 plr30 pb40">
+					<div class="bg_green colw lh100 border-r6 tac font15 mta" id="btn">提现</div>
+				</div>
+
+			</section>
+			<section>
+				<p class="mtb20">提现记录</p>
+				<article class="container">
+					<ul class="list">
+						<!--<li class="bw plr24 ptb30 flex_sb">
+							<div>
+								<p>提现金额：<span>2565</span></p>
+								<p>提现金额：<span>2565</span></p>
+								<p class="mt10 col9">提现时间：2017-11-12 20:53</p>
+							</div>
+							<div>
+								<p>
+									已打款
+								</p>
+								<p>
+									已打款
+								</p>
+							</div>
+						</li>-->
+					</ul>
+				</article>
+			</section>
+		</article>
+	</body>
+
+</html>
+<script src="../js/jquery-1.8.3.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script>
+	var now_code;
+	if(isWX_Allipay() == 'WX') { //微信
+		now_code = getUrlParam('code');
+	} else if(isWX_Allipay() == 'Allipay') { //支付宝
+		now_code = getUrlParam('auth_code');
+	} else { //其他浏览器
+		location.replace('./illegal.html');
+	}
+	dlc_request('is_admin_user', {
+		'shop_token': get_save('token')
+	}, function(res) {
+		console.log(res);
+		if(res.code == 1) {
+			$('#bank_link').hide();
+			console.log(res.msg);
+		} else {
+			if(isWX_Allipay() == 'WX') {
+				$('#bank_link').show();
+			} else {
+				$('#bank_link').hide();
+			}
+			if(!now_code) {
+				$('#bank_link').on('click', function() {
+					if(isWX_Allipay() == 'WX') {
+						location.replace("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + res.data.appid + "&redirect_uri=" + window.location.href + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");
+					} else {
+						location.href = 'https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=' + res.data.appid + '&scope=auth_userinfo&redirect_uri=' + encodeURIComponent(window.location.href);
+					}
+				});
+			} else {
+				get_userinfo();
+			}
+
+		}
+	});
+
+	function get_userinfo() {
+		// 获取个人信息
+		var data = {
+			'shop_token': get_save('token')
+		};
+		if(now_code) {
+			data.code = now_code;
+		}
+		dlc_request('set_admin_user', data, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				dlctipbox.alert(res.msg);
+				setTimeout(function() {
+					location.reload();
+				}, 500);
+			} else {
+				dlctipbox.alert(res.msg);
+			}
+		});
+	}
+
+	get_msg();
+	var onOff = 0;
+	//	var carda = $('.card').text();
+	$('#btn').click(function() {
+		if(onOff) return false;
+		var tx_money = $('#tx_money').val();
+		if(isNull(tx_money)) {
+			dlctipbox.show('请输入提现金额');
+		} else if(tx_money * 1 > $('#money').data('money') * 1) {
+			dlctipbox.show('可提现金额不足');
+		} else {
+			onOff = 1;
+			dlc_request('/shop_cash', {
+				'shop_token': get_save('token'),
+				'money': tx_money
+			}, function(res) {
+				console.log(res);
+				if(res.code == 1) {
+					$('#tx_money').val('');
+					setTimeout(function() {
+						onOff = 0;
+						get_msg();
+					}, 1000);
+				} else {
+					onOff = 0;
+				}
+				dlctipbox.show(res.msg);
+			});
+		}
+	});
+
+	function get_msg() {
+		dlc_request('/get_shop_money', {
+			'shop_token': get_save('token')
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				$('#money').text('可提现余额￥' + res.data.money).attr('data-money', res.data.money);
+			} else {
+				dlctipbox.show(res.msg);
+			}
+			//		if(isNull(carda)) {
+			//			$('#number_card').hide();
+			//		} else {
+			//			$('#number_card').show();
+			//		};
+		});
+	}
+	//  }
+	$('#tx_all').click(function() {
+		$('#tx_money').val($('#money').data('money'));
+	});
+	var isPageHide = false;
+	window.addEventListener('pageshow', function() {
+		if(isPageHide) {
+			window.location.reload();
+		}
+	});
+	window.addEventListener('pagehide', function() {
+		isPageHide = true;
+	});
+
+	var page = 0;
+	$('.container').dropload({
+		scrollArea: window,
+		domUp: {
+			domClass: 'dropload-up',
+			domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate: '<div class="dropload-update">↑释放更新</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>'
+		},
+		domDown: {
+			domClass: 'dropload-down',
+			domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad: '<div class="dropload-load"><span class="loadings"></span>加载中...</div>',
+			domNoData: '<div class="dropload-noData">我是有底线的哦~</div>'
+		},
+		loadUpFn: function(me) {
+			page = 1;
+			dlc_request('/cash_list', {
+				'page': page,
+				'shop_token': get_save('token')
+			}, function(res) {
+				console.log(res);
+				if(res.code == 1) {
+					var str = '';
+					if(res.data.totalpage < page) {
+						me.lock();
+						me.noData();
+					} else if(res.data.list.length > 0) {
+						var data = res.data.list;
+						for(var i in data) {
+							if(data[i].status == 1) {
+								data[i].status = "已通过";
+							} else if(data[i].status == 2) {
+								data[i].status = "已拒绝";
+							} else if(data[i].status == 0) {
+								data[i].status = "待审核";
+							} else {
+								data[i].status = "已打款";
+							}
+							str += '<li class="bw plr24 ptb30 flex_sb bdb">' +
+								'<div>' +
+								'<p class="font15">提现金额：' + data[i].money +
+								'</p>' +
+								'<p class="font15">提现时间：' + data[i].createtime +
+								'</p>' +
+								'</div>' +
+								'<div>' +
+								'<p class="tae ' + (data[i].status == "已通过" ? 'col_bl' : data[i].status == "待审核" ? 'col_or' : data[i].status == "已打款" ? 'col_gr' : 'col_red') + '">' + data[i].status +
+								'</p>' +
+								'<p class="tae">' + data[i].fail +
+								'</p>' +
+								'</div>' +
+								'</li>';
+						}
+					} else {
+						me.lock();
+						me.noData();
+					}
+					setTimeout(function() {
+						$('.list').html(str);
+						me.resetload();
+						me.unlock();
+						me.noData(false);
+					}, 1000);
+				} else {
+					dlctipbox.show(res.msg);
+				}
+			});
+		},
+		loadDownFn: function(me) {
+			page++;
+			dlc_request('/cash_list', {
+				'page': page,
+				'shop_token': get_save('token')
+			}, function(res) {
+				console.log(res);
+				if(res.code == 1) {
+					var str = '';
+					if(res.data.totalpage < page) {
+						me.lock();
+						me.noData();
+					} else if(res.data.list.length > 0) {
+						var data = res.data.list;
+						for(var i in data) {
+							if(data[i].status == 1) {
+								data[i].status = "已通过";
+							} else if(data[i].status == 2) {
+								data[i].status = "已拒绝";
+							} else if(data[i].status == 0) {
+								data[i].status = "待审核";
+							} else {
+								data[i].status = "已打款";
+							}
+							str += '<li class="bw plr24 ptb30 flex_sb bdb">' +
+								'<div>' +
+								'<p class="font15">提现金额：' + data[i].money +
+								'</p>' +
+								'<p class="font15">提现时间：' + data[i].createtime +
+								'</p>' +
+								'</div>' +
+								'<div>' +
+								'<p class="tae ' + (data[i].status == "已通过" ? 'col_bl' : data[i].status == "待审核" ? 'col_or' : data[i].status == "已打款" ? 'col_gr' : 'col_red') + '">' + data[i].status +
+								'</p>' +
+								'<p class="tae">' + data[i].fail +
+								'</p>' +
+								'</div>' +
+								'</li>';
+						}
+					} else {
+						me.lock();
+						me.noData();
+					}
+					setTimeout(function() {
+						$('.list').append(str);
+						me.resetload();
+						me.unlock();
+						me.noData(false);
+					}, 1000);
+				} else {
+					dlctipbox.show(res.msg);
+				}
+			});
+		},
+		threshold: 50
+	});
+</script>

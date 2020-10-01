@@ -1,0 +1,166 @@
+
+<title>银行管理 - 银行列表</title>
+<div class="page-header">
+	<h1>
+		银行管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> 银行列表
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+
+<div class="row">
+	<div class="col-xs-12">
+
+    <ul class="nav nav-tabs">
+        <li class=" active" ><a href="/admin_system#page/admin_bank">银行列表</a></li>
+
+    </ul>
+    <br />
+    
+
+    
+     <div class="panel panel-info">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> 筛选</div>
+    <div class="panel-body" style="display:">
+      
+            <div class="form-group form-search form-inline">
+            	<label class="control-label">银行卡名称</label>
+               
+                    <input class="form-control" name="bank_name" id="bank_name" type="text" value="<{$get.bank_name}>" placeholder="银行卡名称">
+
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> 搜索</button>
+
+			</div>
+       
+    </div>
+ 
+    </div>
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>                 
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover table-list">
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>银行名称</th>
+								<th>银行卡logo</th>
+								<th>银行标识码</th>
+								<th>银行卡背景图</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $list.list as $v}>
+							<tr class="alert1" align="left">
+								<td> <{$v['id']}></td>
+                                <td><{$v['bank_name']}></td>
+								<td><img src="<{$v['bank_logo']}>" class="img-prefile" width="35" /></td>
+								<td><{$v['bank_code']}></td>
+                                <td><img src="<{$v['bank_background']}>" class="img-prefile" width="35" /></td>
+								<td>
+                                 <{if chkcommand('/admin_bank/edit')}>
+									<a href="admin_system#page/admin_bank/edit/<{$v['id']}>" class="btn btn-success btn-xs"> <i class="fa fa-edit"></i> <{translate('修改')}></a>
+                                 <{/if}>
+                                 </td>
+							</tr>
+							<{/foreach}>
+					<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+						<td style="border:none" colspan="9"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$(':checkbox').each(function(){this.checked = ck});">
+
+							<{if chkcommand('/admin_bank/edit')}>
+                            <a href="/admin_system#page/admin_bank/edit" class="btn btn-lg btn-primary">+ 添加银行</a>
+                            <{/if}>
+						</td>
+					</tr>
+
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$list.total}> <{translate('条记录')}> <{$list.pages}>  </td></tr></table>
+					
+				</form>
+                </div>
+			</div>
+		</div>
+ 
+	<script type="text/javascript">
+ 	var isbusy = false;
+	//这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$(function(){
+		$('.img-prefile').viewer('destroy').viewer({});
+		$('.img-prefile').parent().off('click', '.viewer-canvas').on('click', '.viewer-canvas', function(e){
+			var _con = $(this).find('img');
+			if(_con && !_con.is(e.target) && _con.has(e.target).length === 0){
+				$('.img-prefile').viewer('hide');
+			}
+		});
+		$('.listpage').find('a').each(function(){
+			var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+			$(this).attr('href', url);
+		});
+		//YYYY-MM-DD HH:mm:ss
+		$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD',
+			language: 'zh-CN',
+			pickDate: true,
+			pickTime: true,
+			hourStep: 1,
+			minuteStep: 15,
+			secondStep: 30,
+			inputMask: true
+		});	
+
+		$('#btnDelete').click(function(){
+			var ckvals = $.selectCK('input[name="id[]"]');
+			if(!ckvals){
+				tooltipbox.show("<{translate('请选择要操作的数据')}>");
+				return false;
+			}
+			tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_device/delete', data, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			}, false, { 'ids': ckvals });
+		});
+		$('#btnClear').click(function(){
+			tooltipbox.confirm('确定永久清空所有数据？', function(data){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_device/clear', { }, function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(a, b, c){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+			});
+		});
+	});
+</script>
+ 
+ 

@@ -1,0 +1,257 @@
+<title>护床管理 - <{if $row['id']}>编辑<{else}>添加<{/if}>护床 </title>
+<div class="page-header">
+	<h1>
+		护床管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> <{if $row['id']}>编辑<{else}>添加<{/if}>护床
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_device/goods">护床列表</a></li>
+        <li class="active"><a href="/admin_system#page/admin_device/goods_edit/<{$row['id']}>"><{if $row['id']}>编辑<{else}>添加<{/if}>护床</a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+        
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_device/goods_edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+           
+            <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">选择柜子<{if $_admin->_role_type != 0}>*<{/if}>:</label>
+		<div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="deviceid" name="deviceid" value="<{$row['deviceid']}>" style="width:100%" <{if $_admin->_role_type != 0}>required<{/if}> />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+<script>
+$(function () {
+    $("#deviceid").select2({
+		ajax: {
+			url: "/admin_device/search",
+			data: function (params) {
+				return { 
+					keywords: params,
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': '请选择'});
+				}else{
+					data['data'] = [{'id':'', 'text': '请选择'}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) { 
+				return {
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},		
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $row['deviceid']}>$('#deviceid').select2('data', {id:"<{$row['deviceid']}>", text:"<{$row['deviceid_macno']}>"}).select2('val', ["<{$row['deviceid']}>"]);<{/if}>
+});
+</script>    
+			
+            <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">护床号1*:</label>
+		<div class="col-xs-12 col-sm-3">
+			<span class="block">
+				<input id="macno" name="macno" value="<{$row['macno']}>" class="form-control input-width" required />
+			</span>
+		</div>
+        <!--<div class="col-xs-12 col-sm-1">
+        <a href="javascript:;" data-field="macno" class=" dechex-device_goods btn  btn-info btn-sm">16转10进制</a>
+        </div>-->
+        <div class="col-xs-12 col-sm-1">
+        <a href="javascript:;" data-field="macno" class=" check-device_goods btn  btn-primary btn-sm">检测重复</a>
+        </div>
+		<div class="help-block inline"></div>
+	</div>
+    
+     <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">护床号2*:</label>
+		<div class="col-xs-12 col-sm-3">
+			<span class="block">
+				<input id="macno2" name="macno2" value="<{$row['macno2']}>" class="form-control input-width" required />
+			</span>
+		</div>
+        <!--<div class="col-xs-12 col-sm-1">
+        <a href="javascript:;" data-field="macno2" class=" dechex-device_goods btn  btn-info btn-sm">16转10进制</a>
+        </div>-->
+        <div class="col-xs-12 col-sm-1">
+        <a href="javascript:;" data-field="macno2" class=" check-device_goods btn  btn-primary btn-sm">检测重复</a>
+        </div>
+		<div class="help-block inline"></div>
+	</div>
+    
+    <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">格子位置:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="devicebox" type="text" name="devicebox" max="10" value="<{$row['devicebox']}>" class="form-control input-width" />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+    
+      
+		<!--	<div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">成本价:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="costprice" type="text" name="costprice" value="<{$row['costprice']}>" class="form-control input-width" />
+			</span>
+		</div>
+		<div class="help-block inline">* 会员上报丢失时直接扣除</div>
+	</div>-->
+    
+          
+    <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">添加时间:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="createtime" type="text" name="createtime" value="<{formattime($row['createtime'], 'Y-m-d H:i:s', '')}>" class="form-control input-width datetimepicker" />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+      
+    <!--<div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">心跳时间:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="updatetime" type="text" name="updatetime" value="<{formattime($row['updatetime'], 'Y-m-d H:i:s', '')}>" class="form-control input-width datetimepicker" />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>-->
+     
+        
+    <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">护床状态:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+            	<select name="status" id="status" class="form-control">
+               		<{foreach $device_goods_status as $k => $v}>                 
+                		<option value="<{$k}>" <{if strval($row['status'])==strval($k)}>selected<{/if}>><{$v}></option>
+                	<{/foreach}>
+                    
+                </select> 
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+    
+			 
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button" id="saveedit" class="btn  btn-primary btn-lg">提交</button>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			rules: {
+				title: {
+					required: true
+				}
+			}
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker-date').datetimepicker({
+		format: 'YYYY-MM-DD',
+        language: 'zh-CN',
+        pickDate: true,
+        pickTime: false,
+        hourStep: 1,
+        minuteStep: 15,
+        secondStep: 30,
+        inputMask: true
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker').datetimepicker({
+		format: 'YYYY-MM-DD HH:mm:ss',
+        language: 'zh-CN',
+        pickDate: true,
+        pickTime: true,
+        hourStep: 1,
+        minuteStep: 15,
+        secondStep: 30,
+        inputMask: true
+	});
+	$('.dechex-device_goods').click(function(){
+		var hex = $('#' + $(this).attr('data-field')).val();
+		var dec = '0000000000' + parseInt(hex, 16);
+		if(dec.indexOf('NaN') != -1)dec = '0000000000' + hex;
+		$('#' + $(this).attr('data-field')).val(dec.substr(-10).toUpperCase());
+	});
+	$('.check-device_goods').click(function(){
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		var field = $(this).attr('data-field');
+		var data = { 'id': "<{$row['id']}>" };
+		data[field] = $('#' + field).val();
+		$.post('/admin_device/goods_check', data, function(res){
+			if(res.status == '0'){
+				tooltipbox.alert('护床号未添加');
+			}else if(res.status == '-1'){
+				tooltipbox.alert('数据或网络错误');
+			}else{
+				tooltipbox.alert('护床号已经存在');	
+			}
+		}, 'json').error(function(){
+			tooltipbox.show('数据或网络错误');
+		});
+		return false;
+	});
+	$('#saveedit').click(function(){
+		if(!$('#submitform').valid())return false;
+		if(isbusy)return false;
+		isbusy = true;
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_device/goods_edit/<{$row['id']}>', $('#submitform').serialize(), function(res){
+			if(res.status == '1'){
+				tooltipbox.show('操作完成');
+				location.href = '/admin_system#page/admin_device/goods';
+			}else if(res.status == '0'){
+				tooltipbox.alert(res.msg);
+			}else{
+				tooltipbox.show('数据或网络错误');	
+			}
+			isbusy = false;
+		}, 'json').error(function(a, b, c){
+			tooltipbox.show('数据或网络错误');
+			isbusy = false;
+		});
+	});
+});
+</script> 

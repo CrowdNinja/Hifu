@@ -1,0 +1,206 @@
+<title><{translate('予約管理')}></title>
+
+<{if $unread_count}>
+<div class="page-header">
+	<h1>
+		<a href="/admin_system#page/admin_shop/notice_list"><font color="red">未読のお知らせが<{$unread_count}>件あります。</font></a></h1>
+	</h1>
+</div>
+<{/if}>
+
+<div class="page-header">
+	<h1>
+		<{translate('予約管理')}>
+	</h1>
+</div>
+<!-- /.page-header --> 
+
+	<script type="text/javascript" src="/style/js/cnarealist.js"></script>    
+	<script type="text/javascript" src="/style/js/categorys/categorys.js"></script>    
+    <link rel="stylesheet" href="/style/js/categorys/categorys.css" />
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a><{translate('予約管理')}></a></li>
+    </ul>
+    <br />
+
+
+	<div class="panel panel-success">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('スクリーニング')}></div>
+    <div class="panel-body" style="display:">
+
+            <div class="form-group form-search form-inline">
+				<label class="control-label"><{translate('店舗選択')}></label>
+				<input id="adminid" name="adminid" value="<{$get.adminid}>" style="width:200px" />
+				<label class="control-label">予約時間</label>
+				<input  class="form-control" id="start_time" name="start_time" value="<{$get.start_time}>" style="width:140px" />
+				<label class="control-label">から</label>
+				<input  class="form-control" id="end_time" name="end_time" value="<{$get.end_time}>" style="width:140px" />
+				<button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('検索する')}></button>
+			</div>
+       
+    </div>
+ 
+    </div>
+<script>
+$(function () {
+    $("#adminid").select2({
+		ajax: {
+			url: "/admin_reservation/shop_reservation_search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+
+	<{if $gid==4}>
+		<{if $member_store_id}>
+			$('#adminid').select2('data', {id:"<{$member_store_id}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$member_store_id}>"]);
+			$("#adminid").prop("disabled", true);
+		<{/if}>
+	<{else}>
+		<{if $get.adminid}>
+			$('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);
+		<{/if}>
+	<{/if}>
+});
+</script> 
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+});
+</script>                 
+				 
+		<form class="form-horizontal" role="form" id="submitform">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th><{translate('予約ID')}></th>
+						<th><{translate('店舗名')}></th>
+						<th><{translate('予約者名')}></th>
+						<th><{translate('電話番号')}></th>
+						<th><{translate('予約時間')}></th>
+						<th><{translate('予約メニュー')}></th>
+						<th><{translate('お支払い')}></th>
+						<th><{translate('ステータス')}></th>
+						<th><{translate('ご要望')}></th>
+						<th><{translate('操作')}></th>
+					</tr>
+				</thead> 
+				<tbody>
+				<{foreach $reservationList.list as $v}>
+				<tr class="alert1 success" align="left">
+					<td><{$v['id']}></td>
+					<td><{$v['shop_name']}></td>
+					<td><{$v['user_name']}></td>
+					<td><{$v['phone_no']}></td>
+					<td><{$v['reserve_time']}></td>
+					<td><{$v['title']}></td>
+					<td>
+						<{if $v['paytype']==6}>
+							現金
+						<{else}>
+							支払い済み
+						<{/if}>
+					</td>
+					<td>
+						<{if $v['status']==0}>
+							予約済み
+						<{elseif $v['status']==1}>
+							来店済み
+						<{/if}>
+					</td>
+					<td><{$v['remark']}></td>
+					<td >
+						<{if chkcommand('/admin_trade/purchase_history')}>
+							<a href="admin_system#page/admin_trade/purchase_history/<{$v['user_id']}>/" class="btn btn-info btn-xs"> <i class="fa fa-eye"></i> <{translate('購入履歴')}></a>
+						<{/if}>
+						<{if chkcommand('/admin_reservation/cancel')}>
+							<{if $v['status']==0 && !($v['paytype']==6 && empty($v['pay_token'])) }>
+								<a class="btn btn-primary btn-xs btn_cancel btnCancel" id="" data-id="<{$v['id']}>"> <{translate('キャンセル')}></a>
+							<{/if}>
+						<{/if}>
+					</td>
+				<{/foreach}>
+				</tbody>
+				
+			</table>
+			<table   style="width:100%;" class="listpage"><tr><td ><{translate('合計')}> <{$reservationList.total}> <{translate('件')}> <{$reservationList.pages}>  </td></tr></table>
+					
+		</form>
+		</div>
+	</div>
+</div>
+
+<script src="/style/js/jquery.dialogBox.js"></script>
+
+<script type="text/javascript">
+	var isbusy = false;
+	$(function(){
+		$('.listpage').find('a').each(function(){
+			var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+			$(this).attr('href', url);
+		});
+
+		$('.btnCancel').click(function(){
+			var id = $(this).data('id');
+			console.log(id);
+			tooltipbox.confirm("予約をキャンセルします。よろしいですか？<br><span class='alert-red'>＊この作業は取り消せません</span>", function(data){
+				tooltipbox.show("<{translate('操作を実行する')}>");
+				// 予約キャンセル実行
+				$.ajax({
+					type: 'POST',
+					data: {
+						'id': id,
+					},
+					url: '/admin_reservation/cancel',
+					error: function(xhr) {
+						alert( xhr.responseText ); 
+					},
+					success: function(data) {
+						var msg = JSON.parse(data)['msg'];
+						if(msg != ''){
+							alert(msg);
+						}
+						window.location.reload();
+					}
+				})
+			}, false, { 'id': id });
+		});
+	});
+</script>
+

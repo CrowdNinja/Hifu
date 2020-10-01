@@ -1,0 +1,729 @@
+<title><{translate('代理商管理')}> - <{translate('编辑代理商')}> </title>
+<div class="page-header">
+	<h1>
+		<{translate('代理商管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i>  <{translate('编辑代理商')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+	<script>window.UEDITOR_HOME_URL = '/app/third_party/ueditor1_4_3_3-utf8-php/';</script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>
+	<script type="text/plain" id="j_ueditorupload" style="height:5px;display:none;" ></script>
+    <script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.upload.js"></script>
+	<script type="text/javascript" src="/style/js/cnarealist.js"></script>    
+	<script type="text/javascript" src="/style/js/categorys/categorys.js"></script>    
+    <link rel="stylesheet" href="/style/js/categorys/categorys.css" />
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+<script language='javascript' src="/style/assets/js/bootstrap-tag.min.js"></script>
+<style>
+.tags {width:100%;}
+.tagcss {width:100%; min-height:34px;/* height:35px; overflow:hidden; padding:3px;*/}
+</style>
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+    	<{if chkcommand('/admin_corp')}>
+        <li><a href="/admin_system#page/admin_corp/"><{translate('代理商列表')}></a></li>
+        <{/if}>
+        <li class="active"><a href="/admin_system#page/admin_corp/edit/<{$data->id}>"><{translate('编辑代理商')}></a></li>
+    </ul>
+    
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+		<form class="form-horizontal" method="post" role="form" id="submitform"  >
+        
+        <div class="panel panel-info">
+        <div class="panel-heading">
+            <{translate('账号信息')}>
+        </div>
+    </div>   
+        
+        <{if $_admin->_role_type == 0 || $_admin->id != $data->id}>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('用户名')}>*:</label>
+				<div class="col-xs-12 col-sm-4">
+					<span class="block">
+						<input id="adminname" type="text" name="adminname" value="<{$data->adminname}>" autocomplete="new-password" class="form-control input-width"  maxlength="100" required/>
+					</span>
+				</div>
+                <!--<div class="col-xs-12 col-sm-1">
+        <a href="javascript:;" class=" check-adminname btn  btn-primary btn-sm"><{translate('检测重复')}></a>
+        </div>-->
+				<div class="help-block inline"></div>
+			</div>
+
+	<div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('密码')}>:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="password" type="password" name="password" class="form-control input-width" autocomplete="new-password" maxlength="100" required/>
+			</span>
+		</div>
+		<div class="help-block inline">* <{translate('留空不修改密码')}></div>
+	</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('所属角色')}>*:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block"  >
+						<select name="gid" class="form-control input-width">
+							<{foreach $roles as $v}>
+							<option value="<{$v['id']}>"  <{if $v['id']==$data->gid}>selected <{/if}> ><{$v['title']}></option>
+							<{/foreach}>
+						</select> </span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group status">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('状态')}>:</label>
+                <input type="hidden" name="_status" value="<{$data->status}>" />
+				<div class="col-xs-12 col-sm-5">
+					<span class="block"  > <label>
+							<input type="radio" name="status" value="1" <{if $data->status==1}>
+							checked="checked" <{/if}> > <{translate('正常')}> </label> &nbsp;&nbsp;&nbsp;<label>
+							<input type="radio" name="status" value="0" <{if $data->status==0}>
+							checked="checked" <{/if}> > <{translate('禁用')}> </label> &nbsp;&nbsp;&nbsp;<label>
+							<!--<input type="radio" name="status" value="2" <{if $data->status==2}>
+							checked="checked" <{/if}> >已禁用 </label>--> </span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+            
+            <!--<div class="form-group _status_memo" style="display:<{if $data->status != 2}>none<{/if}>">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">审核说明:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input type="text" name="_status_memo" value="" class="form-control input-width" />
+					</span>
+				</div>
+				<div class="help-block inline">* 请填写审核失败原因</div>
+			</div>-->
+<script>
+$(function(){
+	$('.status').find('label').click(function(){
+		if($('input[name=status]:checked').val() == 2){
+			$('._status_memo').show();
+		}else{
+			$('._status_memo').hide();
+		}
+	});
+});
+</script>
+            <{/if}>
+            
+            <!--
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">绑定会员:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="userid" type="text" data-bindmobile="1" name="userid" value="<{$data->userid}>" style="width:100%" readonly />
+					</span>
+				</div>
+				<div class="help-block inline">* 必须绑定手机号码</div>
+			</div>
+          
+    	<div class="form-group">
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">入驻推荐会员:</label>
+            <div class="col-xs-12 col-sm-5">
+                <span class="block">
+                    <input id="recmdid" name="recmdid" value="<{$data->recmdid}>" style="width:100%" readonly />
+                </span>
+            </div>
+            <div class="help-block inline"></div>
+        </div>-->
+        
+                    <!--
+			<div class="form-group status">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">默认代理商:</label>
+                <input type="hidden" name="_status" value="<{$data->status}>" />
+				<div class="col-xs-12 col-sm-5">
+					<span class="block"  > <label>
+							<input type="radio" name="default" value="1" <{if $data->default==1}>
+							checked="checked" <{/if}> > 是 </label> &nbsp;&nbsp;&nbsp;<label>
+							<input type="radio" name="default" value="0" <{if $data->default==0}>
+							checked="checked" <{/if}> >否 </label> </span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>-->
+
+            <{if $_admin->_role_type == 0}>       
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('账户余额')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="money" type="text" name="money" min="0" value="<{$data->money}>" class="form-control input-width" />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+            <{/if}>
+
+			<{if $_admin->_role_type == 0 || $_admin->id != $data->id}>
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('分成比例')}> <b style="color:red;">%</b>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="percen" type="text" name="percen" max="100" min="0" value="<{$data->percen}>" class="form-control input-width" />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+			<{/if}>
+
+			<!--<{if $_admin->_role_type == 0 }>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">提现手续费比例<b style="color:red;">%</b>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="cash_fee" type="text" name="cash_fee" value="<{$data->cash_fee}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="help-block inline" style="color:red;"> 例如：比例1% 提现100元 手续费收1元，填0或者空视为不收取提现手续费</div>
+			</div>
+			<{/if}>-->
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('代理商名称')}>*:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="nickname" type="text" name="nickname" value="<{$data->nickname}>" class="form-control input-width" required />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('联系人')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="name" type="text" name="name" value="<{$data->name}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('手机地区号')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<select name="mobile_prefix" id="mobile_prefix" class="form-control">
+						<{foreach $phone_area_code as $k => $v}>
+						<option value="<{$v['mobile_prefix']}>" <{if $data->mobile_prefix==$v['mobile_prefix']}>selected<{/if}>><{$v['country']}> (<{$v['mobile_prefix']}>)</option>
+						<{/foreach}>
+					</select>
+				</div>
+				<label for="title" class="col-xs-12 col-sm-1 control-label no-padding-right"><{translate('手机号码')}>:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block">
+						<input id="phone" type="number" name="phone" value="<{$data->phone}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+
+
+			<!--<div class="form-group select_agent">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">绑定微信提现用户:</label>
+				<div class="col-xs-12 col-sm-5">
+                    <span class="block">
+                        <input id="user_id" name="user_id" value="<{$data->user_id}>" style="width:100%"  />
+                    </span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>-->
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('开户人姓名')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="compellation" type="text" name="compellation" value="<{$data->compellation}>" class="form-control input-width"  />
+					</span>
+				</div>
+			<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+			<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('开户银行名称')}>:</label>
+			<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="bank_name" type="text" name="bank_name" value="<{$data->bank_name}>" class="form-control input-width"  />
+					</span>
+			</div>
+			<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('银行卡号')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+						<span class="block">
+							<input id="bank_card" type="number" name="bank_card" value="<{$data->bank_card}>" class="form-control input-width"  />
+						</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+
+			<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('备注描述')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="desc" type="text" name="desc" value="<{$data->desc}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+            
+            
+           <!-- <div class="form-group">
+                <label class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('所在城市')}>:</label>
+                <div class="col-xs-12 col-sm-5">
+                    <input type="hidden" value="<{$data->area}>" id="area" name="area" />
+                    <span class="block">
+                        <div class="categorys-selector" data-datalist="cnAreaList" data-dataval="name" data-dataview="name" data-datablock=" " data-field="area">
+                        <div class="categorys-text"><{if $data->area}>	<{$data->area}> <{else}> <{translate('请选择')}> <{/if}><div></div><b></b></div>
+                        <div class="categorys-close"></div>
+                        </div>               
+                    </span>
+                </div>
+                <div class="help-block inline"></div>
+            </div>-->
+            
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('详细地址')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="address" type="text" name="address" value="<{$data->address}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+           <!--
+            <div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">地址坐标:</label>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block">
+						<input id="lat" type="text" name="lat" value="<{$data->lat}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="col-xs-12 col-sm-2">
+					<span class="block">
+						<input id="lng" type="text" name="lng" value="<{$data->lng}>" class="form-control input-width"  />
+					</span>
+				</div>
+                <div class="col-xs-12 col-sm-1">
+                    <a href="javascript:;" class="btn-location btn btn-primary btn-sm">获取坐标</a>
+                </div>
+                <div class="col-xs-12 col-sm-1">
+                    <div class="pull-right"></div><a href="javascript:;" class="btn-map btn btn-primary btn-sm">地图选择</a>
+                </div>
+				<div class="help-block inline">* 请先填写所在地址</div>
+			</div>
+            -->
+
+  <!--  <div class="form-group">
+    	<label class="col-xs-12 col-sm-3 control-label no-padding-right">证件图:</label>
+    	<div class="col-xs-12 col-sm-2">
+			<div class="form-group">
+    			<input type="hidden" name="license" value="<{$data->license}>" />
+				<div class="col-xs-12 col-sm-5">
+                    <label>执照</label>
+                	<div class="upfile_imgthumb">
+                        <img src="<{if $data->license}><{$data->license}><{else}>/style/xin_inselimg.png<{/if}>" data-default="/style/xin_inselimg.png" class="btn-prefile">
+                        <div class="upfile_imgcaption">
+                                <a href="javascript:;" class="btn btn-primary btn-xs btn-upfile">上传</a> 
+                                <a href="javascript:;" class="btn btn-default btn-xs btn-upremove">删除</a>
+                        </div>
+                    </div>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+        </div>
+        
+        <div class="col-xs-12 col-sm-2">
+    	 <div class="form-group">				
+    			<input type="hidden" name="cardpic" value="<{$data->cardpic}>" />
+				<div class="col-xs-12 col-sm-5">
+                	<label>身份证</label>
+                	<div class="upfile_imgthumb">
+                        <img src="<{if $data->cardpic}><{$data->cardpic}><{else}>/style/xin_inselimg.png<{/if}>" data-default="/style/xin_inselimg.png" class="btn-prefile">
+                        <div class="upfile_imgcaption">
+                                <a href="javascript:;" class="btn btn-primary btn-xs btn-upfile">上传</a> 
+                                <a href="javascript:;" class="btn btn-default btn-xs btn-upremove">删除</a>
+                        </div>
+                    </div>
+				</div>
+				<div class="help-block inline"></div>
+			</div>
+        </div>
+    	
+    </div>-->
+
+			<!--<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('排序')}>:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="orderby" type="text" name="orderby" value="<{$data->orderby}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>-->
+     
+   <!-- <div class="panel panel-info">
+        <div class="panel-heading">
+            代理商资料
+        </div>
+    </div>   -->
+    
+             <!--<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">支付二维码:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<a href="/Index/qrcode?url=<{$data->qrcode}>" target="_blank"><img src="/Index/qrcode?url=<{$data->qrcode}>" width="100" /></a>
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>  --> 	
+            
+            <!--<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">管理员:</label>
+				<div class="col-xs-12 col-sm-4">
+					<span class="block">
+						<input id="mangerids" type="text" name="mangerids" value="<{$data->mangerids}>" class="form-control input-width" />
+					</span>
+				</div>
+                <{if chkcommand('/admin_user')}>
+                <div class="col-xs-12 col-sm-1">
+                    <div></div>
+                    <a href="javascript:;" class="dialogBox select-account btn  btn-primary btn-sm">选择</a>
+                </div>
+                <{/if}>
+				<div class="help-block inline">* 填写会员ID, 多个英文逗号分隔</div>
+			</div>	-->
+
+
+            <!--<div class="form-group">-->
+				<!--<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">客服电话:</label>-->
+				<!--<div class="col-xs-12 col-sm-5">-->
+					<!--<span class="block">-->
+						<!--<input id="phone" type="text" name="phone" value="<{$data->phone}>" class="form-control input-width"  />-->
+					<!--</span>-->
+				<!--</div>-->
+				<!--<div class="help-block inline"></div>-->
+			<!--</div>-->
+            
+ <!--<div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">图片:</label>
+        <textarea name="pictures" style="display:none"><{$data->pictures}></textarea>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+                <div class="pictures">
+                <{if $data->pictures}>
+<{foreach explode("\n", str_replace("\r", "", $data->pictures)) as $k => $v}>
+<div class="upfile_imgthumb">
+<img src="<{$v}>" data-default="/style/xin_inselimg.png" class="btn-prefile" data-multi="1">
+<div class="upfile_imgcaption">
+<a href="javascript:;" data-src="<{$v}>" data-multi="1" class="btn btn-primary btn-xs btn-upfile">上传</a>
+<a href="javascript:;" data-src="<{$v}>" data-multi="1" class="btn btn-default btn-xs btn-upremove">删除</a>
+</div>
+</div>
+                    <{/foreach}>
+                    <{/if}>
+                </div>
+                <a href="javascipt:;" class="btn btn-upfile btn-primary btn-sm" style="width:121px" data-multi="1" data-conr=".pictures">+ 上传图片</a>
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+
+
+		<div class="form-group">
+				<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">关键词:</label>
+				<div class="col-xs-12 col-sm-5">
+					<span class="block">
+						<input id="keywords" type="text" name="keywords" value="<{$data->keywords}>" class="form-control input-width"  />
+					</span>
+				</div>
+				<div class="help-block inline"></div>
+			</div>-->
+            
+		<!--<div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">介绍:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<script id="editor" type="text/plain" style="width:620px;height:300px;"></script>
+				<textarea id="text" name="text" style="display:none"><{$data->text}></textarea>
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>-->
+            
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button" id="saveedit" class="btn  btn-primary btn-lg">
+						提交
+					</button>
+				</div>
+			</div>
+		</form>
+        </div>
+	</div>
+</div>
+	</div>
+    </div>
+<script src="/style/assets/js/x-editable/bootstrap-editable.min.js"></script>
+<script src="/style/assets/js/jquery.gritter.min.js"></script>
+<script src="/style/assets/js/x-editable/ace-editable.min.js"></script>
+
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=<{$geocoder_key}>&plugin=AMap.Geocoder"></script>
+
+<script>
+var iframeWindow = null;
+function iframeLoadNotify(_iframe){
+	iframeWindow = _iframe;
+	$('#dialog-box-iframe').show(300);
+	$(iframeWindow.document).find('.navbar,.sidebar,.footer,.breadcrumbs,.page-header,.ace-settings-container,.nav-tabs').hide();
+	$(iframeWindow.document).find('#submitform table:eq(0) tr:last .btn').hide();
+	$(iframeWindow.document).find('#submitform table:eq(0) tr:not(:last)').find('th:last,td:last').hide();
+	var selectBtn = $('<a href="javascript:;" class="btn btn-primary">+ 选择</a>');
+	selectBtn.appendTo($(iframeWindow.document).find('#submitform table:eq(0) tr:last td').eq(0));
+	selectBtn.click(function(){
+		var ckvals = iframeWindow.$.selectCK('input[name="id[]"]');
+		if(!ckvals){
+			tooltipbox.show("<{translate('请选择要操作的数据')}>");
+			return false;
+		}
+		ckvals = ckvals.split(',');
+		for(var i in ckvals){
+			var title = ckvals[i];
+			title = $(iframeWindow.document).find('#submitform table:eq(0) input[name="id[]"][value="' + ckvals[i] + '"]').parent().next().text();
+			$('input[name=mangerids]').data('tag').add(ckvals[i], title);
+		}
+		$('.dialog-box-close').click();
+		tooltipbox.show('已完成选择所选数据');
+	});
+	tooltipbox.clear();
+}
+$(function(){
+    $("#recmdid,#user_id").select2({
+        ajax: {
+            url: "/admin_user/search",
+            data: function (params) {
+                return {
+                    keywords: params,
+                    bindmobile: $.trim($(this).data('bindmobile'))
+                };
+            },
+            results:function(data,pageNo){
+                if(data.data.length)data['data'].splice(0, 0, {'id':0, 'text': "<{translate('请选择')}>"});
+                return {
+                    results:data.data
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            type: 'post',
+            dataType: 'json'
+        },
+        initSelection: function(elem, cbfunc){
+        },
+        allowClear: false,
+        openOnEnter: false,
+        minimumInputLength: 1,
+    });
+<{if $data->recmdid}>$('#recmdid').select2('data', {id:"<{$data->recmdid}>", text:"<{$data->recmdid_account}>"}).select2('val', ["<{$data->recmdid}>"]);<{/if}>
+    <{if $data->user_id}>$('#user_id').select2('data', {id:"<{$data->user_id}>", text:"<{$data->userid_account}>"}).select2('val', ["<{$data->user_id}>"]);<{/if}>
+	$('input[name=mangerids]').tag({
+		'tagcss': 'tagcss'
+	});
+    $('#submitform').validate({
+        errorElement: 'div',
+        errorClass: 'help-block',
+        focusInvalid: true,
+        rules: {
+            title: {
+                required: true
+            }
+        }
+    });
+	$('.dialogBox').click(function(){
+		tooltipbox.show('加载中...', null, 999999999);
+		$(this).prev().dialogBox({
+			title:'选择',
+			fixTop: -1 * $(window).height() * 0.2,
+			autoSize:false,
+			hasMask:true,
+			hasClose:true,
+			width:Math.min(1000, $(window).width() * 0.9),
+			height:Math.min(1200, $(window).height() * 0.9),
+			frameborder:'no',
+			scrolling:'auto',
+			content:'/admin_system#page/admin_user',
+			framedisplay:'none',
+			iframeload:function(_iframe){
+				//setTimeout(function(){ tooltipbox.clear(); }, 5000);
+				$('.dialog-box').dragDiv();
+			},
+			close:function(){
+				//恢复
+				$(iframeWindow.document).find('.navbar,.sidebar,.footer,.breadcrumbs,.page-header,.ace-settings-container,.nav-tabs').show();
+				$(iframeWindow.document).find('#submitform table:eq(0) tr:last .btn').show();
+				$(iframeWindow.document).find('#submitform table:eq(0) tr:not(:last)').find('th:last,td:last').show();
+				$(iframeWindow.document).find('#submitform table:eq(0) tr:last td').eq(0).find('a:last').remove();
+				tooltipbox.clear();
+			},
+		});
+		return false;
+	});
+
+});
+</script>                        
+<script type="text/javascript">
+function amap_click(map, res){
+	console.log(res);
+	//map.clearMap();
+	$("#lng").val(res.lnglat.lng);
+	$("#lat").val(res.lnglat.lat);
+}
+
+	$(document).ready(function() {
+		$('.btn-map').click(function(){
+			var address = $('#area').val() + ' ' + $('#address').val().replace(/ /g, '');
+			address = address.replace(/^\s/g, '').replace(' ', '省');
+			address = address.replace(' ', '市');
+			$(this).prev().dialogBox({
+				title:'选择坐标',
+				fixTop: -1 * $(window).height() * 0.2,
+				autoSize:false,
+				hasMask:false,
+				hasClose:true,
+				width:Math.min(800, $(window).width() * 0.9),
+				height:Math.min(600, $(window).height() * 0.9),
+				frameborder:'no',
+				scrolling:'auto',
+				content:'/app/third_party/amap/amap.html?address=' + encodeURI(encodeURI(address)),
+				framedisplay:'none',
+				iframeload:function(_iframe){
+					$('#dialog-box-iframe').show(300);
+					$('.dialog-box').dragDiv();
+					//setTimeout(function(){ tooltipbox.clear(); }, 5000);
+				},
+				close:function(){					
+				},
+			});
+			return false;	
+		});
+
+		/*$('#password').editable({
+				type: 'text',
+				pk: <{$data->id}>,
+				url: '/admin_corp/save_pwd<{$qs_pid}>',
+				title: '修改密码',
+				value: '',
+				success: function(response, newValue) {
+				var json = eval('(' + response + ')');
+				if (json.code == 0)
+				return json.msg;
+				},
+				validate: function(value) {
+				if ($.trim(value) == '') {
+				return '密码为空，不修改.';
+				}
+				if($.trim(value).length<4)
+					{
+					return '密码必须大于4位.';
+					}
+				
+				}
+		});*/
+		/*var ue = UE.getEditor('editor', { autoFloatEnabled:false });
+		ue.ready(function(){
+			ue.setContent($('#text').val(), false);
+		});*/
+		//YYYY-MM-DD HH:mm:ss
+		$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD',
+			language: 'zh-CN',
+			pickDate: true,
+			pickTime: true,
+			hourStep: 1,
+			minuteStep: 15,
+			secondStep: 30,
+			inputMask: true
+		});
+        $('#submitform').validate({
+            errorElement : 'div',
+            errorClass : 'help-block',
+            focusInvalid : false,
+            rules : {
+            }
+        });
+		$('.check-adminname').click(function(){
+			tooltipbox.show("<{translate('正在执行操作')}>");
+			$.post('/admin_bguser/check', { 'id': "<{$data->id}>", 'adminname': $('#adminname').val() }, function(res){
+				if(res.status == '0'){
+					tooltipbox.alert("<{translate('账号可用')}>");
+				}else if(res.status == '-1'){
+					tooltipbox.alert("<{translate('未提交数据')}>");
+				}else{
+					tooltipbox.alert("<{translate('账号已经存在')}>");
+				}
+			}, 'json').error(function(){
+				tooltipbox.show("<{translate('数据或网络错误')}>");
+			});
+		});
+		$("#saveedit").click(function() {
+			//if ($('#submitform').valid()) {
+				//$('#text').val(ue.getContent());
+				$.post('/admin_corp/save/<{$data->id}>', $("#submitform").serialize(), function(res){
+					if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作完成')}>");
+                        location.href = '/admin_system#page/admin_corp';
+					}else{
+						tooltipbox.alert(res.msg);
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+				//Dlc.service.post("/admin_corp/save/<{$data->id}><{$qs_pid}>", $("#submitform").serialize());
+				return false;
+				//$('#submitform').submit();
+			//}
+		});
+		$('.btn-location').click(function(){
+			if(!$('#area').val() || !$('#address').val()){
+				tooltipbox.show("<{translate('请先选择城市与填写详细地址')}>");
+				return false;
+			}
+			var map = new AMap.Map("container", {
+				resizeEnable: true
+			});
+			var geocoder = new AMap.Geocoder({
+					city: "", //城市，默认：“全国”
+					radius: 500 //范围，默认：500
+			});
+			//地理编码
+			geocoder.getLocation($('#area').val().replace(/ /g, '') + $('#address').val(), function(status, result) {
+				if (status === 'complete' && result.info === 'OK') {
+					//TODO:获得了有效经纬度，可以做一些展示工作
+					//比如在获得的经纬度上打上一个Marker
+					if(result.geocodes.length > 0){
+						$('#lat').val(result.geocodes[0].location.lat);
+						$('#lng').val(result.geocodes[0].location.lng);
+					}
+				}else{
+					//获取经纬度失败
+					tooltipbox.show("<{translate('获取失败，请确认地址正确')}>");
+				}
+				//alert($.toJSON(result));
+			});
+		});
+	}); 
+</script>

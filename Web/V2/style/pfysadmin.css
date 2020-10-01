@@ -1,0 +1,100 @@
+.listpage {
+	text-align: center;
+}
+.listpage strong{
+  background-color: #6faed9;
+  line-height: 20px;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+  min-width: 20px;
+  text-align: center;
+  display: -webkit-inline-box;
+  border-color: #e0e8eb;
+  color: #2283c5;
+  padding-left: 6px;
+}
+.listpage a{
+  background-color: #C6DEED;
+  min-width: 20px;
+  text-align: center;
+  display: -webkit-inline-box;
+  border-color: #e0e8eb;
+  color: #2283c5;
+  padding-left: 6px;
+  padding-right: 6px;
+  margin: 0 2px;
+}
+.replyinfo{
+	width:80%;
+	margin: 0 auto;
+}
+.replyinfo ul{
+	  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #333;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+	}
+.replyinfo ul li{
+	list-style-type:none;
+}
+.replyinfo ul li span{
+	padding-left: 20px;
+}
+.reply2reply{
+	padding-top: 4px;
+	padding-bottom: 4px;
+  border-top: 1px dashed #CCC;
+}
+.img-square{
+border: 1px solid red;
+margin-left: 0px;
+margin-top: 10px;
+width:100%;
+}
+.closeLayer{
+/*display: none;*/
+z-index: 99;
+position:absolute; /*绝对定位*/
+left:155px; /*位置自己看着调整，在图片上方*/
+top:0px; 
+cursor:pointer;
+/*border: 1px solid red;*/
+}
+
+
+.edit_post_img_show{
+	width:170px;
+	  position: relative;
+  min-height: 1px;
+  padding-left: 12px;
+  padding-right: 12px;
+    float: left;
+}
+
+.edit_reply_img{
+		width:100%;
+	  position: relative;
+  min-height: 1px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.edit_reply_img_show{
+		width:170px;
+	  position: relative;
+  min-height: 1px;
+  padding-left: 12px;
+  padding-right: 12px;
+    float: left;
+}
+.a_showedit{
+	display:none;
+}
+
+
+

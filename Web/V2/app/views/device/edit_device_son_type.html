@@ -1,0 +1,139 @@
+<title><{translate('设备管理')}> - <{if $row['id']}><{translate('编辑')}><{else}><{translate('添加')}><{/if}><{translate('设备子类型')}> </title>
+<div class="page-header">
+	<h1>
+        <{translate('设备管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{if $row['id']}><{translate('编辑')}><{else}><{translate('添加')}><{/if}><{translate('设备子类型')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+<script>window.UEDITOR_HOME_URL = '/app/third_party/ueditor1_4_3_3-utf8-php/';</script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>
+<script type="text/plain" id="j_ueditorupload" style="height:5px;display:none;" ></script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.upload.js"></script>
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="javascript:;" id="back"><{translate('设备子类型列表')}></a></li>
+        <li class="active"><a href="/admin_system#page/admin_device/edit_device_son_type/<{$row['id']}>"><{if $row['id']}><{translate('编辑')}><{else}><{translate('添加')}><{/if}><{translate('设备子类型')}></a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_device/edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+
+                    <div class="form-group">
+                        <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('日文名')}>:</label>
+                        <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="japanese_name" type="text" name="japanese_name" value="<{$row['japanese_name']}>" class="form-control input-width" required />
+			</span>
+                        </div>
+                        <div class="help-block inline"></div>
+                    </div>
+
+			<div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('中文名')}>:</label>
+		<div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="chinese_name" type="text" name="chinese_name" value="<{$row['chinese_name']}>" class="form-control input-width" required />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+
+
+
+
+                    <div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button" id="saveedit" class="btn  btn-primary btn-lg"><{translate('提交')}></button>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			rules: {
+				title: {
+					required: true
+				}
+			}
+	});
+
+    $('#agent_id').change(function () {
+        var parent_id= $("#agent_id").val();
+        var adminid="<{$row['adminid']}>";
+        if(parent_id>0){
+            $.ajax({
+                type:"post",
+                url:"/admin_shop/get_corp_shop",
+                data:{'parent_id':parent_id},
+                dataType: "json",
+                success:function(data) {
+                    var arr = data.data;
+                    var html="<option value='0'  ><{translate('请选择')}></option>";
+                    var selected='';
+                    for(var i=0;i<arr.length;i++){
+                        if(arr[i]['id']==adminid){
+                            selected='selected="selected"';
+                        }else{
+                            selected='';
+                        }
+                        html+='<option value="'+arr[i]['id']+'" '+selected+' >'+arr[i]['text']+'</option>';
+                    }
+                    $("#adminid").html(html).change();
+                },
+                error:function(xhr){
+                    tooltipbox.alert("<{translate('获取失败')}>");
+                    return false;
+                }
+            });
+        }
+    });
+    $('#agent_id').change();
+
+
+    $('#back').click(function(){
+        history.back(-1);
+    });
+
+	$('#saveedit').click(function(){
+		if(!$('#submitform').valid())return false;
+		if(isbusy)return false;
+		isbusy = true;
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_device/edit_device_son_type/<{$row['id']}>', $('#submitform').serialize(), function(res){
+			if(res.status == '1'){
+				tooltipbox.show("<{translate('操作完成')}>");
+				history.back(-1);
+			}else if(res.status == '0'){
+				tooltipbox.alert(res.msg);
+			}else{
+				tooltipbox.show("<{translate('数据或网络错误')}>");
+			}
+			isbusy = false;
+		}, 'json').error(function(a, b, c){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+			isbusy = false;
+		});
+	});
+});
+</script> 

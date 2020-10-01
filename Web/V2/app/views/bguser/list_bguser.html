@@ -1,0 +1,78 @@
+<title>系统设置 - 操作员列表 </title>
+
+		<div class="row">
+			<div class="col-md-12">
+			<form class="form-horizontal" role="form" id="submitform">
+	           <table class="table table-bordered table-hover">
+			<thead>
+          <tr>
+            <th>编号</th>
+            <th>排序</th>
+            <th>用户名</th>
+            <th>呢称</th>
+            <th>所在角色</th>
+            <th>状态</th>
+            <th>加入时间</th>
+            <th>最后登录</th>
+            <th>操作</th>
+          </tr>
+        </thead> 
+					<tbody>
+					<{section name=values loop=$data}>
+					<tr class="alert1" align="left">
+						<td>
+							<{$data[values]->id}>
+						</td>
+                        <td>
+							<input type="text" name="orderby[<{$data[values]->id}>]" value="<{$data[values]->orderby}>" size="5">
+						</td>
+						<td>
+							<{$data[values]->adminname}>
+						</td> 
+                        <td>
+							<{$data[values]->nickname}>
+						</td>
+						<td>
+							<{$data[values]->_gid}>
+						</td> 
+						<td>
+							<{if $data[values]->status}>正常<{else}>冻结<{/if}>
+						</td>
+						<td>
+						  <{$data[values]->regdate|date_format:'%Y-%m-%d %H:%M:%S'}>
+						</td>  
+						<td>
+						   <{$data[values]->lastlogin|date_format:'%Y-%m-%d %H:%M:%S'}>
+						</td> 
+						<td>
+							<a href="/admin_system#page/admin_bguser/edit/<{$data[values]->id}>">编辑</a> | 
+                            <a onclick="return confirm('确定要删除该数据吗？');" href="/admin_system#page/admin_bguser/delete/<{$data[values]->id}>">删除</a>
+						</td> 
+					</tr>
+				<{/section}>
+				
+			</tbody></table>
+				<div class="col-sm-offset-5 col-sm-7">
+					<input id="btnOrderBy" class="btn btn-success btn-lg" value="排序" type="button">
+					<a  href="/admin_system#page/admin_bguser/add" id="saveedit" class="btn  btn-primary btn-lg">添加</a>
+				</div>
+			</form>
+			</div>
+		</div>
+		 
+<script>
+		$('#btnOrderBy').click(function(){
+				tooltipbox.show("<{translate('正在执行操作')}>");
+				$.post('/admin_bguser/orderby', $('#submitform').serializeArray(), function(res){
+					if(res.status == '1'){
+						tooltipbox.show("<{translate('操作执行成功')}>");
+						location.reload();
+					}else{
+						tooltipbox.show("<{translate('数据或网络错误')}>");
+					}
+				}, 'json').error(function(){
+					tooltipbox.show("<{translate('数据或网络错误')}>");
+				});
+		});
+</script>
+ 

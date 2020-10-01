@@ -1,0 +1,100 @@
+<link rel="stylesheet" href="/style/assets/css/bootstrap.min.css">
+<div class="row">
+  <div class="col-xs-12">
+
+    <form id="submitform" class="form-horizontal" role="form" enctype="multipart/form-data" action="/admin_shop/cash"
+          method="post" accept-charset="utf-8" novalidate="novalidate">
+        <input type="hidden" id="id" name="id" value="<{$id}>" class="form-control input-width" />
+        <!--<input type="hidden" id="page" name="page" value="<{$page}>" class="form-control input-width" />-->
+
+        <div class="form-group" >
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('可提现金额')}></label>
+            <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="may_money" name="may_money"  value="<{$agent['money']}>"  type="text" class="form-control " readonly />
+			</span>
+            </div>
+            <div class="help-block inline"></div>
+        </div>
+
+        <div class="form-group" id="div1">
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('提现金额')}><span style="color:red;">*<{translate('提现不能包涵小数，必需大于1')}></span></label>
+            <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="money" name="money" min='1' value=""  type="number" class="form-control " placeholder="<{translate('请输入提现金额')}>" required />
+			</span>
+            </div>
+            <div class="help-block inline"></div>
+        </div>
+
+
+        <div class="form-group" >
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('银行卡号')}></label>
+            <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="bank_card" name="bank_card"  value="<{$agent['bank_card']}>"  type="text" class="form-control "  required/>
+			</span>
+            </div>
+            <div class="help-block inline"></div>
+        </div>
+
+        <div class="form-group" >
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('开户行名称')}></label>
+            <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="bank_name" name="bank_name"  value="<{$agent['bank_name']}>"  type="text" class="form-control input-width"  required/>
+			</span>
+            </div>
+            <div class="help-block inline"></div>
+        </div>
+
+        <div class="form-group" >
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('开户人姓名')}></label>
+            <div class="col-xs-12 col-sm-4">
+			<span class="block">
+				<input id="name" name="name"  value="<{$agent['compellation']}>"  type="text" class="form-control input-width"   required/>
+			</span>
+            </div>
+            <div class="help-block inline"></div>
+        </div>
+            <!--<div class="form-group" >-->
+                <!--<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">密码: </label>-->
+                <!--<div class="col-xs-12 col-sm-4">-->
+			<!--<span class="block">-->
+				<!--<input id="password" name="password" type="password" value="" class="form-control input-width"  />-->
+			<!--</span>-->
+                <!--</div>-->
+            <!--<div class="help-block inline"></div>-->
+        <!--</div>-->
+
+        <!--<div class="form-group" style="display: none;" id="div2">-->
+            <!--<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">充值时间:</label>-->
+            <!--<div class="col-xs-12 col-sm-4">-->
+			<!--<span class="block">-->
+				<!--<input id="pa2r"  type='date' name="par" min='1' value="" class="form-control input-width"  />-->
+			<!--</span>-->
+            <!--</div>-->
+
+            <!--<div class="help-block inline"></div>-->
+        <!--</div>-->
+      <!--<div class="form-group">-->
+        <!--<label class="col-xs-12 col-sm-3 control-label no-padding-right">apk文件:</label>-->
+        <!--<div class="col-xs-12 col-sm-5">-->
+			<!--<span class="block">-->
+				<!--<input type="file" name="info" value="<{$info['info']}>" class="form-control" style="border:0;padding:0;">-->
+                <!--<span style="color:red;">上传文件请等待提示在关闭窗口</span>-->
+			<!--</span>-->
+        <!--</div>-->
+        <!--<div class="help-block inline"></div>-->
+      <!--</div>-->
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <button type="submit" class="btn  btn-primary btn-lg"><{translate('提交')}></button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+

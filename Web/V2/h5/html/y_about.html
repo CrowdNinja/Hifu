@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>关于我们</title>
+		<meta content="" name="keywords">
+		<meta content="" name="description">
+		<meta content="webkit" name="renderer">
+		<meta content="no-siteapp" http-equiv="Cache-Control" />
+		<meta content="yes" name="mobile-web-app-capable" />
+		<meta content="yes" name="apple-mobile-web-app-capable" />
+		<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+		<meta content="telephone=no,email=no,address=no" name="format-detection" />
+		<meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<link href="../css/y_common.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/common.css" />
+		<style>
+			.pic {
+				width: 1.84rem;
+				height: 1.84rem;
+				border-radius: .1rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<article class="bigBox bw">
+			<div class="container">
+				<p class="tac mt100"><img class="pic"></p>
+				<p class="lh140 font21 tac name" style="color: #5b5b5b"></p>
+			 <div class="content plr20">
+			 </div>
+			</div>
+			<footer class="tac col9 pb20">
+				<p class="company" style="color: #9A9A9A;"></p>
+				<p class="english" style="color: #9A9A9A;"></p>
+			</footer>
+		</article>
+	</body>
+
+</html>
+<script src="../js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/dlc.js" type="text/javascript" charset="utf-8"></script>
+<script>
+	dlctipbox.loading('载入中..');
+	dlc_request('about', {}, function(res) {
+		console.log(res);
+		dlctipbox.clear();
+		if(res.code == 1) {
+			$('.pic').attr('src', res.data.logo);
+			$('.name').text(res.data.title);
+			$('.company').text(res.data.company_name);
+			$('.english').text(res.data.english);
+			$('.content').html(res.data.text);
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+</script>

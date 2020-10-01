@@ -1,0 +1,375 @@
+
+<title><{translate('设备管理')}> - <{translate('设备列表')}></title>
+<div class="page-header">
+	<h1>
+		<{translate('设备管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('设备列表')}>
+	</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+<link rel="stylesheet" href="/style/common.css" />
+<div class="row">
+	<div class="col-xs-12">
+
+		<ul class="nav nav-tabs">
+			<li class=" <{if !$get.type}>active<{/if}>" ><a href="/admin_system#page/admin_device"><{translate('设备列表')}></a></li>
+			<li class=" <{if $get.type==1}> active <{/if}>" ><a href="/admin_system#page/admin_device?type=1"><{translate('美容机')}></a></li>
+			<li class="  <{if $get.type==2}> active <{/if}>" ><a href="/admin_system#page/admin_device?type=2"><{translate('脱毛机')}></a></li>
+		</ul>
+		<br />
+
+
+
+		<div class="panel panel-success">
+			<div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('筛选')}></div>
+			<div class="panel-body" style="display:">
+
+				<div class="form-group form-search form-inline">
+					<label class="control-label"><{translate('设备号')}></label>
+					<input class="form-control" name="keywords" id="keywords" type="text" value="<{$get.keywords}>" placeholder="">
+					<label class="control-label"><{translate('地址')}></label>
+					<input class="form-control" name="address" id="address" type="text" value="<{$get.address}>" placeholder="">
+					<label class="control-label"><{translate('状态')}></label>
+                    <select name="status" id="status" class="form-control">
+                        <option value=""><{translate('请选择')}></option>
+                        <{foreach $device_status as $k => $v}>
+                        <option value="<{$k}>" <{if $get.status==strval($k)}>selected<{/if}>><{$v}></option>
+                        <{/foreach}>
+                    </select>
+					<label class="control-label"><{translate('设备类型')}></label>
+					<select name="type" id="type" class="form-control">
+						<option value=""><{translate('请选择')}></option>
+						<{foreach $device_type as $k => $v}>
+						<option value="<{$k}>" <{if $get.type==strval($k)}>selected<{/if}>><{$v}></option>
+						<{/foreach}>
+					</select>
+					<label class="control-label"><{translate('设备子类型')}></label>
+					<select name="device_son_type_id" id="device_son_type_id" class="form-control">
+						<option value=""><{translate('请选择')}></option>
+						<{foreach $device_son_type as $k => $v}>
+						<option value="<{$v['id']}>" <{if $get.device_son_type_id==strval($v['id'])}>selected<{/if}>><{$v['name']}></option>
+						<{/foreach}>
+					</select>
+					<label class="control-label"><{translate('选择代理商')}></label>
+					<input id="corpid" name="corpid" value="<{$get.corpid}>" style="width:200px" />
+
+					<label class="control-label"><{translate('选择商家')}></label>
+					<input id="adminid" name="adminid" value="<{$get.adminid}>" style="width:200px" />
+
+					<button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('搜索')}></button>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<script>
+            $(function(){
+                $("#corpid").select2({
+                    ajax: {
+                        url: "/admin_corp/search",
+                        data: function (params) {
+                            return {
+                                keywords: params
+                            };
+                        },
+                        results:function(data,pageNo){
+                            if(data.data.length){
+                                data['data'].splice(0, 0, {'id':'', 'text':"<{translate('请选择')}>" });
+                            }else{
+                                data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                            }
+                            return {
+                                results:data.data
+                            };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: data
+                            };
+                        },
+                        type: 'post',
+                        dataType: 'json'
+                    },
+                    initSelection: function(elem, cbfunc){
+                    },
+                    allowClear: false,
+                    openOnEnter: false,
+                    minimumInputLength: 1,
+                });
+            <{if $get.corpid}>$('#corpid').select2('data', {id:"<{$get.corpid}>", text:"<{$get_corpid_account}>"}).select2('val', ["<{$get.corpid}>"]);<{/if}>
+
+                    $("#adminid").select2({
+                        ajax: {
+                            url: "/admin_shop/search",
+                            data: function (params) {
+                                return {
+                                    keywords: params
+                                };
+                            },
+                            results:function(data,pageNo){
+                                if(data.data.length){
+                                    data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+                                }else{
+                                    data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                                }
+                                return {
+                                    results:data.data
+                                };
+                            },
+                            processResults: function (data) {
+                                return {
+                                    results: data
+                                };
+                            },
+                            type: 'post',
+                            dataType: 'json'
+                        },
+                        initSelection: function(elem, cbfunc){
+                        },
+                        allowClear: false,
+                        openOnEnter: false,
+                        minimumInputLength: 1,
+                    });
+                <{if $get.adminid}>$('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);<{/if}>
+
+                        //这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+                        //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+                        //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+                        $('.btn-default').click(function(){
+                            var url = $.searchURL( location.href );
+                            location.href = url;
+                        });
+                    });
+		</script>
+
+		<form class="form-horizontal" role="form" id="submitform" method="post" action="/admin_device/import" enctype="multipart/form-data">
+			<table class="table table-bordered table-hover table-list">
+				<thead>
+				<tr>
+					<th></th>
+					<th><{translate('代理商')}></th>
+					<th><{translate('商家')}></th>
+					<th><{translate('设备号')}></th>
+					<th><{translate('设备类型')}></th>
+					<th><{translate('在线状态')}></th>
+					<th><{translate('使用状态')}></th>
+					<th><{translate('设备地址')}></th>
+					<th><{translate('备注')}></th>
+					<th><{translate('心跳时间')}></th>
+					<th><{translate('上次离线时间')}></th>
+					<th><{translate('开机状态')}></th>
+					<th><{translate('错误码')}></th>
+					<th><{translate('已设置参数')}></th>
+					<th><{translate('操作')}></th>
+				</tr>
+				</thead>
+				<tbody>
+				<{foreach $device.list as $v}>
+				<tr class="alert1 success" align="left">
+					<td><input type="checkbox" name="id[]" value="<{$v['id']}>" /> <{$v['id']}></td>
+					<td><{if $v['_corpid']}><b><{$v['_corpid']}></b><{else}><span style="color:#999"><{translate('没有代理商')}></span><{/if}></td>
+					<td><{if $v['_adminid']}><b><{$v['_adminid']}></b><{else}><span style="color:#999"><{translate('没有商家')}></span><{/if}></td>
+					<td><{$v['macno']}></td>
+					<td><{$device_type[$v['type']]}>- <{$v['device_son_type_name']}> </td>
+					<td><{$v['_status']}></td>
+					<td><{$device_status[$v['status']]}></td>
+					<td><{$v['address']}></td>
+					<td><{$v['remark']}></td>
+					<td><{$v['beat_time']}></td>
+					<td style="color:red;"><{$v['off_line_time']}></td>
+					<td><{if $v['isClosed']==1}> <{translate('关机')}><{else}> <{translate('开机')}><{/if}></td>
+					<td><{$v['error']}></td>
+					<td>
+						<{translate('APN')}> :<{$v['apn']}><br/>
+						<{translate('用户名')}> :<{$v['username']}> <br/>
+						<{translate('密码')}> :<{$v['password']}>
+					</td>
+					<td >
+						<{if chkcommand('/admin_device/edit')}>
+						<a href="admin_system#page/admin_device/edit/<{$v['id']}>/<{$page}>" class="btn btn-success btn-xs"> <i class="fa fa-edit"></i> <{translate('修改')}></a> |
+						<{/if}>
+					</td>
+				</tr>
+				<{/foreach}>
+				<tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+					<td style="border:none" colspan="9"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$(':checkbox').each(function(){this.checked = ck});">
+						<{if chkcommand('/admin_device/delete')}>
+						<input id="btnDelete" class="btn btn-lg btn-default" value="<{translate('删除')}>" type="button">
+						<{/if}>
+						<{if chkcommand('/admin_device/clear')}>
+						<input id="btnClear" class="btn btn-lg btn-default" value="<{translate('清空')}>" type="button">
+						<{/if}>
+
+						<{if chkcommand('/admin_device/edit')}>
+						<a href="/admin_system#page/admin_device/edit/0/<{$page}>" class="btn btn-lg btn-primary">+ <{translate('添加设备')}></a>
+						<{/if}>
+						<{if chkcommand('/admin_device/set_device')}>
+						<a href="javascript:;" class="btn btn-lg btn-warning set_device">+ <{translate('批量设置设备')}></a>
+						<{/if}>
+						<{if chkcommand('/admin_device/import')}>
+						<a href="javascript:;" id="downloadExcel" class="btn btn-lg btn-purple"><i class="fa fa-download"></i><{translate('下载导入摸板')}></a>
+						<a href="javascript:;" id="import" class="btn btn-lg btn-info" style="cursor: pointer;" ><i class="fa fa-plus-circle"></i> <{translate('批量导入设备')}>
+							<input type="file" name="import" style="position:absolute;width:100%;height:100%;top:0;left:0;margin:0;padding:0;opacity:0;cursor: pointer;" >
+						</a>
+						<{/if}>
+						<{if chkcommand('/admin_device/set_device_son_type')}>
+						<a href="javascript:;" class="btn btn-lg btn-success set_device_son_type">+ <{translate('批量设置设备子类型')}></a>
+						<{/if}>
+					</td>
+				</tr>
+
+				</tbody>
+			</table>
+			<table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$device.total}> <{translate('条记录')}> <{$device.pages}>  </td></tr></table>
+
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+    var isbusy = false;
+    //这里处理分页搜索key，引用 /style/assets/js/jquery.fn.js
+    //注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+    //$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+    function isPositiveInteger(s){//是否为正整数
+        var re = /^[0-9]+$/ ;
+        return re.test(s)
+    }
+    $(function(){
+        $('.img-prefile').viewer('destroy').viewer({});
+        $('.img-prefile').parent().off('click', '.viewer-canvas').on('click', '.viewer-canvas', function(e){
+            var _con = $(this).find('img');
+            if(_con && !_con.is(e.target) && _con.has(e.target).length === 0){
+                $('.img-prefile').viewer('hide');
+            }
+        });
+        $(".open_device").click(function () {
+            var macno = $(this).data('macno');
+            layer.prompt({title: '开启时长（分钟）', formType: 2}, function(text, index){
+                if(!isPositiveInteger(text)){
+                    tooltipbox.show("请输入正确时间");
+                    return false
+                }
+                $.post("/admin_device/open",{minute:text,macno:macno},function(re){
+                    layer.close(index);
+                    if(re){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show('操作执行失败');
+                        location.reload();
+                    }
+                });
+            },'json');
+        });
+        //设置设备
+        $('.set_device').click(function () {
+            var ckvals = $.selectCK('input[name="id[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            var url = 'admin_device/set_device/?ids='+ckvals;
+            layer.open({
+                type: 2,
+                title: "<{translate('设置设备参数')}>",
+                shadeClose: true, //不显示关闭按钮
+                shade: 0.3,
+                area: ['830px', '500px'],
+                content: [url, 'no'], //iframe的url，no代表不显示滚动条
+            });
+        });
+        //设置设备子类型
+        $('.set_device_son_type').click(function () {
+            var ckvals = $.selectCK('input[name="id[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            var url = 'admin_device/set_device_son_type/?ids='+ckvals;
+            layer.open({
+                type: 2,
+                title: "<{translate('设置设备子类型')}>",
+                shadeClose: true, //不显示关闭按钮
+                shade: 0.3,
+                area: ['830px', '300px'],
+                content: [url, 'no'], //iframe的url，no代表不显示滚动条
+            });
+        });
+        $("#import").change(function(){
+            $("#submitform").submit();
+        });
+        $('.listpage').find('a').each(function(){
+            var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+            $(this).attr('href', url);
+        });
+        $('#downloadExcel').click(function(){
+            $.download("./macno_import.xlsx");
+            return false;
+        });
+
+        $('#btnDelete').click(function(){
+            var ckvals = $.selectCK('input[name="id[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_device/delete', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            }, false, { 'ids': ckvals });
+        });
+        $('#btnClear').click(function(){
+            tooltipbox.confirm("<{translate('确定永久清空所有数据？')}>", function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_device/clear', { }, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(a, b, c){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            });
+        });
+        $('.btnDlQrcode').click(function(){
+            var ckvals = $.selectCK('input[name="id[]"]');
+            var type=$(this).data('type');
+            if(!ckvals)ckvals = '';
+            tooltipbox.loading("<{translate('正在导出数据')}>");
+            var url = '/admin_device/dlqrcode';
+            $.post(url, { 'ids': ckvals,'type':type }, function(res){
+                if(res.status == 1){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('正在下载文件')}>");
+                        $.download(res.url);
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }else{
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                }
+            }, 'json').error(function(){
+                tooltipbox.show("<{translate('数据或网络错误')}>");
+            });
+        });
+    });
+</script>
+
+

@@ -1,0 +1,121 @@
+<title>类型管理 - <{if $row['id']}>编辑<{else}>添加<{/if}>类型 </title>
+<div class="page-header">
+	<h1>
+		类型管理 <small> <i class="ace-icon fa fa-angle-double-right"></i> <{if $row['id']}>编辑<{else}>添加<{/if}>类型
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_device/device_type">类型列表</a></li>
+        <li class="active"><a href="/admin_system#page/admin_device/type_edit/<{$row['id']}>"><{if $row['id']}>编辑<{else}>添加<{/if}>类型</a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+        
+        		<form class="form-horizontal" role="form" id="submitform" action="/admin_device/type_edit/<{$row['id']}>" method="post" accept-charset="utf-8">
+           
+
+			
+
+    
+
+    
+    <div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">套餐类型:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="title" type="text" name="title" value="<{$row['title']}>" class="form-control input-width" />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+    
+    
+      
+			<div class="form-group">
+		<label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right">押金金额（元）:</label>
+		<div class="col-xs-12 col-sm-5">
+			<span class="block">
+				<input id="foregift" type="number"  min="0" name="foregift" value="<{$row['foregift']}>" class="form-control input-width" />
+			</span>
+		</div>
+		<div class="help-block inline"></div>
+	</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="button" id="saveedit" class="btn  btn-primary btn-lg">提交</button>
+				</div>
+			</div>
+		</form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var isbusy = false;
+
+$(function(){
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			rules: {
+				title: {
+					required: true
+				}
+			}
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker-date').datetimepicker({
+		format: 'YYYY-MM-DD',
+        language: 'zh-CN',
+        pickDate: true,
+        pickTime: false,
+        hourStep: 1,
+        minuteStep: 15,
+        secondStep: 30,
+        inputMask: true
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker').datetimepicker({
+		format: 'YYYY-MM-DD HH:mm:ss',
+        language: 'zh-CN',
+        pickDate: true,
+        pickTime: true,
+        hourStep: 1,
+        minuteStep: 15,
+        secondStep: 30,
+        inputMask: true
+	});
+
+	$('#saveedit').click(function(){
+		if(!$('#submitform').valid())return false;
+		if(isbusy)return false;
+		isbusy = true;
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_device/type_edit/<{$row['id']}>', $('#submitform').serialize(), function(res){
+			if(res.status == '1'){
+				tooltipbox.show('操作完成');
+				location.href = '/admin_system#page/admin_device/device_type';
+			}else if(res.status == '0'){
+				tooltipbox.alert('相同记录已经存在');	
+			}else{
+				tooltipbox.show('数据或网络错误');	
+			}
+			isbusy = false;
+		}, 'json').error(function(a, b, c){
+			tooltipbox.show('数据或网络错误');
+			isbusy = false;
+		});
+	});
+});
+</script> 

@@ -1,0 +1,20 @@
+curl -X POST \
+-H 'Accept: application/json' \
+-H 'Authorization: Bearer EAAAEHY_AHTOnQaVVLeoMryfo6nb3iOHummQYplICMwqG6ztIGb1JlN4nTUc5XzX' \
+-H 'Cache-Control: no-cache' \
+-H 'Content-Type: application/json' \
+-d '{
+    "idempotency_key": "test123123123",
+    "autocomplete": true,
+    "amount_money": {
+      "amount": 100,
+      "currency": "JPY"
+    },
+    "source_id": "cnon:card-nonce-ok"
+    }
+}' \
+'https://connect.squareupsandbox.com/v2/payments'
+
+
+{"payment": {"id": "tE1Vd54cq2IViwHXTq4Wf8P3pfMZY","created_at": "2020-05-19T01:51:41.587Z","updated_at": "2020-05-19T01:51:41.774Z","amount_money": {"amount": 100,"currency": "JPY"},"status": "COMPLETED","delay_duration": "PT168H","source_type": "CARD","card_details": {"status": "CAPTURED","card": {"card_brand": "MASTERCARD","last_4": "9029","exp_month": 5,"exp_year": 2022,"fingerprint": "sq-1-8PuAmR3s_halhPfEjvl9CxQ0p9wb_Z2toM5WftW5ITkn9AkzBxtsK9HFdx5d0enVTg","card_type": "CREDIT","prepaid_type": "NOT_PREPAID","bin": "540988"},"entry_method": "KEYED","cvv_status": "CVV_ACCEPTED","avs_status": "AVS_ACCEPTED","statement_description": "SQ *DEFAULT TEST ACCOUNT"},"location_id": "C0HXW03RP8T86","order_id": "xQHFl2MHZMoHIjBJS4s9sqbnjh4F","total_money": {"amount": 100,"currency": "JPY"},"receipt_number": "tE1V","receipt_url": "https://squareupsandbox.com/receipt/preview/tE1Vd54cq2IViwHXTq4Wf8P3pfMZY","delay_action": "CANCEL","delayed_until": "2020-05-26T01:51:41.587Z"}}
+10:52

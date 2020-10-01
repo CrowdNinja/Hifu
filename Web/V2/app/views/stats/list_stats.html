@@ -1,0 +1,331 @@
+
+<title><{translate('营业报表')}> - <{translate('代理统计')}> </title>
+<div class="page-header">
+	<h1>
+        <{translate('营业报表')}>  <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('代理统计')}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/admin_system#page/admin_stats/"><{translate('代理统计')}></a></li>
+    </ul>
+    <br />
+    
+     <div class="panel panel-success">
+    <div class="panel-heading" onclick="$(this).parent().find('.panel-body').toggle()"><i class="glyphicon glyphicon-chevron-down"></i> <{translate('筛选')}></div>
+    <div class="panel-body" style="display:">
+
+      
+            <div class="form-group form-search form-inline">
+
+            <label class="control-label"><{translate('选择代理')}></label>
+				<input id="corpid" name="corpid" value="<{$get.corpid}>" style="width:200px" />
+
+
+
+                <label class="control-label"><{translate('交易日期')}></label>
+                    <input class="form-control " name="createtime1" id="createtime1" type="text" value="<{$get.createtime1}>" placeholder="">
+                <label class="control-label"><{translate('至')}></label>
+                    <input class="form-control " name="createtime2" id="createtime2" type="text" value="<{$get.createtime2}>" placeholder="">
+                
+              
+                    <button class="btn btn-default btn-sm"><i class="fa fa-search"></i> <{translate('搜索')}></button>
+                    <{if chkcommand('/admin_stats/agent_export')}>
+                    <button class="btn btn-success btn-export btn-sm"><i class="fa fa-export"></i> <{translate('导出')}></button>
+                    <{/if}>
+            </div>
+       
+    </div>
+ 
+    </div>
+        <script>
+            laydate.render({
+                elem: '#createtime1',
+            });
+            laydate.render({
+                elem: '#createtime2'
+            });
+
+        </script>
+<script>
+$(function () {
+
+    //$("#userid,#user_recmdid,#admin_recmdid").select2({
+    $("#userid").select2({
+		ajax: {
+			url: "/admin_user/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.userid}>$('#userid').select2('data', {id:"<{$get.userid}>", text:"<{$get_userid_account}>"}).select2('val', ["<{$get.userid}>"]);<{/if}>
+	//<{if $get.user_recmdid}>$('#user_recmdid').select2('data', {id:"<{$get.user_recmdid}>", text:"<{$get_user_recmdid_account}>"}).select2('val', ["<{$get.user_recmdid}>"]);<{/if}>
+	//<{if $get.admin_recmdid}>$('#admin_recmdid').select2('data', {id:"<{$get.admin_recmdid}>", text:"<{$get_admin_recmdid_account}>"}).select2('val', ["<{$get.admin_recmdid}>"]);<{/if}>
+    
+    
+	$("#corpid").select2({
+		ajax: {
+			url: "/admin_corp/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.corpid}>$('#corpid').select2('data', {id:"<{$get.corpid}>", text:"<{$get_corpid_account}>"}).select2('val', ["<{$get.corpid}>"]);<{/if}>
+	
+	$("#adminid").select2({
+		ajax: {
+			url: "/admin_shop/search",
+			data: function (params) {
+				return { 
+					keywords: params
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.adminid}>$('#adminid').select2('data', {id:"<{$get.adminid}>", text:"<{$get_adminid_account}>"}).select2('val', ["<{$get.adminid}>"]);<{/if}>
+
+	$("#tradeid").select2({
+		ajax: {
+			url: "/admin_trade/search",
+			data: function (params) {
+				return { 
+					keywords: params,
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.tradeid}>$('#tradeid').select2('data', {id:"<{$get.tradeid}>", text:"<{$get_tradeid_tradeno}>"}).select2('val', ["<{$get.tradeid}>"]);<{/if}>
+
+	$("#deviceid").select2({
+		ajax: {
+			url: "/admin_device/search",
+			data: function (params) {
+				return { 
+					keywords: params,
+				};
+			},
+			results:function(data,pageNo){
+				if(data.data.length){
+					data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+				}else{
+					data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+				}
+				return {
+					results:data.data	
+				};
+			},
+			processResults: function (data) {
+				return { 
+					results: data
+				};
+			},
+			type: 'post',
+			dataType: 'json'
+		},	
+		initSelection: function(elem, cbfunc){
+		},
+		allowClear: false,
+		openOnEnter: false,
+		minimumInputLength: 1,
+	});
+	<{if $get.deviceid}>$('#deviceid').select2('data', {id:"<{$get.deviceid}>", text:"<{$get_deviceid_macno}>"}).select2('val', ["<{$get.deviceid}>"]);<{/if}>
+});
+</script> 
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+	$('.btn-export').click(function(){
+		location.href = $.searchURL(location.href).replace('/admin_system#page/admin_stats', '/admin_stats/export');
+	});	
+});
+</script>                 
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+                                <th><{translate('代理商名称')}></th>
+                                <th><{translate('营业金额')}></th>
+                                <th><{translate('实收金额')}></th>
+                                <th><{translate('优惠金额')}></th>
+                                <th><{translate('line支付金额')}></th>
+                                <th><{translate('余额支付金额')}></th>
+                                <th><{translate('退款金额')}></th>
+                                <th><{translate('订单数量')}></th>
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $stats.list as $v}>
+							<tr class="alert1" align="left">
+								<td><{$v['agent_name']}></td>
+								<td><{$v['total_money']}> <{translate('元')}></td>
+								<td><{$v['sum_total']}> <{translate('元')}></td>
+                                <td><{$v['total_discount']}> <{translate('元')}></td>
+                                <td><{$v['line_money']}> <{translate('元')}></td>
+                                <td><{$v['balance_money']}> <{translate('元')}></td>
+                                <td><{$v['refund_money']}> <{translate('元')}></td>
+								<td><{$v['count']}> <{translate('笔')}></td>
+							</tr>
+							<{/foreach}>
+                            
+                            <tr class="success" align="left">
+								<td><b><{translate('总计')}></b></td>
+                                <td><{formatnumber($stats_all['total_money'], 2)}> <{translate('元')}></td>
+                                <td><{formatnumber($stats_all['sum_total'], 2)}> <{translate('元')}></td>
+                                <td><{formatnumber($stats_all['total_discount'], 2)}> <{translate('元')}></td>
+                                <td><{formatnumber($stats_all['line_money'], 2)}> <{translate('元')}></td>
+                                <td><{formatnumber($stats_all['ali_money'], 2)}> <{translate('元')}></td>
+                                <td><{formatnumber($stats_all['wx_money'], 2)}> <{translate('元')}></td>
+                                <td><{formatnumber($stats_all['balance_money'], 2)}> <{translate('元')}></td>
+                                <td><{formatnumber($stats_all['refund_money'], 2)}> <{translate('元')}></td>
+                                <td><{formatnumber($stats_all['count'], 0)}> <{translate('笔')}></td>
+                            </tr>
+                            
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$stats.total}> <{translate('条记录')}> <{$stats.pages}>  </td></tr></table>
+					
+				</form>
+                </div>
+			</div>
+		</div>
+<script>
+$(function(){
+	$('.listpage').find('a').each(function(){
+		var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+		$(this).attr('href', url);
+	});
+	//YYYY-MM-DD HH:mm:ss
+	$('.datetimepicker').datetimepicker({
+		format: 'YYYY-MM-DD',
+		language: 'zh-CN',
+		pickDate: true,
+		pickTime: true,
+		hourStep: 1,
+		minuteStep: 15,
+		secondStep: 30,
+		inputMask: true
+	});	
+	$('#btnExport').click(function(){
+		tooltipbox.show("<{translate('正在导出数据')}>");
+		var url = $.searchURL( '/admin_stats/export' );
+		$.get(url, { }, function(res){
+			if(res.status == 1){
+				tooltipbox.show("<{translate('正在下载文件')}>");
+				$.download(res.url);
+			}else{
+				tooltipbox.show("<{translate('数据或网络错误')}>");
+			}
+		}, 'json').error(function(){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+		});
+	});
+});
+</script>

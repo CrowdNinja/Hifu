@@ -1,0 +1,1 @@
+<li class=""><a data-url="page/admin_system/home/5" href="admin_system#page/admin_system/home/5"><i class="menu-icon fa fa-list-alt"></i><span class="menu-text"> 首頁 </span></a><b class="arrow"></b></li><li class=""><a data-url="page" href="admin_system#page"><i class="menu-icon fa fa-list-alt"></i><span class="menu-text"> 常用功能 </span></a><b class="arrow"></b></li>

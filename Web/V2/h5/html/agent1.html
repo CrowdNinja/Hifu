@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>商家首页</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<style>
+			.banner_item {
+				width: calc( 100% / 4);
+			}
+			.msg_type{
+				box-shadow:0 2px 4px 0 #ccc;
+			}
+			.options-img{
+				display: flex;
+			}
+			.options-img a{
+				display: flex;
+				flex: 1;
+				width: 45%;
+				margin: 0 0.2rem 0.15rem 0;
+				border-radius: 0.1rem;
+				text-decoration: none;
+				align-items: center;
+				padding: 0.24rem 0;
+				background-color: #FFFFFF;
+				box-shadow:0 2px 4px 0 #ccc;
+			}
+			.options-img a:nth-child(2){
+				margin-right: 0.24rem;
+			}
+			.options-img a img{
+				width: 0.4rem;
+				height: 0.4rem;
+				vertical-align: top;
+				margin: 0 0.2rem 0 0.38rem;
+			}
+			.options-img a span{
+				display: block;
+				font-size: 0.32rem;
+			}
+			.options-img a span:nth-child(2){
+				font-size: 0.25rem;
+				margin-top: 0.1rem;
+				color: #b9b9b9;
+			}
+		</style>
+	</head>
+
+	<body class="agent_index">
+		<article class="bigBox">
+			<header class="bg_image colw oh">
+				<div class="wrap font0" style="width: 400%;">
+					<div class="dib banner_item">
+						<div class="ptb50 plr70 tac">
+							<p class="font15">今日收益(元)</p>
+							<p class="font30" id="earningsDay"></p>
+							<p class="mt20 font14" id="order_numDay"></p>
+						</div>
+					</div>
+					<div class="dib banner_item">
+						<div class="ptb50 plr70 tac">
+							<p class="font15">昨日收益(元)</p>
+							<p class="font30" id="earningsYes"></p>
+							<p class="mt20 font14" id="order_numYes"></p>
+						</div>
+					</div>
+					<div class="dib banner_item">
+						<div class="ptb50 plr70 tac">
+							<p class="font15">本周收益(元)</p>
+							<p class="font30" id="earningsWeek"></p>
+							<p class="mt20 font14" id="order_numWeek"></p>
+						</div>
+					</div>
+					<div class="dib banner_item">
+						<div class="ptb50 plr70 tac">
+							<p class="font15">本月收益(元)</p>
+							<p class="font30" id="earningsMonth"></p>
+							<p class="mt20 font14" id="order_numMonth"></p>
+						</div>
+					</div>
+				</div>
+				<img src="../img/11.png" style="width: .48rem;" class="page_tap prev" onclick="page_change(0)">
+				<img src="../img/10.png" style="width: .48rem;" class="page_tap next" onclick="page_change(1)">
+			</header>
+			<section class="plr24 pos_r h170" style="margin-top: -.7rem;z-index: 2;">
+				<div class="msg_type">
+					<div class="bw border-r1 plr60 h170 flex">
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font21" id="wx_pay_moneyDay"></p>
+							<p class="col9 mt10">微信支付</p>
+						</div>
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font21" id="ali_pay_moneyDay"></p>
+							<p class="col9 mt10">支付宝支付</p>
+						</div>
+					</div>
+				</div>
+				<div class="dpn msg_type">
+					<div class="bw border-r1 plr60 h170 flex">
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font21" id="wx_pay_moneyYes"></p>
+							<p class="col9 mt10">微信支付</p>
+						</div>
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font21" id="ali_pay_moneyYes"></p>
+							<p class="col9 mt10">支付宝支付</p>
+						</div>
+					</div>
+				</div>
+				<div class="dpn msg_type">
+					<div class="bw border-r1 plr60 h170 flex">
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font21" id="wx_pay_moneyWeek"></p>
+							<p class="col9 mt10">微信支付</p>
+						</div>
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font21" id="ali_pay_moneyWeek"></p>
+							<p class="col9 mt10">支付宝支付</p>
+						</div>
+					</div>
+				</div>
+				<div class="dpn msg_type">
+					<div class="bw border-r1 plr60 h170 flex">
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font21" id="wx_pay_moneyMonth"></p>
+							<p class="col9 mt10">微信支付</p>
+						</div>
+						<div class="flex1 flex_aj flex_column">
+							<p class="col_price font21" id="ali_pay_moneyMonth"></p>
+							<p class="col9 mt10">支付宝支付</p>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section class="mt20 ml20">
+			    <div class="options-img">
+					<a href="./revenue.html">
+						<img src="../img/yingshoutongji.png" >
+						<div>
+							<span>营收统计</span>
+							<span>查看实时收益流水</span>
+						</div>
+					</a>
+					<a href="./order_record.html">
+						<img src="../img/dingdanjilu.png">
+						<div>
+							<span>订单记录</span>
+							<span>查看订单信息</span>
+						</div>
+					</a>
+				   </div>
+				   <div class="options-img">
+					<a href="./device_list.html">
+						<img src="../img/shebeiliebiao.png" >
+						<div>
+							<span>设备列表</span>
+							<span>查看设备信息</span>
+						</div>
+					</a>
+					<a href="./wifi_set.html">
+						<img src="../img/wifipassword.png">
+						<div>
+							<span>wifi配置</span>
+							<span>wifi配置与查看</span>
+						</div>
+					</a>
+				   </div>
+				   <div class="options-img">
+					<a href="./shop_list.html">
+						<img src="../img/shanghuliebiao.png">
+						<div>
+							<span>商户列表</span>
+							<span>查看商户信息</span>
+						</div>
+					</a>
+					<a href="./divide_record.html">
+						<img src="../img/fenrenjine.png">
+						<div>
+							<span>分润金额</span>
+							<span>查看分润金额</span>
+						</div>
+					</a>
+				   </div>
+				   <div class="options-img">
+					<a href="./set_list.html">
+						<img src="../img/taocanliebiao.png">
+						<div>
+							<span>套餐列表</span>
+							<span>查看套餐信息</span>
+						</div>
+					</a>
+					<a href="./tx.html">
+						<img src="../img/tx.png">
+						<div>
+							<span>申请提现</span>
+							<span>提现到银行卡</span>
+						</div>
+					</a>
+			   </div>
+			</section>
+			<div class="tac mt10" id="role"></div>
+		</article>
+	</body>
+
+</html>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script>
+	var now = 0;
+
+	function page_change(type) {
+		switch(type) {
+			case 0:
+				if(now > 0) now--;
+				$('.msg_type').eq(now).fadeIn(150).siblings().hide();
+				break;
+			case 1:
+				if(now < 3) now++;
+				$('.msg_type').eq(now).fadeIn(150).siblings().hide();
+				break;
+		}
+		$('.wrap').animate({
+			'left': -$(".banner_item").eq(0).width() * now
+		}, 500);
+	}
+
+	function msg_now() {
+
+	}
+	dlc_request('/shop_home', {
+		'shop_token': get_save('token'),
+		'type':1
+	}, function(res) { //日
+		console.log(res);
+		if(res.code == 1) {
+			$('#earningsDay').text(res.data.total_money);
+			$('#order_numDay').text('成交笔数' + res.data.count + '单');
+			$('#wx_pay_moneyDay').text(res.data.wx_money);
+			$('#ali_pay_moneyDay').text(res.data.ali_money);
+			$('#role').text('身份角色：' + res.data.role_type_name);
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+	dlc_request('/shop_home', {
+		'shop_token': get_save('token'),
+		'type':2
+	}, function(res) { //月
+		console.log(res);
+		if(res.code == 1) {
+			$('#earningsYes').text(res.data.total_money);
+			$('#order_numYes').text('成交笔数' + res.data.count + '单');
+			$('#wx_pay_moneyYes').text(res.data.wx_money);
+			$('#ali_pay_moneyYes').text(res.data.ali_money);
+			$('#role').text('身份角色：' + res.data.role_type_name);
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+	dlc_request('/shop_home', {
+		'shop_token': get_save('token'),
+		'type':3
+	}, function(res) { //月
+		console.log(res);
+		if(res.code == 1) {
+			$('#earningsMonth').text(res.data.total_money);
+			$('#order_numMonth').text('成交笔数' + res.data.count + '单');
+			$('#wx_pay_moneyMonth').text(res.data.wx_money);
+			$('#ali_pay_moneyMonth').text(res.data.ali_money);
+			$('#role').text('身份角色：' + res.data.role_type_name);
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+	dlc_request('/shop_home', {
+		'shop_token': get_save('token'),
+		'type':4
+	}, function(res) { //周
+		console.log(res);
+		if(res.code == 1) {
+			$('#earningsWeek').text(res.data.total_money);
+			$('#order_numWeek').text('成交笔数' + res.data.count + '单');
+			$('#wx_pay_moneyWeek').text(res.data.wx_money);
+			$('#ali_pay_moneyWeek').text(res.data.ali_money);
+			$('#role').text('身份角色：' + res.data.role_type_name);
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+</script>

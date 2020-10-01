@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>确认支付</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+		<!--<link rel="stylesheet" href="../css/y_common.css" />-->
+		<link rel="stylesheet" href="../css/swiper.min.css" />
+		<style>
+			.contimg>img {
+				width: 100%;
+			}
+			
+			.kom_a {
+				border-radius: 5px;
+				padding: 0.4rem 0;
+				background: #fff;
+			}
+			
+			.kom_img>img {
+				width: 0.53rem;
+				margin-left: 0.3rem;
+			}
+			
+			.kom_img {
+				display: inline-block;
+				height: 0.54rem;
+				line-height: 0.54rem;
+			}
+			
+			.kom_img>span {
+				margin-left: 0.1rem;
+			}
+			
+			.kom_img1 {
+				float: right;
+				padding-right: 0.3rem;
+				line-height: 0.6rem;
+			}
+			
+			.kom_img1>img {
+				width: 0.3rem;
+				margin-top: 0.1rem;
+			}
+			
+			.kom_img2>img {
+				width: 0.5rem!important;
+				margin-top: 0.05rem;
+			}
+			
+			.kom_b {
+				border-radius: 5px;
+				padding: 0.2rem 0;
+				background: #fff;
+				margin: 0.2rem 0;
+			}
+			
+			.kom_til {
+				font-size: 0.32rem;
+				padding: 0.2rem 0.3rem;
+			}
+			
+			.kom_zz {
+				padding: 0.3rem 0;
+				border-bottom: 1px solid #E7E7E7;
+				margin: 0 0.2rem;
+				display: none;
+			}
+			
+			.kom_i1 {
+				margin-left: 0.1rem!important;
+			}
+			
+			.kom_c {
+				padding: 0.3rem 0;
+				color: #fff;
+				text-align: center;
+				font-size: 0.32rem;
+				border-radius: 50px;
+				margin: 0.8rem 0rem;
+			}
+			
+			.kom_bott {
+				width: 100%;
+				position: fixed;
+				bottom: 0;
+				background: #fff;
+				padding: 0.1rem 0;
+			}
+			
+			.kom_lom {
+				text-align: center;
+				width: 49.5%;
+				float: left;
+			}
+			
+			.kom_lom>img {
+				width: 0.6rem;
+				height: 0.6rem;
+			}
+			
+			.border {
+				border-right: 1px solid #F0F0F0;
+			}
+			
+			.radioBg {
+				width: .42rem;
+				height: .42rem;
+				background: url("../img/ico17.png") no-repeat;
+				background-size: 100%;
+			}
+			
+			input[name=type]:checked+.radioBg {
+				background: url("../img/4a.png") no-repeat;
+				background-size: 100%;
+			}
+			
+			.bg_sure {
+				background: url(../img/bg_orderpay.png) no-repeat center;
+				background-size: 100% 100%;
+				height: 4.5rem;
+			}
+			
+			.bg_top {
+				width: 80%;
+				height: 1.5rem;
+				margin: 0 auto;
+				background: url(../img/bg_sure.png) no-repeat;
+				background-size: 100% 100%;
+				margin-bottom: -.2rem;
+			}
+			
+			.colr_money {
+				color: #FA6745;
+			}
+		</style>
+	</head>
+
+	<body class="bgcola">
+		<section class="col6">
+			<div class="plr20">
+				<div class="bg_top"></div>
+			</div>
+			<div class="plr60 bg_sure">
+				<p class="pt60 col6">已选择套餐</p>
+				<p class="mt20"><span class="font16 title"></span><i class="ml50"><span class="pack_money"></span><i class="time"></i></i>
+				</p>
+				<div class="mt80 tac">
+					<p class="font16 col3">待付款</p>
+					<p class="mt20">需支付:<i class="font17 colr_money fw">￥</i><i class="font17 colr_money fw pay_money"></i></p>
+				</div>
+			</div>
+		</section>
+		<article class="plr30">
+			<div class="kom_a">
+				<div class="kom_img">
+					<img src="../img/2a.png">
+					<span>优惠卷</span>
+				</div>
+				<div class="kom_img1">
+					<span id="pay_text"></span>
+					<img id="img_cou" class="mb10">
+				</div>
+			</div>
+			<div class="kom_b">
+				<div class="kom_til bdb">支付方式</div>
+				<label id="ali_pay" class="dpn">
+                        <div class="flex_sb plr24 h100">
+                            <div class="flex_a">
+                                <img src="../img/26.png" style="width: .54rem;" style="display: none;">
+                                <span class="ml20">支付宝支付</span>
+                            </div>
+                            <input id="zf" type="radio" name="type" value="ali_pay" style="display: none;">
+                            <div class="radioBg"></div>
+                        </div>
+                    </label>
+				<label id="wx_pay" class="dpn">
+                        <div class="flex_sb plr24 h100">
+                            <div class="flex_a">
+                                <img src="../img/3a.png" style="width: .54rem;" style="display: none;">
+                                <span class="ml20">微信支付</span>
+                            </div>
+                            <input id="wx" type="radio" name="type" value="wx_pay" style="display: none;">
+                            <div class="radioBg"></div>
+                        </div>
+                    </label>
+
+				<!--<div class="kom_zz mode_wx">
+					<div class="kom_img">
+						<img src="../img/3a.png" class="kom_i1">
+						<span>微信</span>
+					</div>
+					<div class="kom_img2 kom_img1">
+						<img src="../img/4a.png">
+					</div>
+				</div>
+				<div class="kom_zz mode_zfb">
+					<div class="kom_img">
+						<img src="../img/26.png" class="kom_i1">
+						<span>支付宝</span>
+					</div>
+					<div class="kom_img2 kom_img1">
+						<img src="../img/4a.png">
+					</div>
+				</div>-->
+			</div>
+			<div class="kom_c bg_green mta">支付</div>
+		</article>
+		<div id="alipay"></div>
+	</body>
+
+</html>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+	//套餐详情
+	var coupon_money = getUrlParam('moneys');
+	dlc_request('get_pack_info', {
+		'pack_id': getUrlParam('id')
+	}, function(res) {
+		console.log(res);
+		if(res.code == 1) {
+			$('.title').text(res.data.title);
+			$('.pack_money').text(res.data.price + '元/');
+			$('.time').text(res.data.hour + '小时');
+			if(isNull(coupon_money)) {
+				$('.pay_money').text(+res.data.price);
+			} else {
+				var pay_money = res.data.price - coupon_money;
+				$('.pay_money').text(pay_money > 0 ? pay_money : 0);
+			}
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+	if(isNull(coupon_money)) {
+		$('#img_cou').attr('src', '../img/5a.png');
+	} else {
+		$('#img_cou').attr('src', '../img/cancel.png')
+	}
+	var pass_id = getUrlParam('id'); //首页和套餐id
+	var macno = get_save('macno');
+	var moneys = getUrlParam('moneys');
+
+	dlc_request('user_coupon', {}, function(res) {
+		console.log(res);
+		if(res.code == 1) {
+			var data = res.data.list;
+			console.log(data.length, 0);
+			if(data.length == 0) {
+				$('#pay_text').text("没有券可使用");
+			} else {
+				for(var i in data) {
+					console.log(data[i].status);
+					if(data[i].status == 1) {
+						console.log('123');
+						$('.kom_a').click(function() {
+							if(isNull(moneys)) {
+								location.href = 'user_coupons_order.html?con_id=' + pass_id;
+							} else {
+								dlctipbox.confirm('确定不使用优惠券？', function(index) {
+									if(index == 1) {
+										location.replace('order_pay.html?id=' + pass_id);
+									}
+								});
+							}
+
+						});
+						if(isNull(moneys)) {
+							$('#pay_text').text("有券可使用");
+						} else {
+							$('#pay_text').text('-' + moneys + '元');
+						}
+						break;
+					} else {
+						console.log('456');
+						$('#pay_text').text("没有券可使用");
+
+					}
+				}
+			}
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+
+	if(isWeiXin()) {
+		$('#wx_pay').show();
+		$('input[value="wx_pay"]').prop('checked', true);
+	} else {
+		$('#ali_pay').show();
+		$('input[value="ali_pay"]').prop('checked', true);
+	}
+	//余额
+	dlc_request('profile', {}, function(res) {
+		console.log(res)
+		if(res.code == 1) {
+			$('.balance').text(res.data.money + '元');
+		} else {
+			dlctipbox.show(res.msg);
+		}
+	});
+	//支付方式
+	var onOff = 0;
+	var order_id = '';
+	$('.kom_c').click(function() {
+		if(onOff) return false;
+		onOff = 1;
+		var pay_type = $('input[name=type]:checked').val();
+		if(pay_type == 'wx_pay') {
+			pay_type = 2;
+			dlc_request('pay_order', {
+				'pack_id': pass_id,
+				'macno': macno,
+				'pay_type': pay_type,
+				'coupon_id': getUrlParam('coupin_id')
+			}, function(res) {
+				console.log(res);
+				if(res.code == 1) {
+					order_id = res.data.order_id;
+					jsApiParameters = res.data.payparams.success;
+					callpay(order_id);
+				} else if(res.code == 88) {
+					var order_id = res.data.order_id;
+					dlctipbox.show(res.msg);
+					setTimeout(function() {
+						location.href = 'using.html?order_id=' + order_id;
+					}, 500);
+				} else {
+					onOff = 0;
+					dlctipbox.alert(res.msg);
+				}
+
+			});
+		} else if(pay_type == 'ali_pay') {
+			var pay_type = 3;
+			dlc_request('pay_order', {
+				'pack_id': pass_id,
+				'macno': macno,
+				'pay_type': pay_type,
+				'coupon_id': getUrlParam('coupin_id')
+			}, function(res) {
+				console.log(res);
+				//					dlctipbox.show(res.msg);
+				if(res.code == 1) {
+					order_id = res.data.order_id;
+					var html = res.data.payparams;
+					$('#alipay').html(html);
+				} else if(res.code == 88) {
+					order_id = res.data.order_id;
+					dlctipbox.show(res.msg);
+					setTimeout(function() {
+						location.href = 'using.html?order_id=' + order_id;
+					}, 500);
+				} else {
+					onOff = 0;
+					dlctipbox.alert(res.msg);
+				}
+
+			});
+		} else {
+			dlctipbox.show('请选择支付方式');
+		}
+
+	});
+
+	function jsApiCall(order_id) {
+		WeixinJSBridge.invoke(
+			'getBrandWCPayRequest',
+			jsApiParameters,
+			function(res) {
+				if(res.err_msg == 'get_brand_wcpay_request:ok') {
+					dlctipbox.show('支付成功');
+					location.href = 'using.html?order_id=' + order_id;
+				} else {
+					onOff = 0;
+					dlctipbox.show('支付取消或失败');
+				}
+			}
+		);
+	}
+
+	function callpay(order_id) {
+		if(typeof WeixinJSBridge == "undefined") {
+			if(document.addEventListener) {
+				document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+			} else if(document.attachEvent) {
+				document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+				document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+			}
+		} else {
+			jsApiCall(order_id);
+		}
+	}
+
+	function isWeiXin() {
+		var ua = window.navigator.userAgent.toLowerCase();
+		console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+		if(ua.match(/MicroMessenger/i) == 'micromessenger') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+</script>

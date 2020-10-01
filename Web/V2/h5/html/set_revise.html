@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>套餐列表</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="../css/commonsecond.css" />
+		<link rel="stylesheet" href="../css/mainsecond.css" />
+	</head>
+	<style type="text/css">
+		.list .item + .item{
+			border-top: 1px solid #E5E5E5;
+		}
+		.on , .off{
+			width: 1.3rem;
+			height: 0.5rem;
+		}
+		.on{
+			border: 1px solid #28c3bb;
+			background-color: #30BBB4;
+		}
+		.on img ,
+		.off img{
+			width: 0.5rem;
+			height: 0.5rem;
+		}
+	</style>
+	<body>
+		<header>
+			<div class="ml50 mr30 flex_sb col9 font13 ptb30">
+				<div class="ml10">套餐名称</div>
+				<div class="">价格(元)</div>
+				<div style="width: 3.1rem;">时间(小时)</div>
+			</div>
+		</header>
+		<section class="container">
+			<div class="bw mb20 list col3">
+				<!-- <div class="flex_sb item ptb30 ml50 mr30">
+					<span class="ml10 tac fw">轻微湿衣</span>
+					<span class="border1 fw flex_a" style="width: 1rem;height: 0.5rem;">
+						<input type="text" class="font16 tac price1" style="width: 1rem;" value="1.00">
+					</span>
+					<span class="tac fw" style="width: 1rem;">1</span>
+					<div>
+						<div onclick="tabFn(this)">
+							<div class="border-r6 flex_sb on">
+								<span class="ml20" style="color: #FFFFFF;">启用</span>
+								<img src="../img/button.png">
+							</div>
+						</div>
+						<div class="dpn" onclick="tabFn(this)">
+							<div class="border1 border-r6 flex_sb off">
+								<img src="../img/button.png">
+								<span class="mr20" style="color: #e5e5e5;">关闭</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="flex_sb item ptb30 ml50 mr30">
+					<span class="ml10 tac fw">中度湿衣</span>
+					<span class="border1 fw flex_a" style="width: 1rem;height: 0.5rem;">
+						<input type="text" class="font16 tac price2" style="width: 1rem;" value="2.00">
+					</span>
+					<span class="tac fw" style="width: 1rem;">2</span>
+					<div>
+						<div onclick="tabFn(this)">
+							<div class="border-r6 flex_sb on">
+								<span class="ml20" style="color: #FFFFFF;">启用</span>
+								<img src="../img/button.png">
+							</div>
+						</div>
+						<div class="dpn" onclick="tabFn(this)">
+							<div class="border1 border-r6 flex_sb off">
+								<img src="../img/button.png">
+								<span class="mr20" style="color: #e5e5e5;">关闭</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="flex_sb item ptb30 ml50 mr30">
+					<span class="ml10 tac fw">严重湿衣</span>
+					<span class="border1 fw flex_a" style="width: 1rem;height: 0.5rem;">
+						<input type="text" class="font16 tac price3" style="width: 1rem;" value="3.00">
+					</span>
+					<span class="tac fw" style="width: 1rem;">3</span>
+					<div class="state">
+						<div class="state_on" onclick="tabFn(this)">
+							<div class="border-r6 flex_sb on">
+								<span class="ml20" style="color: #FFFFFF;">启用</span>
+								<img src="../img/button.png">
+							</div>
+						</div>
+						<div class="state_off" onclick="tabFn(this)">
+							<div class="border1 border-r6 flex_sb off">
+								<img src="../img/button.png">
+								<span class="mr20" style="color: #e5e5e5;">关闭</span>
+							</div>
+						</div>
+					</div>
+				</div> -->
+			</div>
+		</section>
+	</body>
+</html>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/drop/dropload.min.js"></script>
+<script>
+	var jerry = '',
+		page = 0;
+	
+	// function get_list(){
+		dlc_request('/pack_list', {
+			'shop_token' : get_save('token'),
+			'shop_id' : getUrlParam('shop_id')
+		}, function(res) {
+			console.log(res);
+			if(res.code == 1) {
+				var str='';
+				var data = res.data;
+				for(var i in data) {
+					str += '<div class="flex_sb item ptb30 ml50 mr30">' + 
+						'<span class="tac fw" style="width: 1.5rem;">' + data[i].title +
+						'</span>' +
+						'<span class="border1 fw flex_a" style="width: 1rem;height: 0.5rem;">' +
+						'<input type="text" class="font16 tac price" id='+ data[i].id +'  data-id="'+ data[i].id +'" onchange="set_money(this)" style="width: 1rem;" value="' + data[i].price + '">' + 
+						'</span>' +
+						'<span class="tac fw" style="width: 1rem;">' + data[i].hour +
+						'</span>' + 
+						'<div class="state">' + 
+						'<div class="' + (data[i].status == 1 ? 'dpn' : 'state_on') + '" data-id="'+ data[i].id +'" data-status="1" onclick="tabFn(this)">' + 
+						'<div class="border-r6 flex_sb on">' + 
+						'<span class="ml20" style="color: #FFFFFF;">启用' +
+						'</span>' +
+						'<img src="../img/button.png">' +
+						'</div>' +
+						'</div>' +
+						'<div onclick="tabFn(this)" class="' + (data[i].status == 0 ? 'dpn' : 'state_on') + '" data-id="'+ data[i].id +'" data-status="0">' + 
+						'<div class="border1 border-r6 flex_sb off">' + 
+						'<img src="../img/button.png">' +
+						'<span class="mr20" style="color: #e5e5e5;">关闭' +
+						'</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				}
+				setTimeout(function() {
+					$('.list').html(str);
+					onOff = 0;
+					// jerry.resetload();
+					// jerry.unlock();
+					// jerry.noData(false);
+				}, 1000);
+			} else {
+				dlctipbox.show(res.msg);
+			}
+		});
+	// };
+		function tabFn(that) {
+			 $(that).addClass('dpn').siblings().removeClass('dpn');
+			 var pack_id=$(that).data('id')
+			 var status=$(that).data('status')
+			dlc_request('/edit_pack', {
+				'shop_token' : get_save('token'),
+				'pack_id' :pack_id,
+				'status': status
+			}, function(res) {
+				dlctipbox.show(res.msg);
+			});
+			// if($(".state").children('.state_on').hasClass('dpn')){
+			// 	data[i].status = 1;
+			// }else if($(".state").children('.state_off').hasClass('dpn')){
+			// 	data[i].status = 0;
+			// }
+		}
+		function set_money(that) {
+			 var pack_id=$(that).data('id');
+			 var price=$("#money_"+pack_id).val();
+			 console.log(price);
+			dlc_request('/edit_pack', {
+				'shop_token' : get_save('token'),
+				'pack_id' :pack_id,
+				'price': price
+			}, function(res) {
+				dlctipbox.show(res.msg);
+			});
+			// if($(".state").children('.state_on').hasClass('dpn')){
+			// 	data[i].status = 1;
+			// }else if($(".state").children('.state_off').hasClass('dpn')){
+			// 	data[i].status = 0;
+			// }
+		}
+		$('body').click(function(event){
+			var evt = event.target;
+			evt = $(evt);
+			if (evt.hasClass('price')) {
+				return;
+			}else{
+				console.log($(".price").val())
+			}
+		})
+	
+	
+	
+	
+</script>

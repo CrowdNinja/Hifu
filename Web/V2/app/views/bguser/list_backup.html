@@ -1,0 +1,109 @@
+
+<title><{translate('系統設置')}> - <{translate('数据备份')}></title>
+<div class="page-header">
+    <h1>
+        <{translate('系統設置')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('数据备份')}>
+    </small>
+    </h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="/admin_system#page/admin_backup/"><{translate('数据备份')}></a></li>
+        </ul>
+        <br />
+
+       
+
+        <form class="form-horizontal" role="form" id="submitform">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th width="85"><{translate('序号')}></th>
+                    <th><{translate('文件')}></th>
+                    <!--<th>操作</th>-->
+
+                </tr>
+                </thead>
+                <tbody>
+                <{foreach $files as $k => $v}>
+                <tr class="alert1" align="left">
+                    <td><input type="checkbox" name="id[]" value="<{$v}>" /> <{$k}></td>
+                    <td><a href="<{$path}><{$v}>" target="_blank"><{$v}></a></td>
+                    <!--<td ><a href="admin_system#page/admin_backup/restore/<{enbase64($v)}>">还原</a></td>-->
+                </tr>
+                <{/foreach}>
+                <tr style="position:fixed; bottom:0; width:100%; background:#fff;z-index:9">
+                    <td style="border:none" colspan="12"><input type="checkbox" id="checkall" onclick="var ck = this.checked;$('input[name=&quot;id[]&quot;]').each(function(){this.checked = ck});">
+
+                        <input id="btnDelete" class="btn btn-default" value="<{translate('删除')}>" type="button">
+                        <a id="btnBackup" href="javascript:;" class="btn btn-primary">+ <{translate('新备份')}></a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </form>
+    </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+    var isbusy = false;
+    $(function(){
+        //YYYY-MM-DD HH:mm:ss
+        $('.datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            language: 'zh-CN',
+            pickDate: true,
+            pickTime: true,
+            hourStep: 1,
+            minuteStep: 15,
+            secondStep: 30,
+            inputMask: true
+        });
+        $('#btnDelete').click(function(){
+            var ckvals = $.selectCK('input[name="id[]"]');
+            if(!ckvals){
+                tooltipbox.show("<{translate('请选择要操作的数据')}>");
+                return false;
+            }
+            tooltipbox.confirm("<{translate('确定永久删除选中的数据')}>？", function(data){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_backup/delete/', data, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            }, false, { 'ids': ckvals });
+        });
+        $('#btnBackup').click(function(){
+            tooltipbox.confirm('确定备份所有数据？', function(){
+                tooltipbox.show("<{translate('正在执行操作')}>");
+                $.post('/admin_backup/backup/', { }, function(res){
+                    if(res.status == '1'){
+                        tooltipbox.show("<{translate('操作执行成功')}>");
+                        location.reload();
+                    }else{
+                        tooltipbox.show("<{translate('数据或网络错误')}>");
+                    }
+                }, 'json').error(function(a, b, c){
+                    tooltipbox.show("<{translate('数据或网络错误')}>");
+                });
+            });
+        });
+    });
+</script>
+ 
+ 

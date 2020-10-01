@@ -1,0 +1,100 @@
+<title><{translate('購入履歴')}></title>
+<div class="page-header">
+	<h1>
+		 <{translate('購入履歴')}>
+	</h1>
+</div>
+<!-- /.page-header -->
+
+
+<div class="row">
+	<div class="col-xs-12">
+    
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page<{$returnUri}>"><{translate('一覧に戻る')}></a></li>
+        <li class="active"><a><{translate('購入履歴')}></a></li>
+    </ul>
+    <br />
+				
+<script>
+$(function(){
+	//这里处理搜索key，引用 /style/assets/js/jquery.fn.js
+	//注意php代码不需要处理搜索URL参数，分页URL的处理注意本页尾的JS代码
+	//$.searchURL = function(url = location.href, sConr = '.form-search', sObj = 'input,select,textarea', sJoin = ','){/**/}
+	$('.btn-default').click(function(){
+		var url = $.searchURL( location.href );
+		location.href = url;
+	});
+	$('.btn-export').click(function(){
+		location.href = $.searchURL(location.href).replace('/admin_system#page/admin_trade', '/admin_trade/export');
+	});	
+});
+</script>                 
+				 
+				<form class="form-horizontal" role="form" id="submitform">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th><{translate('番号')}></th>
+								<th><{translate('取引番号')}></th>
+								<th><{translate('エージェント名')}></th>
+								<th><{translate('店舗名')}></th>
+								<th><{translate('顧客情報')}></th>
+								<th><{translate('メニュー情報')}></th>
+								<th><{translate('支払い情報')}></th>
+								<th><{translate('取引状況')}></th>
+								<th><{translate('支払い方法')}></th>
+								<th><{translate('注文日時')}></th>
+								<th><{translate('支払い日時')}></th>
+								<th><{translate('操作')}></th>
+							</tr>
+						</thead>
+						<tbody>
+							<{foreach $trade.list as $v}>
+							<tr class="alert1 success" align="left">
+								<td><{$v['id']}></td>
+								<td><{$v['tradeno']}></td>
+                                <td style="color:brown;"><{$v['agent_name']}></td>
+                                <td style="color:brown;"><{$v['_adminid']}></td>
+                                <td><{$v['_userid']}></td>
+                                <td >
+									<{translate('メニュー名')}>：<b ><{$v['pack']['title']}></b> <br />
+									<{translate('メニュー金額')}>：<b style="color:red;"><{$v['pack']['price']}></b> <{translate('元')}><br />
+                                </td>
+                                <td >
+									<{translate('注文金額')}>：<b style="color:red;"><{$v['money']}></b> <{translate('元')}><br />
+									<{translate('クーポン額')}>：<b style="color:red;"><{$v['discount']}></b> <{translate('元')}><br />
+									<{translate('支払額')}>：<b style="color:red;"><{$v['pay_money']}></b> <{translate('元')}><br />
+                                </td>
+                                <td><{$trade_status[$v['status']]}></td>
+                                <td><{$trade_paytype[$v['paytype']]}></td>
+                                <td><{$v['ctime']}></td>
+                                <td><{$v['paytime']}></td>
+								<td >
+									<{if chkcommand('/admin_trade/purchase_history_detail')}>
+									<a href="admin_system#page/admin_trade/purchase_history_detail/<{$v['id']}>/<{$get.page}>" class="btn btn-info btn-xs"> <i class="fa fa-eye"></i> <{translate('詳細')}></a>
+									<{/if}>
+                                </td>
+							</tr>
+							<{/foreach}>
+
+						</tbody>
+					</table>
+                     <table   style="width:100%;" class="listpage"><tr><td ><{translate('共')}> <{$trade.total}> <{translate('条记录')}> <{$trade.pages}>  </td></tr></table>
+					
+				</form>
+                </div>
+			</div>
+		</div>
+ 
+<script type="text/javascript">
+ 	var isbusy = false;
+	$(function(){
+		$('.listpage').find('a').each(function(){
+			var url = $.replaceURL( location.href, 'page', $(this).attr('data-ci-pagination-page') );
+			$(this).attr('href', url);
+		});
+	});
+</script>
+ 
+ 

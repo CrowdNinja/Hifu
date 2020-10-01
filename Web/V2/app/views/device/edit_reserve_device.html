@@ -1,0 +1,253 @@
+<title><{translate('設備管理')}> - <{translate('予約管理用機器設定')}><{if $row['admin_id']}><{translate('編集')}><{else}><{translate('追加')}><{/if}> </title>
+<div class="page-header">
+	<h1>
+        <{translate('設備管理')}> <small> <i class="ace-icon fa fa-angle-double-right"></i> <{translate('予約管理用機器設定')}><{if $row['admin_id']}><{translate('編集')}><{else}><{translate('追加')}><{/if}>
+		</small>
+	</h1>
+</div>
+<!-- /.page-header -->
+<script language='javascript' src="/style/assets/js/jquery.dialogBox.js"></script>
+<link rel="stylesheet" href="/style/assets/js/jquery.dialogbox.css" />
+<script>window.UEDITOR_HOME_URL = '/app/third_party/ueditor1_4_3_3-utf8-php/';</script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/lang/en/en.js"></script>
+<script type="text/plain" id="j_ueditorupload" style="height:5px;display:none;" ></script>
+<script type="text/javascript" charset="utf-8" src="/app/third_party/ueditor1_4_3_3-utf8-php/ueditor.upload.js"></script>
+<div class="row">
+	<div class="col-md-12">
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="/admin_system#page/admin_device/list_reserve_device"><{translate('一覧')}></a></li>
+        <li class="active"><a href="/admin_system#page/admin_device/edit_reserve_device/<{$row['admin_id']}>"><{translate('予約管理用機器設定')}><{if $row['admin_id']}><{translate('編集')}><{else}><{translate('追加')}><{/if}></a></li>
+    </ul>
+
+  <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+
+        <form class="form-horizontal" role="form" id="submitform" action="/admin_device/list_reserve_device/<{$row['admin_id']}>" method="post" accept-charset="utf-8">
+
+        <div class="form-group">
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{translate('店舗名')}><{if $_admin->_role_type != 0}>*<{/if}>:</label>
+            <div class="col-xs-12 col-sm-4">
+                <select name="adminid" id="adminid" class="form-control" <{if !empty($row['admin_id'])}>disabled<{/if}>>
+                    <option vlaue="0"> <{translate('選択してください')}></option>
+                    <{foreach $shop as $k => $v}>
+                    <option value="<{$v['id']}>" <{if strval($row['admin_id'])==$v['id']}>selected<{/if}>><{$v['nickname']}></option>
+                    <{/foreach}>
+
+                </select>
+                <{if !empty($row['admin_id'])}><input type="hidden" name="adminid" value="<{$row['admin_id']}>"><{/if}>
+            </div>
+            <div class="help-block inline"></div>
+        </div>
+<script>
+$(function () {
+        $("#agent_id").select2({
+            ajax: {
+                url: "/admin_corp/search",
+                data: function (params) {
+                    return {
+                        keywords: params,
+                    };
+                },
+                results:function(data,pageNo){
+                    if(data.data.length){
+                        data['data'].splice(0, 0, {'id':'', 'text': "<{translate('请选择')}>"});
+                    }else{
+                        data['data'] = [{'id':'', 'text': "<{translate('请选择')}>"}];
+                    }
+                    return {
+                        results:data.data
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                type: 'post',
+                dataType: 'json'
+            },
+            initSelection: function(elem, cbfunc){
+            },
+            allowClear: false,
+            openOnEnter: false,
+            minimumInputLength: 1,
+        });
+    <{if $row['agent_id']}>$('#agent_id').select2('data', {id:"<{$row['agent_id']}>", text:"<{$row['agent_name']}>"}).select2('val', ["<{$row['agent_id']}>"]);<{/if}>
+});
+</script>
+
+        <{foreach $deviceSonTypeList as $deviceId=>$device_name}>
+        <div class="form-group">
+            <label for="title" class="col-xs-12 col-sm-3 control-label no-padding-right"><{$device_name}>の台数:</label>
+            <div class="col-xs-12 col-sm-4">
+                <span class="block">
+                    <input type="text" name="device_<{$deviceId}>" value="<{$row[$deviceId]}>" class="form-control input-width" />
+                </span>
+            </div>
+            <div class="help-block inline"></div>
+        </div>
+        <{/foreach}>
+
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="button" id="saveedit" class="btn  btn-primary btn-lg"><{translate('確定')}></button>
+            </div>
+        </div>
+
+        </form>
+        </div>
+        </div>
+	</div>
+    </div>
+</div>
+<script src="/style/assets/js/x-editable/bootstrap-editable.min.js"></script>
+<script src="/style/assets/js/jquery.gritter.min.js"></script>
+<script src="/style/assets/js/x-editable/ace-editable.min.js"></script>
+
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=<{$geocoder_key}>&plugin=AMap.Geocoder"></script>
+<script type="text/javascript">
+var isbusy = false;
+function amap_click(map, res){
+    console.log(res);
+    //map.clearMap();
+    $("#lng").val(res.lnglat.lng);
+    $("#lat").val(res.lnglat.lat);
+}
+$(function(){
+	$('#submitform').validate({
+			errorElement: 'div',
+			errorClass: 'help-block',
+			focusInvalid: true,
+			rules: {
+				title: {
+					required: true
+				}
+			}
+	});
+
+    $('#agent_id').change(function () {
+        var parent_id= $("#agent_id").val();
+        var adminid="<{$row['adminid']}>";
+        if(parent_id>0){
+            $.ajax({
+                type:"post",
+                url:"/admin_shop/get_corp_shop",
+                data:{'parent_id':parent_id},
+                dataType: "json",
+                success:function(data) {
+                    var arr = data.data;
+                    var html="<option value='0'  ><{translate('请选择')}></option>";
+                    var selected='';
+                    for(var i=0;i<arr.length;i++){
+                        if(arr[i]['id']==adminid){
+                            selected='selected="selected"';
+                        }else{
+                            selected='';
+                        }
+                        html+='<option value="'+arr[i]['id']+'" '+selected+' >'+arr[i]['text']+'</option>';
+                    }
+                    $("#adminid").html(html).change();
+                },
+                error:function(xhr){
+                    tooltipbox.alert("<{translate('获取失败')}>");
+                    return false;
+                }
+            });
+        }
+    });
+    $('#agent_id').change();
+    $('.btn-map').click(function(){
+        var address = $('#address').val().replace(/ /g, '');
+        address = address.replace(/^\s/g, '').replace(' ', '省');
+        address = address.replace(' ', '市');
+        $(this).prev().dialogBox({
+            title:"<{translate('选择坐标')}>",
+            fixTop: -1 * $(window).height() * 0.2,
+            autoSize:false,
+            hasMask:false,
+            hasClose:true,
+            width:Math.min(800, $(window).width() * 0.9),
+            height:Math.min(600, $(window).height() * 0.9),
+            frameborder:'no',
+            scrolling:'auto',
+            content:'/app/third_party/amap/amap.html?address=' + encodeURI(encodeURI(address)),
+            framedisplay:'none',
+            iframeload:function(_iframe){
+                $('#dialog-box-iframe').show(300);
+                $('.dialog-box').dragDiv();
+                //setTimeout(function(){ tooltipbox.clear(); }, 5000);
+            },
+            close:function(){
+            },
+        });
+        return false;
+    });
+    $('.btn-location').click(function(){
+        if(!$('#address').val()){
+            tooltipbox.show("<{translate('请先填写地址')}>");
+            return false;
+        }
+        var map = new AMap.Map("container", {
+            resizeEnable: true
+        });
+        var geocoder = new AMap.Geocoder({
+            city: "", //城市，默认：“全国”
+            radius: 500 //范围，默认：500
+        });
+        //地理编码
+        geocoder.getLocation($('#address').val(), function(status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+                //TODO:获得了有效经纬度，可以做一些展示工作
+                //比如在获得的经纬度上打上一个Marker
+                if(result.geocodes.length > 0){
+                    $('#lat').val(result.geocodes[0].location.lat);
+                    $('#lng').val(result.geocodes[0].location.lng);
+                }
+            }else{
+                //获取经纬度失败
+                tooltipbox.show("<{translate('获取失败，请确认地址正确')}>");
+            }
+            //alert($.toJSON(result));
+        });
+    });
+
+	$('.check-device').click(function(){
+		tooltipbox.show("<{translate('正在执行操作')}>");
+		$.post('/admin_device/check', { 'id': "<{$row['admin_id']}>", 'macno': $('#macno').val() }, function(res){
+			if(res.status == '0'){
+				tooltipbox.alert("<{translate('设备号可使用')}>");
+			}else if(res.status == '-1'){
+				tooltipbox.alert("<{translate('数据或网络错误')}>");
+			}else{
+				tooltipbox.alert("<{translate('设备号已经存在')}>");
+			}
+		}, 'json').error(function(){
+			tooltipbox.show("<{translate('数据或网络错误')}>");
+		});
+		return false;
+	});
+	$('#saveedit').click(function(){
+		if(!$('#submitform').valid())return false;
+		if(isbusy)return false;
+		isbusy = true;
+		tooltipbox.show("<{translate('操作を実行する')}>");
+		$.post('/admin_device/edit_reserve_device/<{$row['admin_id']}>', $('#submitform').serialize(), function(res){
+			if(res.status == '1'){
+				tooltipbox.show("<{translate('操作完了')}>");
+				history.back(-1);
+			}else if(res.status == '0'){
+				tooltipbox.alert(res.msg);
+			}else{
+				tooltipbox.show("<{translate('データまたはネットワークエラー')}>");
+			}
+			isbusy = false;
+		}, 'json').error(function(a, b, c){
+			tooltipbox.show("<{translate('データまたはネットワークエラー')}>");
+			isbusy = false;
+		});
+	});
+});
+</script> 
