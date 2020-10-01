@@ -32,6 +32,11 @@ https://beauty-admin.com/
 
 ソースコードを全部公開します。
 
+決済サービスは「LINEPAY」と「Square」です。
+
+https://squareup.com/jp/ja
+
+
 
 ●　発注側（開発委託）：
 
@@ -46,12 +51,6 @@ https://www.skrum.co.jp/
 
 発注担当者　：田澤 尚治
 
-https://drive.google.com/file/d/1AkgpSxCS0KdmidGmC6WdEbPfvAJVH7Nf/view?usp=sharing
-
-
-Twitterアカウント：
-
-https://twitter.com/naoharoo?lang=en
 
 
 ●　客先
@@ -59,7 +58,3 @@ https://twitter.com/naoharoo?lang=en
 https://xn--68jp0cyhmeplpb.com/
 
 会社名　：株式会社BIG YOUTH（ビッグ・ユース）
-
-所在地　：東京都港区北青山３-5-8 青山OKビル６Ｆ
-
-電話番号　：03-5843-1021
